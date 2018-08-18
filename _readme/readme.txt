@@ -36,8 +36,15 @@ service httpd restart
 4. Создаем модель (php artisan make:model Product -m   ключ -m создает миграцию   )
 5. В миграции прописываем вручную все поля и связи
 6. Выполняем миграцию (php artisan migrate) (php artisan migrate:rollback --step=1  удаляем последнюю миграцию 1шт. ) (php artisan migrate:rollback    удаляет все)
-
 7. Заполнение тестовыми данными (php artisan make:seeder CategoryTableSeeder) 
+8. Добавление пустой миграции (php artisan make:migration create_foreign_products)
+9. Добавление полей в таблицу (php artisan make:migration create_parrent_id --table categories)
+
+1. Создание API контроллера (php artisan make:controller api/v1/CategoryController --resource --model=Category)
+2. Добавляем путь к api контроллеру в routes\api.php (Route::group(['prefix' => '/v1',  'namespace' => 'Api\V1', 'as' => 'api.'], function () {
+        Route::resource('companies', 'CompaniesController', ['except' => ['create', 'edit']]);
+    });)
+	
 
 
 npm run watch
