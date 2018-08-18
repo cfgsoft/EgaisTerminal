@@ -31,3 +31,14 @@ service httpd restart
 
 
 1. Создан новый проект для терминала.
+2. Добавляем аутентификацию в проект (php artisan make:auth)
+3. Создаем модель (php artisan make:model Category -m) 
+4. Создаем модель (php artisan make:model Product -m   ключ -m создает миграцию   )
+5. В миграции прописываем вручную все поля и связи
+6. Выполняем миграцию (php artisan migrate) (php artisan migrate:rollback --step=1  удаляем последнюю миграцию 1шт. ) (php artisan migrate:rollback    удаляет все)
+
+7. Заполнение тестовыми данными (php artisan make:seeder CategoryTableSeeder) 
+
+
+npm run watch
+
