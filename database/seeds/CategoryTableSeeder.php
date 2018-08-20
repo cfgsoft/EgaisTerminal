@@ -13,6 +13,7 @@ class CategoryTableSeeder extends Seeder
     {
         //
         DB::table('categories')->insert([
+            'id' => 1,
             'descr' => 'Beer',
             'code' => '0000001',
             'version' => '1',
