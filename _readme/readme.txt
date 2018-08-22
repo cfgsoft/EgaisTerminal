@@ -12,7 +12,7 @@ http://qaru.site/questions/3369/mysql-grant-all-privileges-on-database
 
 mysql -u root -p   (Вход в консоль на linux)
 
-CREATE USER 'newuser'@'localhost' IDENTIFIED BY 'password';
+CREATE USER 'newuser'@'localhost' IDENTIFIED BY 'password'; 
 GRANT ALL PRIVILEGES ON * . * TO 'newuser'@'localhost';
 FLUSH PRIVILEGES;
 
@@ -29,7 +29,21 @@ yum install unzip
 Перезапуск сети
 service httpd restart
 
+Перезапуск ngix 
+systemctl restart nginx
 
+Установка minding commander (запуск mc)
+yum install mc
+
+меняем путь в appache /etc/http/bx/conf
+меняем путь в nginx /etc/nginx/bx/site_enabled
+добавляем /public
+
+Установка web панели 
+http://blog.sedicomm.com/2018/01/22/ustanovka-centos-web-panel-v-centos/
+
+
+0. php artisan key:generate (генерация нового ключа)
 1. Создан новый проект для терминала.
 2. Добавляем аутентификацию в проект (php artisan make:auth)
 3. Создаем модель (php artisan make:model Category -m) 
@@ -45,7 +59,7 @@ service httpd restart
 2. Добавляем путь к api контроллеру в routes\api.php (Route::group(['prefix' => '/v1',  'namespace' => 'Api\V1', 'as' => 'api.'], function () {
         Route::resource('companies', 'CompaniesController', ['except' => ['create', 'edit']]);
     });)
-	
+3. Создание API контроллера (php artisan make:controller api/v1/ProductController --resource --model=Product)	
 
 
 npm run watch

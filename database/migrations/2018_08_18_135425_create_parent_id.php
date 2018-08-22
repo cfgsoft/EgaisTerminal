@@ -15,7 +15,7 @@ class CreateParentId extends Migration
     {
         Schema::table('categories', function (Blueprint $table) {
             $table->integer('parent_id')->unsigned();
-            $table->string('parent_code',10);
+            $table->string('parent_code',10)->default('');
             $table->index('code');
         });
     }

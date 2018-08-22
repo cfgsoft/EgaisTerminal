@@ -19,4 +19,5 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 
 Route::group(['prefix' => '/v1',  'namespace' => 'Api\V1', 'as' => 'api.'], function () {
     Route::resource('categories', 'CategoryController', ['except' => ['create', 'edit']]);
+    Route::resource('products',   'ProductController',  ['except' => ['create', 'edit']]);
 });

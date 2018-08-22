@@ -79,7 +79,7 @@
 
             <div class="content">
                 <div class="title m-b-md">
-                    lic.chance-ltd.ru
+                    lic.chance-ltd.ru1
                 </div>
 
                 <div class="links">

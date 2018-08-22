@@ -12,7 +12,7 @@ class CategoryTableSeeder extends Seeder
     public function run()
     {
         //
-        DB::table('categories')->insert([
+        $newItem = DB::table('categories')->insert([
             'id' => 1,
             'descr' => 'Beer',
             'code' => '0000001',
@@ -21,8 +21,10 @@ class CategoryTableSeeder extends Seeder
             'parent_id' => 0,
             'parent_code' => ''
         ]);
+		
+		echo $newItem;
 
-            DB::table('categories')->insert([
+            $newItem = DB::table('categories')->insert([
                 'descr' => 'Baltika',
                 'code' => '0000004',
                 'version' => '1',
@@ -30,8 +32,10 @@ class CategoryTableSeeder extends Seeder
                 'parent_id' => 0,
                 'parent_code' => '0000001'
             ]);
+			
+			echo $newItem;
 
-            DB::table('categories')->insert([
+            $newItem = DB::table('categories')->insert([
                 'descr' => 'SunInbev',
                 'code' => '0000005',
                 'version' => '1',
@@ -39,6 +43,8 @@ class CategoryTableSeeder extends Seeder
                 'parent_id' => 0,
                 'parent_code' => '0000001'
             ]);
+			
+			echo $newItem;
 
         DB::table('categories')->insert([
             'descr' => 'Vodka',

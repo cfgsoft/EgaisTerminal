@@ -15,11 +15,25 @@ class CategoryController extends Controller
      */
     public function index()
     {
-        //$cats = Category::all();
+//        $code = "S650000006";
+//        $bdCategory = Category::where("code", $code)->first();
+//
+//        if ($bdCategory == null) {
+//
+//        } else {
+//
+//        }
+//
+//        return response()->json($bdCategory);
+
+
         //return response()->json(["data" => $cats, "status" => 1]);
 
-        $category = Category::latest()->paginate();
-        return $category;
+        //$category = Category::latest()->paginate();
+        //return $category;
+
+        $cats = Category::all();
+        return response()->json($cats);
     }
 
     /**
@@ -40,7 +54,25 @@ class CategoryController extends Controller
      */
     public function store(Request $request)
     {
-        $category = Category::create($request->all());
+        $newCategory = $request->all();
+
+        if (isset($newCategory["parent_code"])) {
+            $parentCategory = Category::where("code", $newCategory["parent_code"])->first();
+            if ($parentCategory != null) {
+                $newCategory["parent_id"] = $parentCategory->id;
+            }
+        }
+
+        $category = Category::where("code", $newCategory["code"])->first();
+        if ($category == null) {
+            $category = Category::create($newCategory);
+        } else {
+            //$category = Category::findOrFail($category->id);
+            //$category->update($newCategory);
+
+            $category->update($newCategory);
+        }
+
         return $category;
     }
 
