@@ -26,4 +26,19 @@ class HomeController extends Controller
     {
         return view('home');
     }
+
+    public function about()
+    {
+        return view('about');
+    }
+	
+	public function contact(Request $request)
+    {
+        return response()->json(['name' => 'Abigail','state' => 'CA']);
+		
+		//JSONP современные браузы. поддерживают CORS
+		//return response()->json(['name' => 'Abigail', 'state' => 'CA'])
+		//				 ->withCallback($request->input('callback'));
+		
+    }
 }

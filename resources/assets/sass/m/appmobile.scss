@@ -1,0 +1,63 @@
+$background-color-form-input-bar-code:aqua;
+
+body {
+  max-width: 240px; /* Максимальная ширина страницы в пикселах */
+  max-height: 320px; /* Максимальная высота страницы в пикселах */
+  margin: 0px;
+}
+
+h6 {
+  margin: 0px;
+  font-size: xx-small;
+  font-style: normal;
+}
+
+h5 {
+  margin: 0px;
+  font-style: normal;
+}
+
+.mainmenu {
+  margin: 10px;
+  padding: 0px;
+}
+
+.mainmenu li {
+  list-style-type: none;
+  font-size: small;
+}
+
+p {
+  margin: 0px;
+}
+
+thead {
+  background-color: silver;
+  font-size: small;
+  font-style: normal;
+}
+
+tbody {
+  font-size: medium;
+  text-align: center;
+}
+
+.tddescr {
+  font-size: small;
+  text-align: left;
+}
+
+.container {
+  margin: 5px;
+  border: 1px solid;
+}
+
+.barcode {
+  font-size: small;
+  margin: 0px;
+}
+
+#formInputBarCode {
+  background-color: $background-color-form-input-bar-code;
+  margin: 1px;
+}

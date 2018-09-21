@@ -16,6 +16,10 @@ CREATE USER 'newuser'@'localhost' IDENTIFIED BY 'password';
 GRANT ALL PRIVILEGES ON * . * TO 'newuser'@'localhost';
 FLUSH PRIVILEGES;
 
+//Смена пароля
+ALTER USER 'root'@'localhost' IDENTIFIED BY 'new_password'
+ALTER USER 'root'@'localhost' PASSWORD EXPIRE NEVER;
+
 Установка composer
 https://habr.com/post/197454/
 
@@ -39,9 +43,21 @@ yum install mc
 меняем путь в nginx /etc/nginx/bx/site_enabled
 добавляем /public
 
-Установка web панели 
-http://blog.sedicomm.com/2018/01/22/ustanovka-centos-web-panel-v-centos/
+//Установка Laravel Ubuntu
+https://hackernoon.com/a-step-by-step-guide-to-setup-php-laravel-environment-linux-50b55a4fd15e
 
+//Установка web панели 
+//http://blog.sedicomm.com/2018/01/22/ustanovka-centos-web-panel-v-centos/
+
+NPM Основные команды
+https://habr.com/post/133363/
+npm list -g --depth=0 (Глобально установленные пакеты)
+
+//Переход с c# на PHP
+https://habr.com/users/GraDea/
+
+//Mobile-Detect Определение устройства с которого открывается сайт
+https://github.com/serbanghita/Mobile-Detect
 
 0. php artisan key:generate (генерация нового ключа)
 1. Создан новый проект для терминала.

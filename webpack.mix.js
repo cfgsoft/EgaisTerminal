@@ -13,3 +13,13 @@ let mix = require('laravel-mix');
 
 mix.js('resources/assets/js/app.js', 'public/js')
    .sass('resources/assets/sass/app.scss', 'public/css');
+
+mix.copy('resources/assets/js/m/appmobile.js', 'public/js/m');
+mix.sass('resources/assets/sass/m/appmobile.scss', 'public/css/m');
+
+/*mix.minify('resources/assets/js/m/appmobile.js')
+    .copy('resources/assets/js/m/appmobile.min.js', 'public/js/m');*/
+   
+/*mix.copy('resources/assets/js/m/appmobile.js', 'public/js/m');*/
+
+

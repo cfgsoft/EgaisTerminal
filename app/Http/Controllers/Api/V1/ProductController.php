@@ -13,14 +13,21 @@ class ProductController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        $products = Product::latest()->paginate();
-        return $products;
+		header('Access-Control-Allow-Origin: *');
+		
+        $products = Product::orderBy("descr");
 
+        if ($request->has('category_id')) {
+            $products = $products->where('category_id', $request->get('category_id'));
+        }
+
+        return response()->json($products->paginate(50));
+								
         //$products = Product::all();
         //return response()->json($products);
-    }
+    }		
 
     /**
      * Show the form for creating a new resource.

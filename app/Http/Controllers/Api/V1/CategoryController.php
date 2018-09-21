@@ -13,27 +13,38 @@ class CategoryController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-//        $code = "S650000006";
-//        $bdCategory = Category::where("code", $code)->first();
-//
-//        if ($bdCategory == null) {
-//
-//        } else {
-//
-//        }
-//
-//        return response()->json($bdCategory);
+        header('Access-Control-Allow-Origin: *');
 
+        $category = Category::orderBy("descr");
+
+        if ($request->has('parent_id')) {
+            $category = $category->where('parent_id', $request->get('parent_id'));
+        } else {
+            $category = $category->where('parent_id', 0);
+        }
+
+        return $category->paginate(20);
+
+        //$cats = Category::all();
+        //return response()->json($cats);
+
+
+        //$code = "S650000006";
+        //$bdCategory = Category::where("code", $code)->first();
+
+        //if ($bdCategory == null) {
+
+        //} else {
+
+        //}
+        //return response()->json($bdCategory);
 
         //return response()->json(["data" => $cats, "status" => 1]);
 
         //$category = Category::latest()->paginate();
-        //return $category;
-
-        $cats = Category::all();
-        return response()->json($cats);
+        //return $category;    
     }
 
     /**
