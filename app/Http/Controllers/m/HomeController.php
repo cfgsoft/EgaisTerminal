@@ -31,7 +31,7 @@ class HomeController extends Controller
             $action1 = $request->get('barcode');
         }
 
-        return view('m\home', ["useragent" => $useragent, "action1" => $action1]);
+        return view('m\index', ["useragent" => $useragent, "action1" => $action1]);
     }
 
     public function about()
@@ -50,13 +50,10 @@ class HomeController extends Controller
         switch($barcode)
         {
             case '1':
-                return redirect()->action('m\HomeController@index', ["barcode" => 'Набор 1']);
-                break;
-            case '2':
-                return redirect()->action('m\HomeController@index', ["barcode" => 'Набор 2']);
+                return redirect()->action('m\OrderController@index');
                 break;
             default:
-                return redirect()->action('m\HomeController@index', ["barcode" => $barcode]);
+                return redirect()->action('m\ReadBarCodeController@index');
                 break;
         }
 

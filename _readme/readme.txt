@@ -70,6 +70,7 @@ https://github.com/serbanghita/Mobile-Detect
 8. Добавление пустой миграции (php artisan make:migration create_foreign_products)
 9. Добавление полей в таблицу (php artisan make:migration create_parrent_id --table categories)
 10. Заполнение таблиц (php artisan db:seed          php artisan db:seed --class=UsersTableSeeder)
+11. php artisan make:controller ShowProfile --invokable
 
 1. Создание API контроллера (php artisan make:controller api/v1/CategoryController --resource --model=Category)
 2. Добавляем путь к api контроллеру в routes\api.php (Route::group(['prefix' => '/v1',  'namespace' => 'Api\V1', 'as' => 'api.'], function () {

@@ -60,7 +60,7 @@ tbody {
 }
 
 #formInputBarCode {
-  background-color: aqua;
+  /* background-color: $background-color-form-input-bar-code; */
   margin: 1px;
 }
 

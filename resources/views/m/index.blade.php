@@ -10,8 +10,8 @@
     </form>
 
     <ul class="mainmenu">
-        <li><a href="{{ action('m\HomeController@index') }}">(1) Отгрузка</a></li>
-        <li><a href="{{ action('m\HomeController@index') }}">(9) Сканировать штрихкоды</a></li>
+        <li><a href="{{ action('m\OrderController@index') }}">(1) Отгрузка</a></li>
+        <li><a href="{{ action('m\ReadBarCodeController@index') }}">(9) Сканировать штрихкоды</a></li>
         <li><a href="{{ route('m.home.index') }}">(0) Тест</a></li>
     </ul>
 
