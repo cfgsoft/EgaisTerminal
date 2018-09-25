@@ -4,7 +4,7 @@
     <h6><a href="{{ route('m.home.index') }}" >0-Выход</a></h6>
     <p>Отсканируйте штрих код</p>
 
-    <form action="{{ action('m\ReadBarCodeController@submitbarcode') }}" id="formInputBarCode" method="post">
+    <form action="{{ action('m\ReadBarCodeController@submitbarcode') }}" id="formInputBarCode" method="get">
         <input id="InputBarCode" name="BarCode" title="Barcode" size="23" />
         <input type="hidden" name="_token" value="{{ csrf_token() }}" >
         <input type="submit" value=".." />
