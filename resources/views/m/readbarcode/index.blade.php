@@ -10,6 +10,8 @@
         <input type="submit" value=".." />
     </form>
 
+    {{ $token }}
+
     @foreach ($barcode as $item)
         <h6> {{ $item->barcode }} </h6>
         <h5> {{ $item->created_at }} </h5>

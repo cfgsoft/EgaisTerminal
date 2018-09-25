@@ -23,12 +23,16 @@ class ReadBarCodeController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
         $barcode = ReadBarCode::orderBy("created_at", 'desc') //'asc'
                                 ->take(10)->get();
 
-        return view('m/readbarcode/index',["barcode" => $barcode]);
+        //test token
+        $result = $request->session()->all();//получаем данные из сессии
+        $token = $result['_token'];
+
+        return view('m/readbarcode/index',['barcode' => $barcode, 'token' => $token]);
     }
 
     public function submitbarcode(Request $request)
