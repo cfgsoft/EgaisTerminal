@@ -31,13 +31,13 @@ class HomeController extends Controller
             $action1 = $request->get('barcode');
         }
 
-        return view('m\index', ["useragent" => $useragent, "action1" => $action1]);
+        return view('m/index', ["useragent" => $useragent, "action1" => $action1]);
     }
 
     public function about()
     {
         $useragent = $_SERVER['HTTP_USER_AGENT'];
-        return view('m\about', ["useragent" => $useragent]);
+        return view('m/about', ["useragent" => $useragent]);
     }
 
     public function submitbarcode(Request $request)

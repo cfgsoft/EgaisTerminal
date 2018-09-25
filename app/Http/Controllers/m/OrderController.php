@@ -28,7 +28,7 @@ class OrderController extends Controller
         $order = Order::orderBy("number", 'desc')
                  ->take(10)->get();
 
-        return view('m\order\index', ['order' => $order]);
+        return view('m/order/index', ['order' => $order]);
     }
 
     public function edit(Request $request)
@@ -36,7 +36,7 @@ class OrderController extends Controller
         $order = Order::find($request->get('id'));
         $order->orderlines;
 
-        return view('m\order\edit', ['order' => $order]);
+        return view('m/order/edit', ['order' => $order]);
     }
 
     public function submitbarcode(Request $request)

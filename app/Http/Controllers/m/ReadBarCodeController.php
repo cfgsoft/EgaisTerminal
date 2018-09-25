@@ -28,7 +28,7 @@ class ReadBarCodeController extends Controller
         $barcode = ReadBarCode::orderBy("created_at", 'desc') //'asc'
                                 ->take(10)->get();
 
-        return view('m\readbarcode\index',["barcode" => $barcode]);
+        return view('m/readbarcode/index',["barcode" => $barcode]);
     }
 
     public function submitbarcode(Request $request)

@@ -43,6 +43,10 @@ yum install mc
 меняем путь в nginx /etc/nginx/bx/site_enabled
 добавляем /public
 
+//Смена разрешения на всех вложенных файлах
+chown -R bitrix:bitrix /home/bitrix/www
+
+
 //Установка Laravel Ubuntu
 https://hackernoon.com/a-step-by-step-guide-to-setup-php-laravel-environment-linux-50b55a4fd15e
 
