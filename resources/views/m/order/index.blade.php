@@ -12,6 +12,32 @@
 
     <h5>Документы набора</h5>
 
+    <table class="table">
+        <thead>
+        <tr>
+            <th>
+                Номер
+            </th>
+            <th></th>
+        </tr>
+        </thead>
+        <tbody>
+        @foreach ($order as $item)
+            <tr>
+                <td>
+                    {{$item->number}}
+                </td>
+                <td>
+                    <a href="{{ route('m.order.edit', ['id' => $item->id]) }}" >Собрать</a>
+                </td>
+            </tr>
+        @endforeach
+
+        </tbody>
+    </table>
+
+
+
 @endsection
 
 @section('scripts')

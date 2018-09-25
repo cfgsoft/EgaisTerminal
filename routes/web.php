@@ -28,7 +28,9 @@ Route::post('/m/readbarcode/submitbarcode', 'm\ReadBarCodeController@submitbarco
 
 Route::get('/m/order', 'm\OrderController@index')->name('m.order');
 Route::get('/m/order/index', 'm\OrderController@index')->name('m.order.index');
+Route::get('/m/order/edit', 'm\OrderController@edit')->name('m.order.edit');
 Route::post('/m/order/submitbarcode', 'm\OrderController@submitbarcode')->name('m.order.submitbarcode');
+Route::post('/m/order/submiteditbarcode', 'm\OrderController@submiteditbarcode')->name('m.order.submiteditbarcode');
 
 Route::get('/home', 'HomeController@index')->name('home');
 Route::get('/about', 'HomeController@about')->name('about');

@@ -22,9 +22,10 @@ class CreateOrdersTable extends Migration
             $table->timestamps();
         });
 
-        Schema::create('orderlines', function (Blueprint $table) {
+        Schema::create('order_lines', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('order_id')->unsigned();
+            $table->integer('orderlineid')->unsigned();
             $table->string('productdescr', 100);
             $table->string('productcode', 19);
             $table->integer('quantity')->default(0);
@@ -33,10 +34,10 @@ class CreateOrdersTable extends Migration
             $table->timestamps();
         });
 
-        Schema::create('ordermarklines', function (Blueprint $table) {
+        Schema::create('order_mark_lines', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('order_id')->unsigned();
-            $table->integer('ordermarklineid');
+            $table->integer('ordermarklineid')->unsigned();
             $table->string('productcode', 19);
             $table->string('markcode', 68);
             $table->integer('quantity')->default(0);
@@ -52,8 +53,8 @@ class CreateOrdersTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('ordermarklines');
-        Schema::dropIfExists('orderlines');
+        Schema::dropIfExists('order_mark_lines');
+        Schema::dropIfExists('order_lines');
         Schema::dropIfExists('orders');
     }
 }

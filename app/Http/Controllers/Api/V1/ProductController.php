@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\api\v1;
 
 use App\Product;
+use App\Category;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
@@ -22,6 +23,8 @@ class ProductController extends Controller
         if ($request->has('category_id')) {
             $products = $products->where('category_id', $request->get('category_id'));
         }
+
+        //$products = $products->belongsTo('App\Category');
 
         return response()->json($products->paginate(50));
 								

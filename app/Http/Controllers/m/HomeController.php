@@ -57,6 +57,6 @@ class HomeController extends Controller
                 break;
         }
 
-        return redirect()->action('m\HomeController@index', ["barcode" => $barcode]);
+        return redirect()->action('m\HomeController@index');
     }
 }

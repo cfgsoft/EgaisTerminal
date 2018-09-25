@@ -14,8 +14,6 @@
         <li><a href="{{ action('m\ReadBarCodeController@index') }}">(9) Сканировать штрихкоды</a></li>
         <li><a href="{{ route('m.home.index') }}">(0) Тест</a></li>
     </ul>
-
-    {{$action1}}
 @endsection
 
 @section('scripts')
