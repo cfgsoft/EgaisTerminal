@@ -14,7 +14,7 @@ class HomeController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('auth');
+        //$this->middleware('auth');
     }
 
     /**
@@ -27,14 +27,16 @@ class HomeController extends Controller
         return view('home');
     }
 
-    public function about()
+    public function about(Request $request)
     {
         return view('about');
     }
 	
 	public function contact(Request $request)
     {
-        return response()->json(['name' => 'Abigail','state' => 'CA']);
+        return var_dump($_COOKIE);
+
+        //return response()->json(['name' => 'Abigail','state' => 'CA']);
 		
 		//JSONP современные браузы. поддерживают CORS
 		//return response()->json(['name' => 'Abigail', 'state' => 'CA'])
