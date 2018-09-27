@@ -34,9 +34,9 @@ class HomeController extends Controller
 	
 	public function contact(Request $request)
     {
-        return var_dump($_COOKIE);
+        //return var_dump($_COOKIE);
 
-        //return response()->json(['name' => 'Abigail','state' => 'CA']);
+        return response()->json(['name' => 'Abigail','state' => 'CA']);
 		
 		//JSONP современные браузы. поддерживают CORS
 		//return response()->json(['name' => 'Abigail', 'state' => 'CA'])

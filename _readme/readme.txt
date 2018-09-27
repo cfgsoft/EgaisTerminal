@@ -63,6 +63,14 @@ https://habr.com/users/GraDea/
 //Mobile-Detect Определение устройства с которого открывается сайт
 https://github.com/serbanghita/Mobile-Detect
 
+//Установка сервера Ubuntu (web min)
+https://www.youtube.com/watch?v=ePw9LQgBAnc
+http://webgoal.ru/sistemnoe_administrirovanie/ustanovka_lamp_(linux_apache_mysql_php)_ubuntu_1804_dlya_lokalnoi_razrabotki9.html
+sudo apt-get install php-xml
+sudo apt-get install php-mbstring
+
+https://www.youtube.com/watch?v=uIXScyhCtPc
+
 0. php artisan key:generate (генерация нового ключа)
 1. Создан новый проект для терминала.
 2. Добавляем аутентификацию в проект (php artisan make:auth)
