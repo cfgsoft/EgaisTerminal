@@ -25,13 +25,20 @@ h5 {
     background-color: darkgray;
     margin-top: 3px;
     list-style-type: none;
-    font-size: small;
+    //font-size: small;
+    //height: 30px;
+    //border: 2px solid;
 
     a {
       text-decoration: none;
       text-align: center;
       color: white;
+      font-size: small;
+      font-weight: bold;
       display: block;
+      padding-top: 10px;
+      height: 25px;
+      //border: 1px dotted;
 
     }
   }
