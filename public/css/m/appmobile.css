@@ -25,9 +25,24 @@ h5 {
 }
 
 .mainmenu li {
+  background-color: darkgray;
+  margin-top: 3px;
   list-style-type: none;
   font-size: small;
 }
+
+.mainmenu li a {
+  text-decoration: none;
+  text-align: center;
+  color: white;
+  display: block;
+}
+
+/*
+.mainmenu li {
+  list-style-type: none;
+  font-size: small;
+}*/
 
 p {
   margin: 0px;

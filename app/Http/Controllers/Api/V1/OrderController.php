@@ -4,6 +4,7 @@ namespace App\Http\Controllers\api\v1;
 
 use App\Order;
 use App\OrderLine;
+use App\OrderMarkLine;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
@@ -21,6 +22,17 @@ class OrderController extends Controller
         //$order->ordermarklines;
 
         $order = Order::with('orderlines', 'ordermarklines')->get();
+
+        return response()->json($order);
+    }
+
+    public function indexMarkLine()
+    {
+        $order = OrderMarkLine::where('savedin1c', '=', false)->orderBy('order_id')->get();
+
+        //$order = Order::has('ordermarklines','>',0, function($query) {
+        //    $query->where('savedin1c', '=', 1);
+        //})->with('ordermarklines')->get();
 
         return response()->json($order);
     }
@@ -60,6 +72,7 @@ class OrderController extends Controller
             $newOrderLine->orderlineid   = $line['OrderLineId'];
             $newOrderLine->productdescr  = $line['ProductDescr'];
             $newOrderLine->productcode   = $line['ProductCode'];
+            $newOrderLine->f2regid       = $line['F2RegId'];
             $newOrderLine->quantity      = $line['Quantity'];
             $newOrderLine->order_id      = $order->id;
             $newOrderLine->showfirst     = 0;
@@ -101,6 +114,15 @@ class OrderController extends Controller
     public function update(Request $request, Order $order)
     {
         //
+    }
+
+    public function updateMarkLine(Request $request, $id)
+    {
+        $orderMarkLine = OrderMarkLine::findOrFail($id);
+        $orderMarkLine->savedin1c = true;
+        $orderMarkLine->save();
+
+        return $orderMarkLine;
     }
 
     /**

@@ -20,12 +20,28 @@ h5 {
 .mainmenu {
   margin: 10px;
   padding: 0px;
+
+  li {
+    background-color: darkgray;
+    margin-top: 3px;
+    list-style-type: none;
+    font-size: small;
+
+    a {
+      text-decoration: none;
+      text-align: center;
+      color: white;
+      display: block;
+
+    }
+  }
 }
 
+/*
 .mainmenu li {
   list-style-type: none;
   font-size: small;
-}
+}*/
 
 p {
   margin: 0px;

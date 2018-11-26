@@ -83,6 +83,9 @@ https://www.youtube.com/watch?v=uIXScyhCtPc
 9. Добавление полей в таблицу (php artisan make:migration create_parrent_id --table categories)
 10. Заполнение таблиц (php artisan db:seed          php artisan db:seed --class=UsersTableSeeder)
 11. php artisan make:controller ShowProfile --invokable
+12. Создаем модель (php artisan make:model ExciseStamp -m) 
+13. php artisan make:controller api/v1/ExciseStampController --resource --model=ExciseStamp
+14. Изменение размера столбцов (composer require doctrine/dbal)
 
 1. Создание API контроллера (php artisan make:controller api/v1/CategoryController --resource --model=Category)
 2. Добавляем путь к api контроллеру в routes\api.php (Route::group(['prefix' => '/v1',  'namespace' => 'Api\V1', 'as' => 'api.'], function () {
@@ -93,3 +96,4 @@ https://www.youtube.com/watch?v=uIXScyhCtPc
 
 npm run watch
 
+FA-000000041590630

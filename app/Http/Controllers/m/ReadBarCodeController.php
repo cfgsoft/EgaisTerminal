@@ -54,4 +54,24 @@ class ReadBarCodeController extends Controller
 
         return redirect()->action('m\ReadBarCodeController@index');
     }
+
+    public function submitbarcodeajax(Request $request)
+    {
+        $barcode = '';
+        if ($request->has('BarCode')) {
+            $barcode = $request->get('BarCode');
+        }
+
+        if ($barcode == '0') {
+            return redirect()->action('m\HomeController@index');
+        }
+
+        if (isset($barcode)) {
+            $newbarbode = new ReadBarCode;
+            $newbarbode->barcode = $barcode;
+            $newbarbode->save();
+        }
+
+        return redirect()->action('m\ReadBarCodeController@index');
+    }
 }

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\m;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\ReadBarCode;
 
 class HomeController extends Controller
 {
@@ -38,6 +39,37 @@ class HomeController extends Controller
     {
         $useragent = $_SERVER['HTTP_USER_AGENT'];
         return view('m/about', ["useragent" => $useragent]);
+    }
+
+    public function ajax()
+    {
+        return view('m/ajax');
+    }
+
+    public function ajaxresult()
+    {
+        $barcode = ReadBarCode::orderBy("created_at", 'desc') //'asc'
+        ->take(1)->first();
+        return $barcode;
+
+        //$useragent = $_SERVER['HTTP_USER_AGENT'];
+        //return $useragent;
+    }
+
+    public function ajaxpostresult(Request $request)
+    {
+        $barcode = '';
+        if ($request->has('BarCode')) {
+            $barcode = $request->get('BarCode');
+        }
+
+        if (isset($barcode)) {
+            $newbarbode = new ReadBarCode;
+            $newbarbode->barcode = $barcode;
+            $newbarbode->save();
+        }
+
+        return $newbarbode;
     }
 
     public function submitbarcode(Request $request)

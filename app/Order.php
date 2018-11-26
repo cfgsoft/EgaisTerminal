@@ -15,4 +15,12 @@ class Order extends Model
     public function ordermarklines(){
         return $this->hasMany("App\OrderMarkLine");
     }
+
+    public function orderpacklines(){
+        return $this->hasMany("App\OrderPackLine");
+    }
+
+    public function ordererrorlines(){
+        return $this->hasMany("App\OrderErrorLine");
+    }
 }

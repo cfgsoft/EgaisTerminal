@@ -1,8 +1,8 @@
 @extends('layouts.mobile')
 
 @section('content')
+    <h5>Считайте штрихкод</h5>
     <h6><a href="{{ route('m.order.index') }}" >0-Выход</a></h6>
-    <p>Считайте штрихкод</p>
 
     <form action="{{ action('m\OrderController@submiteditbarcode') }}" id="formInputBarCode" method="post">
         <input id="InputBarCode" name="BarCode" title="Barcode" size="23" />
@@ -10,6 +10,8 @@
         <input type="hidden" name="_token" value="{{ csrf_token() }}" >
         <input type="submit" value=".." />
     </form>
+
+    {{ isset($errorMessage) ? $errorMessage : '' }}
 
     <div> {{ $order->number  }} </div>
 

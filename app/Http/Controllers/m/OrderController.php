@@ -3,8 +3,13 @@
 namespace App\Http\Controllers\m;
 
 use App\Order;
+use App\OrderLine;
+use App\OrderMarkLine;
+use App\OrderErrorLine;
+use App\ExciseStamp;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\DB;
 
 class OrderController extends Controller
 {
@@ -23,12 +28,17 @@ class OrderController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
         $order = Order::orderBy("number", 'desc')
                  ->take(10)->get();
 
-        return view('m/order/index', ['order' => $order]);
+        $barcode = '';
+        if ($request->has('barcode')) {
+            $barcode = $request->get('barcode');
+        }
+
+        return view('m/order/index', ['order' => $order, 'barcode' => $barcode]);
     }
 
     public function edit(Request $request)
@@ -36,7 +46,12 @@ class OrderController extends Controller
         $order = Order::find($request->get('id'));
         $order->orderlines;
 
-        return view('m/order/edit', ['order' => $order]);
+        $errorMessage = '';
+        if ($request->has('errorMessage')) {
+            $errorMessage = $request->get('errorMessage');
+        }
+
+        return view('m/order/edit', ['order' => $order, 'errorMessage' => $errorMessage]);
     }
 
     public function submitbarcode(Request $request)
@@ -50,13 +65,21 @@ class OrderController extends Controller
             return redirect()->action('m\HomeController@index');
         }
 
-//        if (isset($barcode)) {
-//            $newbarbode = new ReadBarCode;
-//            $newbarbode->barcode = $barcode;
-//            $newbarbode->save();
-//        }
+        if (strlen($barcode) > 8) {
+            $barcode = str_replace("*", "", $barcode);
+            $barcode = str_replace("C", "С", $barcode);
+            $barcode = substr($barcode, 0, 4) . '_' . substr($barcode, 4);
 
-        return redirect()->action('m\OrderController@index');
+            $order = Order::where('number', '=', $barcode)->first();
+
+            if (isset($order)) {
+                return redirect()->action('m\OrderController@edit', ['id' => $order->id]);
+            }
+        }
+
+        $barcode = 'Не найден заказ №' . $barcode;
+
+        return redirect()->action('m\OrderController@index', ['barcode' => $barcode]);
     }
 
     public function submiteditbarcode(Request $request)
@@ -73,6 +96,88 @@ class OrderController extends Controller
 
         if ($barcode == '0') {
             return redirect()->action('m\OrderController@index');
+        }
+
+        $errorBarCode = true;
+        $errorMessage = "Не опознан ШК " . $barcode;
+
+        if (strlen($barcode) == 26) {
+        }
+
+        //101100261679680118001D5CCFC794963898C1B13E41231CKY42T7UDIJJY2AWLHS7HPGINLMY7PQPDNJALVS42WNCHYRCO257SPCSCF4ASM37BZNTLIASYRVGFUTCXDXDJPML5MMVLEEHZWPWJVI
+        if (strlen($barcode) == 150) {
+            $exciseStamp = ExciseStamp::find($barcode);
+            if (isset($exciseStamp)) {
+                $errorBarCode = false;
+
+                //Ищем штрих код в уже набранных товарах, если находим ошибка.
+                $orderMarkLine = OrderMarkLine::where('markcode', '=', $barcode)->first();
+                if (isset($orderMarkLine)) {
+                    $errorBarCode = true;
+                    $errorMessage = "Товар уже сканировался " . $barcode;
+                }
+
+                if (!$errorBarCode) {
+                    //Ищем товар в строке заказов
+                    $orderLine = OrderLine::where([["order_id",   "=", $order_id],
+                                                   ["productcode","=", $exciseStamp->productcode],
+                                                   ["f2regid",    "=", $exciseStamp->f2regid]
+                    ])->first();
+
+                    if (isset($orderLine)) {
+
+                        if ($orderLine->quantity > $orderLine->quantitymarks ) {
+                            //Добавить обнуление showfirst  у заказа
+
+                            try{
+                                DB::beginTransaction();
+
+                                $orderMarkLine = new OrderMarkLine;
+                                $orderMarkLine->order_id    = $order_id;
+                                $orderMarkLine->orderlineid = $orderLine->orderlineid;
+                                $orderMarkLine->productcode = $exciseStamp->productcode;
+                                $orderMarkLine->f2regid     = $exciseStamp->f2regid;
+                                $orderMarkLine->markcode    = $barcode;
+                                $orderMarkLine->quantity    = 1;
+                                $orderMarkLine->savedin1c   = false;
+                                $orderMarkLine->save();
+
+                                $orderLine->quantitymarks = $orderLine->quantitymarks + 1;
+                                //$orderLine->showfirst = true;
+                                $orderLine->save();
+
+                                DB::commit();
+
+                            } catch(\Exception $exception){
+                                $errorBarCode = true;
+                                $errorMessage = "Ошибка при записи " . $barcode;
+                            }
+
+                        } else {
+                            $errorBarCode = true;
+                            $errorMessage = "Превышено количество в наборе " . $barcode;
+                        }
+
+                    } else {
+                        $errorBarCode = true;
+                        $errorMessage = "Товар не зайден в заказе " . $barcode;
+                    }
+                }
+
+            } else {
+                $errorBarCode = true;
+                $errorMessage = "Не найдена марка в БД " . $barcode;
+            }
+        }
+
+        if ($errorBarCode && strlen($barcode) > 0) {
+            $orderErrorLine = new OrderErrorLine;
+            $orderErrorLine->order_id = $order_id;
+            $orderErrorLine->markcode = $barcode;
+            $orderErrorLine->message = $errorMessage;
+            $orderErrorLine->save();
+
+            return redirect()->action('m\OrderController@edit', ['id' => $order_id, 'errorMessage' => $errorMessage ]);
         }
 
         return redirect()->action('m\OrderController@edit', ['id' => $order_id]);

@@ -18,7 +18,11 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 });
 
 Route::group(['prefix' => '/v1',  'namespace' => 'Api\V1', 'as' => 'api.'], function () {
-    Route::resource('categories', 'CategoryController', ['except' => ['create', 'edit']]);
-    Route::resource('products',   'ProductController',  ['except' => ['create', 'edit']]);
-    Route::resource('orders',     'OrderController',    ['except' => ['create', 'edit']]);
+    Route::get('orders/indexMarkLine',  'OrderController@indexMarkLine');
+    Route::put('orders/updateMarkLine/{id}', 'OrderController@updateMarkLine');
+
+    Route::resource('categories',  'CategoryController',   ['except' => ['create', 'edit']]);
+    Route::resource('products',    'ProductController',    ['except' => ['create', 'edit']]);
+    Route::resource('orders',      'OrderController',      ['except' => ['create', 'edit']]);
+    Route::resource('excisestamps','ExciseStampController',['except' => ['create', 'edit']]);
 });
