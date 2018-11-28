@@ -45,6 +45,19 @@ class OrderController extends Controller
     {
         $order = Order::find($request->get('id'));
         $order->orderlines;
+        $order->orderlines = $order->orderlines->sortBy('orderlineid')->sortByDesc('showfirst');
+
+
+
+        //$order->orderlines->sortBy('orderlineid');
+        //$order->orderlines->sortByDesc('orderlineid');
+
+        //$orderlines = $orderlines->sortByDesc('orderlineid');
+        //$order->orderlines = $orderlines;
+
+        //$sorted->values()->all();
+        //
+        //return var_dump($sorted->values()->all());
 
         $errorMessage = '';
         if ($request->has('errorMessage')) {
@@ -105,10 +118,15 @@ class OrderController extends Controller
         }
 
         //101100261679680118001D5CCFC794963898C1B13E41231CKY42T7UDIJJY2AWLHS7HPGINLMY7PQPDNJALVS42WNCHYRCO257SPCSCF4ASM37BZNTLIASYRVGFUTCXDXDJPML5MMVLEEHZWPWJVI
-        if (strlen($barcode) == 150) {
+        if (strlen($barcode) == 150 or strlen($barcode) == 68) {
             $exciseStamp = ExciseStamp::find($barcode);
             if (isset($exciseStamp)) {
                 $errorBarCode = false;
+
+                $order = Order::find($order_id);
+                $order->orderlines;
+                $order->ordermarklines;
+
 
                 //Ищем штрих код в уже набранных товарах, если находим ошибка.
                 $orderMarkLine = OrderMarkLine::where('markcode', '=', $barcode)->first();
@@ -127,7 +145,15 @@ class OrderController extends Controller
                     if (isset($orderLine)) {
 
                         if ($orderLine->quantity > $orderLine->quantitymarks ) {
-                            //Добавить обнуление showfirst  у заказа
+                            //Добавить обнуление showFirst  у заказа
+
+                            $orderlineid = $orderLine->orderlineid;
+                            $order->orderlines->each(function ($item, $key) {
+                                if ($item->showfirst) {
+                                    $item->showfirst = false;
+                                    $item->save();
+                                }
+                            });
 
                             try{
                                 DB::beginTransaction();
@@ -143,7 +169,7 @@ class OrderController extends Controller
                                 $orderMarkLine->save();
 
                                 $orderLine->quantitymarks = $orderLine->quantitymarks + 1;
-                                //$orderLine->showfirst = true;
+                                $orderLine->showfirst = true;
                                 $orderLine->save();
 
                                 DB::commit();

@@ -35,20 +35,22 @@
         <tbody>
 
         @foreach ($order->orderlines as $item)
-            <tr>
-                <td>
-                    {{$item->orderlineid}}
-                </td>
-                <td class="tddescr">
-                    {{$item->productdescr}}
-                </td>
-                <td>
-                    {{$item->quantity}}
-                </td>
-                <td>
-                    {{$item->quantitymarks}}
-                </td>
-            </tr>
+            @if ($item->quantity != $item->quantitymarks)
+                <tr>
+                    <td>
+                        {{$item->orderlineid}}
+                    </td>
+                    <td class="tddescr">
+                        {{$item->productdescr}}
+                    </td>
+                    <td>
+                        {{$item->quantity}}
+                    </td>
+                    <td>
+                        {{$item->quantitymarks}}
+                    </td>
+                </tr>
+            @endif
         @endforeach
 
         </tbody>
