@@ -4,7 +4,7 @@
     <p>Выберите действие:</p>
 
     <form action="{{ action('m\HomeController@submitbarcode') }}" id="formInputBarCode" method="post">
-        <input id="InputBarCode" name="BarCode" title="Barcode" size="23" />
+        <input id="InputBarCode" name="BarCode" title="Barcode" size="22" />
         <input type="hidden" name="_token" value="{{ csrf_token() }}" >
         <input type="submit" value=".." />
     </form>

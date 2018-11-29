@@ -5,6 +5,7 @@ namespace App\Http\Controllers\m;
 use App\Order;
 use App\OrderLine;
 use App\OrderMarkLine;
+use App\OrderPackLine;
 use App\OrderErrorLine;
 use App\ExciseStamp;
 use Illuminate\Http\Request;
@@ -111,12 +112,132 @@ class OrderController extends Controller
             return redirect()->action('m\OrderController@index');
         }
 
+        if (strlen($barcode) == 26) {
+            $result = $this->addPackExciseStamp($barcode, $order_id);
+        } else {
+            $result = $this->addExciseStamp($barcode, $order_id);
+        }
+
+        $errorBarCode = $result['error'];
+        $errorMessage = $result['errorMessage'];
+
+        if ($errorBarCode) {
+            return redirect()->action('m\OrderController@edit', ['id' => $order_id, 'errorMessage' => $errorMessage ]);
+        }
+
+        return redirect()->action('m\OrderController@edit', ['id' => $order_id]);
+
+    }
+
+    public function submiteditbarcode_old(Request $request)
+    {
+        $barcode = '';
+        if ($request->has('BarCode')) {
+            $barcode = $request->get('BarCode');
+        }
+
+        $order_id = '';
+        if ($request->has('order_id')) {
+            $order_id = $request->get('order_id');
+        }
+
+        if ($barcode == '0') {
+            return redirect()->action('m\OrderController@index');
+        }
+
         $errorBarCode = true;
         $errorMessage = "Не опознан ШК " . $barcode;
 
-        if (strlen($barcode) == 26) {
-        }
 
+//        //СКАНИРОВАНИЕ ЯЩИКА
+//        if (strlen($barcode) == 26) {
+//            $exciseStamp = ExciseStamp::find($barcode);
+//            if (isset($exciseStamp)) {
+//                $errorBarCode = false;
+//
+//                $order = Order::find($order_id);
+//                $order->orderlines;
+//                $order->ordermarklines;
+//
+//                //Ищем штрих код в уже набранных товарах, если находим ошибка.
+//                $orderPackLine = OrderPackLine::where('markcode', '=', $barcode)->first();
+//                if (isset($orderPackLine)) {
+//                    $errorBarCode = true;
+//                    $errorMessage = "Ящик уже сканировался " . $barcode;
+//                }
+//
+//
+//
+//
+////                //Ищем штрих код в уже набранных товарах, если находим ошибка.
+////                $orderMarkLine = OrderMarkLine::where('markcode', '=', $barcode)->first();
+////                if (isset($orderMarkLine)) {
+////                    $errorBarCode = true;
+////                    $errorMessage = "Товар уже сканировался " . $barcode;
+////                }
+////
+////                if (!$errorBarCode) {
+////                    //Ищем товар в строке заказов
+////                    $orderLine = OrderLine::where([["order_id",   "=", $order_id],
+////                        ["productcode","=", $exciseStamp->productcode],
+////                        ["f2regid",    "=", $exciseStamp->f2regid]
+////                    ])->first();
+////
+////                    if (isset($orderLine)) {
+////
+////                        if ($orderLine->quantity > $orderLine->quantitymarks ) {
+////                            //Добавить обнуление showFirst  у заказа
+////
+////                            $order->orderlines->each(function ($item, $key) {
+////                                if ($item->showfirst) {
+////                                    $item->showfirst = false;
+////                                    $item->save();
+////                                }
+////                            });
+////
+////                            try{
+////                                DB::beginTransaction();
+////
+////                                $orderMarkLine = new OrderMarkLine;
+////                                $orderMarkLine->order_id    = $order_id;
+////                                $orderMarkLine->orderlineid = $orderLine->orderlineid;
+////                                $orderMarkLine->productcode = $exciseStamp->productcode;
+////                                $orderMarkLine->f2regid     = $exciseStamp->f2regid;
+////                                $orderMarkLine->markcode    = $barcode;
+////                                $orderMarkLine->quantity    = 1;
+////                                $orderMarkLine->savedin1c   = false;
+////                                $orderMarkLine->save();
+////
+////                                $orderLine->quantitymarks = $orderLine->quantitymarks + 1;
+////                                $orderLine->showfirst = true;
+////                                $orderLine->save();
+////
+////                                DB::commit();
+////
+////                            } catch(\Exception $exception){
+////                                $errorBarCode = true;
+////                                $errorMessage = "Ошибка при записи " . $barcode;
+////                            }
+////
+////                        } else {
+////                            $errorBarCode = true;
+////                            $errorMessage = "Превышено количество в наборе " . $barcode;
+////                        }
+////
+////                    } else {
+////                        $errorBarCode = true;
+////                        $errorMessage = "Товар не зайден в заказе " . $barcode;
+////                    }
+////                }
+//
+//            } else {
+//                $errorBarCode = true;
+//                $errorMessage = "Не найден коробка БД " . $barcode;
+//            }
+//
+//        }
+
+        //СКАНИРОВАНИЕ АКЦИЗНОЙ МАРКИ
         //101100261679680118001D5CCFC794963898C1B13E41231CKY42T7UDIJJY2AWLHS7HPGINLMY7PQPDNJALVS42WNCHYRCO257SPCSCF4ASM37BZNTLIASYRVGFUTCXDXDJPML5MMVLEEHZWPWJVI
         if (strlen($barcode) == 150 or strlen($barcode) == 68) {
             $exciseStamp = ExciseStamp::find($barcode);
@@ -147,7 +268,6 @@ class OrderController extends Controller
                         if ($orderLine->quantity > $orderLine->quantitymarks ) {
                             //Добавить обнуление showFirst  у заказа
 
-                            $orderlineid = $orderLine->orderlineid;
                             $order->orderlines->each(function ($item, $key) {
                                 if ($item->showfirst) {
                                     $item->showfirst = false;
@@ -208,4 +328,139 @@ class OrderController extends Controller
 
         return redirect()->action('m\OrderController@edit', ['id' => $order_id]);
     }
+
+    private function addExciseStamp($barcode, $order_id)
+    {
+        $errorBarCode = true;
+        $errorMessage = "Не опознан ШК " . $barcode;
+
+        //СКАНИРОВАНИЕ АКЦИЗНОЙ МАРКИ
+        //101100261679680118001D5CCFC794963898C1B13E41231CKY42T7UDIJJY2AWLHS7HPGINLMY7PQPDNJALVS42WNCHYRCO257SPCSCF4ASM37BZNTLIASYRVGFUTCXDXDJPML5MMVLEEHZWPWJVI
+        if (strlen($barcode) == 150 or strlen($barcode) == 68) {
+            $exciseStamp = ExciseStamp::find($barcode);
+            if (isset($exciseStamp)) {
+                $errorBarCode = false;
+
+                $order = Order::find($order_id);
+                $order->orderlines;
+                $order->ordermarklines;
+
+
+                //Ищем штрих код в уже набранных товарах, если находим ошибка.
+                $orderMarkLine = OrderMarkLine::where('markcode', '=', $barcode)->first();
+                if (isset($orderMarkLine)) {
+                    $errorBarCode = true;
+                    $errorMessage = "Товар уже сканировался " . $barcode;
+                }
+
+                if (!$errorBarCode) {
+                    //Ищем товар в строке заказов
+                    $orderLine = OrderLine::where([["order_id",   "=", $order_id],
+                        ["productcode","=", $exciseStamp->productcode],
+                        ["f2regid",    "=", $exciseStamp->f2regid]
+                    ])->first();
+
+                    if (isset($orderLine)) {
+
+                        if ($orderLine->quantity > $orderLine->quantitymarks ) {
+                            //Добавить обнуление showFirst  у заказа
+
+                            $order->orderlines->each(function ($item, $key) {
+                                if ($item->showfirst) {
+                                    $item->showfirst = false;
+                                    $item->save();
+                                }
+                            });
+
+                            try{
+                                DB::beginTransaction();
+
+                                $orderMarkLine = new OrderMarkLine;
+                                $orderMarkLine->order_id    = $order_id;
+                                $orderMarkLine->orderlineid = $orderLine->orderlineid;
+                                $orderMarkLine->productcode = $exciseStamp->productcode;
+                                $orderMarkLine->f2regid     = $exciseStamp->f2regid;
+                                $orderMarkLine->markcode    = $barcode;
+                                $orderMarkLine->quantity    = 1;
+                                $orderMarkLine->savedin1c   = false;
+                                $orderMarkLine->save();
+
+                                $orderLine->quantitymarks = $orderLine->quantitymarks + 1;
+                                $orderLine->showfirst = true;
+                                $orderLine->save();
+
+                                DB::commit();
+
+                            } catch(\Exception $exception){
+                                $errorBarCode = true;
+                                $errorMessage = "Ошибка при записи " . $barcode;
+                            }
+
+                        } else {
+                            $errorBarCode = true;
+                            $errorMessage = "Превышено количество в наборе " . $barcode;
+                        }
+
+                    } else {
+                        $errorBarCode = true;
+                        $errorMessage = "Товар не зайден в заказе " . $barcode;
+                    }
+                }
+
+            } else {
+                $errorBarCode = true;
+                $errorMessage = "Не найдена марка в БД " . $barcode;
+            }
+        }
+
+        if ($errorBarCode && strlen($barcode) > 0) {
+            $orderErrorLine = new OrderErrorLine;
+            $orderErrorLine->order_id = $order_id;
+            $orderErrorLine->markcode = $barcode;
+            $orderErrorLine->message = $errorMessage;
+            $orderErrorLine->save();
+
+            return ['error' => $errorBarCode, 'errorMessage' => $errorMessage ];
+        }
+
+        return ['error' => false, 'errorMessage' => ''];
+    }
+
+    private function addPackExciseStamp($barcode, $order_id)
+    {
+        $errorBarCode = true;
+        $errorMessage = "Не опознан ШК ящика " . $barcode;
+
+        //СКАНИРОВАНИЕ ЯЩИКА
+        if (strlen($barcode) == 26) {
+            $exciseStamp = ExciseStamp::find($barcode);
+            if (isset($exciseStamp)) {
+                $errorBarCode = false;
+
+                $order = Order::find($order_id);
+                $order->orderlines;
+                $order->ordermarklines;
+
+                //Ищем штрих код в уже набранных ящиках, если находим ошибка.
+                $orderPackLine = OrderPackLine::where('markcode', '=', $barcode)->first();
+                if (isset($orderPackLine)) {
+                    $errorBarCode = true;
+                    $errorMessage = "Ящик уже сканировался " . $barcode;
+                }
+            }
+        }
+
+        if ($errorBarCode && strlen($barcode) > 0) {
+            $orderErrorLine = new OrderErrorLine;
+            $orderErrorLine->order_id = $order_id;
+            $orderErrorLine->markcode = $barcode;
+            $orderErrorLine->message = $errorMessage;
+            $orderErrorLine->save();
+
+            return ['error' => $errorBarCode, 'errorMessage' => $errorMessage ];
+        }
+
+        return ['error' => false, 'errorMessage' => ''];
+    }
+
 }

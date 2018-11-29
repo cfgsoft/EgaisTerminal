@@ -5,7 +5,7 @@
     <h6><a href="{{ route('m.order.index') }}" >0-Выход</a></h6>
 
     <form action="{{ action('m\OrderController@submiteditbarcode') }}" id="formInputBarCode" method="post">
-        <input id="InputBarCode" name="BarCode" title="Barcode" size="23" />
+        <input id="InputBarCode" name="BarCode" title="Barcode" size="22" />
         <input type="hidden" id="order_id" name="order_id" value="{{ $order->id }}" />
         <input type="hidden" name="_token" value="{{ csrf_token() }}" >
         <input type="submit" value=".." />

@@ -13,11 +13,11 @@ class CreateOrderIncomingsTable extends Migration
      */
     public function up()
     {
-        Schema::table('excise_stamps', function (Blueprint $table) {
-            $table->string('id', 150)->primary()->change();
-        });
+        //Schema::table('excise_stamps', function (Blueprint $table) {
+        //    $table->string('id', 150)->primary()->change();
+        //});
 
-        Schema::create('excise_stamp_boxs', function (Blueprint $table) {
+        Schema::create('excise_stamp_boxes', function (Blueprint $table) {
             $table->increments('id'); //->primary()
             $table->string('barcode', 26)->unique();
             $table->string('productcode', 19);
@@ -32,8 +32,8 @@ class CreateOrderIncomingsTable extends Migration
             $table->string('markcode',150);
             $table->timestamps();
 
-            $table->foreign('excise_stamp_box_id')->references('id')->on('excise_stamp_boxs')
-                ->onDelete('restrict')->onUpdate('restrict');
+            $table->foreign('excise_stamp_box_id')->references('id')->on('excise_stamp_boxes')
+                ->onDelete('cascade')->onUpdate('cascade');
         });
 
 
@@ -73,7 +73,7 @@ class CreateOrderIncomingsTable extends Migration
             $table->dropForeign('excise_stamp_box_lines_excise_stamp_box_id_foreign');
         });
 
-        Schema::dropIfExists('excise_stamp_boxs');
+        Schema::dropIfExists('excise_stamp_boxes');
         Schema::dropIfExists('excise_stamp_box_lines');
 
 

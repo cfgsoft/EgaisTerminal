@@ -6,7 +6,9 @@ use Illuminate\Database\Eloquent\Model;
 
 class ExciseStampBox extends Model
 {
-    protected $fillable = ['id', 'productcode','f1regid', 'f2regid'];
+    protected $fillable = ['id', 'barcode', 'productcode','f1regid', 'f2regid'];
 
-    public $incrementing = false;
+    public function excisestampboxlines(){
+        return $this->hasMany("App\ExciseStampBoxLine");
+    }
 }
