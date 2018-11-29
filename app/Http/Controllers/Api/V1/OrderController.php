@@ -21,7 +21,11 @@ class OrderController extends Controller
         //$order->orderlines;
         //$order->ordermarklines;
 
-        $order = Order::with('orderlines', 'ordermarklines')->get();
+        //$order = Order::with('orderlines', 'ordermarklines', 'orderpacklines', 'ordererrorlines')
+        $order = Order::with('ordererrorlines')
+            ->orderBy("number", 'desc')
+            ->take(50)
+            ->get();
 
         return response()->json($order);
     }
@@ -88,9 +92,14 @@ class OrderController extends Controller
      * @param  \App\Order  $order
      * @return \Illuminate\Http\Response
      */
-    public function show(Order $order)
+    public function show($id)
     {
-        //
+        //$order = Order::with('orderlines', 'ordermarklines', 'orderpacklines', 'ordererrorlines')
+        $order = Order::find($id);
+        $order->ordermarklines;
+        $order->ordererrorlines;
+
+        return response()->json($order);
     }
 
     /**

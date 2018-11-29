@@ -95,5 +95,3 @@ https://www.youtube.com/watch?v=uIXScyhCtPc
 
 
 npm run watch
-
-FA-000000041590630

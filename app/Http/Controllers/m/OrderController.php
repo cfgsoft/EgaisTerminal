@@ -80,7 +80,7 @@ class OrderController extends Controller
             return redirect()->action('m\HomeController@index');
         }
 
-        if (strlen($barcode) > 8) {
+        if (strlen($barcode) > 8 and strlen($barcode) < 13) {
             $barcode = str_replace("*", "", $barcode);
             $barcode = str_replace("C", "С", $barcode);
             $barcode = substr($barcode, 0, 4) . '_' . substr($barcode, 4);
@@ -111,6 +111,19 @@ class OrderController extends Controller
 
         if ($barcode == '0') {
             return redirect()->action('m\OrderController@index');
+        }
+
+        //Переход на другой заказ
+        if (strlen($barcode) > 8 and strlen($barcode) < 13) {
+            $barcode = str_replace("*", "", $barcode);
+            $barcode = str_replace("C", "С", $barcode);
+            $barcode = substr($barcode, 0, 4) . '_' . substr($barcode, 4);
+
+            $order = Order::where('number', '=', $barcode)->first();
+
+            if (isset($order)) {
+                return redirect()->action('m\OrderController@edit', ['id' => $order->id]);
+            }
         }
 
         if (strlen($barcode) == 26) {
