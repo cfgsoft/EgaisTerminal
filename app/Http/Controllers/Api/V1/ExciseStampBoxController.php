@@ -16,6 +16,7 @@ class ExciseStampBoxController extends Controller
      */
     public function index()
     {
+
         header('Access-Control-Allow-Origin: *');
 
         $exciseStampBox = ExciseStampBox::orderBy("id");

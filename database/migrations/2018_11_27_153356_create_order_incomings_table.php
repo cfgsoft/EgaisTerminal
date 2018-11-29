@@ -17,6 +17,7 @@ class CreateOrderIncomingsTable extends Migration
         //    $table->string('id', 150)->primary()->change();
         //});
 
+
         Schema::create('excise_stamp_boxes', function (Blueprint $table) {
             $table->increments('id'); //->primary()
             $table->string('barcode', 26)->unique();

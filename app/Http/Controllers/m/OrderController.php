@@ -8,6 +8,7 @@ use App\OrderMarkLine;
 use App\OrderPackLine;
 use App\OrderErrorLine;
 use App\ExciseStamp;
+use App\ExciseStampBox;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\DB;
@@ -343,10 +344,8 @@ class OrderController extends Controller
 
                 $order = Order::find($order_id);
                 $order->orderlines;
-                $order->ordermarklines;
 
-
-                //Ищем штрих код в уже набранных товарах, если находим ошибка.
+                //1. Ищем штрих код в уже набранных товарах, если находим ошибка.
                 $orderMarkLine = OrderMarkLine::where('markcode', '=', $barcode)->first();
                 if (isset($orderMarkLine)) {
                     $errorBarCode = true;
@@ -354,7 +353,7 @@ class OrderController extends Controller
                 }
 
                 if (!$errorBarCode) {
-                    //Ищем товар в строке заказов
+                    //2. Ищем товар в строке заказов
                     $orderLine = OrderLine::where([["order_id",   "=", $order_id],
                         ["productcode","=", $exciseStamp->productcode],
                         ["f2regid",    "=", $exciseStamp->f2regid]
@@ -363,8 +362,8 @@ class OrderController extends Controller
                     if (isset($orderLine)) {
 
                         if ($orderLine->quantity > $orderLine->quantitymarks ) {
-                            //Добавить обнуление showFirst  у заказа
 
+                            //Обнуление showFirst  у заказа
                             $order->orderlines->each(function ($item, $key) {
                                 if ($item->showfirst) {
                                     $item->showfirst = false;
@@ -372,9 +371,9 @@ class OrderController extends Controller
                                 }
                             });
 
-                            try{
-                                DB::beginTransaction();
+                            DB::beginTransaction();
 
+                            try{
                                 $orderMarkLine = new OrderMarkLine;
                                 $orderMarkLine->order_id    = $order_id;
                                 $orderMarkLine->orderlineid = $orderLine->orderlineid;
@@ -394,6 +393,8 @@ class OrderController extends Controller
                             } catch(\Exception $exception){
                                 $errorBarCode = true;
                                 $errorMessage = "Ошибка при записи " . $barcode;
+
+                                DB::rollback();
                             }
 
                         } else {
@@ -433,34 +434,112 @@ class OrderController extends Controller
 
         //СКАНИРОВАНИЕ ЯЩИКА
         if (strlen($barcode) == 26) {
-            $exciseStamp = ExciseStamp::find($barcode);
-            if (isset($exciseStamp)) {
+            $exciseStampBox = ExciseStampBox::where('barcode', '=', $barcode)->first();
+            if (isset($exciseStampBox)) {
                 $errorBarCode = false;
 
-                $order = Order::find($order_id);
-                $order->orderlines;
-                $order->ordermarklines;
-
-                //Ищем штрих код в уже набранных ящиках, если находим ошибка.
+                //Ищем штрих код ящика в уже набранных ящиках, если находим ошибка.
                 $orderPackLine = OrderPackLine::where('markcode', '=', $barcode)->first();
                 if (isset($orderPackLine)) {
                     $errorBarCode = true;
                     $errorMessage = "Ящик уже сканировался " . $barcode;
                 }
+
+                if (!$errorBarCode) {
+
+                    DB::beginTransaction();
+
+                    $order = Order::find($order_id);
+                    $order->orderlines;
+                    $order->ordermarklines;
+
+                    $lines = $exciseStampBox->excisestampboxlines;
+                    foreach ($lines as $line){
+
+                        //1. Ищем штрих код в уже набранных товарах, если находим ошибка.
+                        $orderMarkLine = OrderMarkLine::where('markcode', '=', $line->markcode)->first();
+                        if (isset($orderMarkLine)) {
+                            $errorBarCode = true;
+                            $errorMessage = "Товар уже сканировался " . $line->markcode;
+                            break;
+                        }
+
+                        $exciseStamp = ExciseStamp::find($line->markcode);
+
+                        //2. Ищем товар в строке заказов
+                        $orderLine = null;
+                        foreach ($order->orderlines as $item){
+                            if ($item->productcode == $exciseStamp->productcode and $item->f2regid == $exciseStamp->f2regid){
+                                $orderLine = $item;
+                                break;
+                            }
+                        }
+
+                        //3. Превышенние количества в заказе
+                        if (isset($orderLine)) {
+                            if ($orderLine->quantity > $orderLine->quantitymarks ) {
+
+                                $orderMarkLine = new OrderMarkLine;
+                                $orderMarkLine->order_id    = $order_id;
+                                $orderMarkLine->orderlineid = $orderLine->orderlineid;
+                                $orderMarkLine->productcode = $exciseStamp->productcode;
+                                $orderMarkLine->f2regid     = $exciseStamp->f2regid;
+                                $orderMarkLine->markcode    = $line->markcode;
+                                $orderMarkLine->quantity    = 1;
+                                $orderMarkLine->savedin1c   = false;
+                                $orderMarkLine->save();
+
+                                $orderLine->quantitymarks = $orderLine->quantitymarks + 1;
+                                $orderLine->showfirst = true;
+                                $orderLine->save();
+
+                            } else {
+                                $errorBarCode = true;
+                                $errorMessage = "Сканирование ящика. Превышено количество в наборе " . $line->markcode;
+
+                                break;
+                            }
+                        } else {
+                            $errorBarCode = true;
+                            $errorMessage = "Сканирование ящика. Товар не зайден в заказе " . $line->markcode;
+
+                            break;
+                        }
+
+                    }
+
+                    //Запись ящика
+                    if (!$errorBarCode) {
+                        $orderPackLine = new OrderPackLine;
+                        $orderPackLine->order_id    = $order_id;
+                        $orderPackLine->orderlineid = 1;
+                        $orderPackLine->productcode = $exciseStampBox->productcode;
+                        $orderPackLine->f2regid     = $exciseStampBox->f2regid;
+                        $orderPackLine->markcode    = $barcode;
+                        $orderPackLine->quantity    = 1;
+                        $orderPackLine->savedin1c   = false;
+                        $orderPackLine->save();
+
+                        DB::commit();
+                    }
+
+                    DB::rollBack();
+
+                }
             }
+
+
+            if ($errorBarCode && strlen($barcode) > 0) {
+                $orderErrorLine = new OrderErrorLine;
+                $orderErrorLine->order_id = $order_id;
+                $orderErrorLine->markcode = $barcode;
+                $orderErrorLine->message = $errorMessage;
+                $orderErrorLine->save();
+
+                return ['error' => $errorBarCode, 'errorMessage' => $errorMessage];
+            }
+
+            return ['error' => false, 'errorMessage' => ''];
         }
-
-        if ($errorBarCode && strlen($barcode) > 0) {
-            $orderErrorLine = new OrderErrorLine;
-            $orderErrorLine->order_id = $order_id;
-            $orderErrorLine->markcode = $barcode;
-            $orderErrorLine->message = $errorMessage;
-            $orderErrorLine->save();
-
-            return ['error' => $errorBarCode, 'errorMessage' => $errorMessage ];
-        }
-
-        return ['error' => false, 'errorMessage' => ''];
     }
-
 }

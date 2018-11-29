@@ -26,4 +26,5 @@ Route::group(['prefix' => '/v1',  'namespace' => 'Api\V1', 'as' => 'api.'], func
     Route::resource('orders',        'OrderController',      ['except' => ['create', 'edit']]);
     Route::resource('excisestamps',  'ExciseStampController',   ['except' => ['create', 'edit']]);
     Route::resource('excisestampbox','ExciseStampBoxController',['except' => ['create', 'edit']]);
+
 });
