@@ -33,10 +33,10 @@
                     {{line.productdescr}}
                 </td>
                 <td>
-                    10
+                    {{line.quantity}}
                 </td>
                 <td>
-                    10
+                    {{line.quantitymarks}}
                 </td>
             </tr>
 
