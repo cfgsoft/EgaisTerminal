@@ -22,7 +22,7 @@ class OrderController extends Controller
         //$order->ordermarklines;
 
         //$order = Order::with('orderlines', 'ordermarklines', 'orderpacklines', 'ordererrorlines')
-        $order = Order::with('ordererrorlines')
+        $order = Order::with('orderlines', 'ordererrorlines')
             ->orderBy("number", 'desc')
             ->take(50)
             ->get();

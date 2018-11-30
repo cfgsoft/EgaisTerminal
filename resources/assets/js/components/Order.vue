@@ -6,9 +6,49 @@
     <div v-for="order in orders"
          :key="orders.id"
     >
-        <p>
+        <h4>
             {{order.id}} {{order.date}} {{order.number}}
-        </p>
+        </h4>
+
+        <table class="table">
+            <thead>
+            <tr>
+                <th>
+                    Наименование
+                </th>
+                <th>
+                    Заказ
+                </th>
+                <th>
+                    Набор
+                </th>
+            </tr>
+            </thead>
+            <tbody>
+
+            <tr v-for="line in order.orderlines"
+                :key="line.id"
+            >
+                <td>
+                    {{line.productdescr}}
+                </td>
+                <td>
+                    10
+                </td>
+                <td>
+                    10
+                </td>
+            </tr>
+
+            </tbody>
+        </table>
+
+        <small v-for="err in order.ordererrorlines"
+            :key="err.id"
+        >
+            {{err.id}}. {{err.markcode}}  {{err.message}} {{created_at}}  {{updated_at}}
+        </small>
+
     </div>
 
     </div>
