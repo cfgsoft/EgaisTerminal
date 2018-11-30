@@ -68,20 +68,32 @@ class OrderController extends Controller
             //$order->update($newOrder);
         }
 
-        OrderLine::where('order_id', '=', $order->id)->delete();
+        $oldorderlines = $order->orderlines;
 
+        //Изменяем существующие записи
         $orderlines = $newOrder['orderlines'];
         foreach ($orderlines as $line){
-            $newOrderLine = new OrderLine();
-            $newOrderLine->orderlineid   = $line['OrderLineId'];
-            $newOrderLine->productdescr  = $line['ProductDescr'];
-            $newOrderLine->productcode   = $line['ProductCode'];
-            $newOrderLine->f2regid       = $line['F2RegId'];
-            $newOrderLine->quantity      = $line['Quantity'];
-            $newOrderLine->order_id      = $order->id;
-            $newOrderLine->showfirst     = 0;
-            $newOrderLine->Save();
+            $oldorderline = $oldorderlines->firstWhere('f2regid', $line['F2RegId']);
+
+            if (isset($oldorderline)) {
+                if ($oldorderline->quantity != $line['Quantity']) {
+                    $oldorderline->quantity  = $line['Quantity'];
+                    $oldorderline->Save();
+                }
+            } else {
+                $newOrderLine = new OrderLine();
+                $newOrderLine->orderlineid   = $line['OrderLineId'];
+                $newOrderLine->productdescr  = $line['ProductDescr'];
+                $newOrderLine->productcode   = $line['ProductCode'];
+                $newOrderLine->f2regid       = $line['F2RegId'];
+                $newOrderLine->quantity      = $line['Quantity'];
+                $newOrderLine->order_id      = $order->id;
+                $newOrderLine->showfirst     = 0;
+                $newOrderLine->Save();
+            }
         }
+
+        //Обнуляем удаленные записи
 
         return $order;
     }
@@ -97,6 +109,8 @@ class OrderController extends Controller
         //$order = Order::with('orderlines', 'ordermarklines', 'orderpacklines', 'ordererrorlines')
         $order = Order::find($id);
         $order->ordermarklines;
+        $order->ordermarklines;
+        $order->orderpacklines;
         $order->ordererrorlines;
 
         return response()->json($order);

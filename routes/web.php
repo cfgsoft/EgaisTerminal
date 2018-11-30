@@ -45,7 +45,8 @@ Route::get('/opt/out/WayBill_v3/{id?}', 'api\v1\UtmEgaisController@waybill_v3');
 Route::get('/home', 'HomeController@index')->name('home');
 Route::get('/about', 'HomeController@about')->name('about');
 Route::get('/contact', 'HomeController@contact')->name('contact');
+Route::get('/test', 'HomeController@test')->name('test');
 
 
-Route::get('/admin', 'SpaController@index')->where('any', '.*');
+Route::get('/admin', 'SpaController@index');//->where('any', '.*');
 //Route::get('/admin/{any}', 'SpaController@index')->where('any', '.*');
