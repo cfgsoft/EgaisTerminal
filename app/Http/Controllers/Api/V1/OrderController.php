@@ -68,19 +68,18 @@ class OrderController extends Controller
             //$order->update($newOrder);
         }
 
-        $oldorderlines = $order->orderlines;
+        //Обнуляем количество, загружаем повторно
+        OrderLine::where('order_id', '=', $order->id)->update(['quantity' => 0]);
 
-        //Изменяем существующие записи
+        $oldOrderLines = $order->orderlines;
+
+        //Добавляем новые записи, изменяем существующее количество
         $orderlines = $newOrder['orderlines'];
         foreach ($orderlines as $line){
-            $oldorderline = $oldorderlines->firstWhere('f2regid', $line['F2RegId']);
+            $oldOrderLine = $oldOrderLines->firstWhere('f2regid', $line['F2RegId']);
 
-            if (isset($oldorderline)) {
-                if ($oldorderline->quantity != $line['Quantity']) {
-                    $oldorderline->quantity  = $line['Quantity'];
-                    $oldorderline->Save();
-                }
-            } else {
+            if (!isset($oldOrderLine)) {
+                //add
                 $newOrderLine = new OrderLine();
                 $newOrderLine->orderlineid   = $line['OrderLineId'];
                 $newOrderLine->productdescr  = $line['ProductDescr'];
@@ -90,10 +89,14 @@ class OrderController extends Controller
                 $newOrderLine->order_id      = $order->id;
                 $newOrderLine->showfirst     = 0;
                 $newOrderLine->Save();
+            } else {
+                //update
+                if ($oldOrderLine->quantity != $line['Quantity']) {
+                    $oldOrderLine->quantity  = $line['Quantity'];
+                    $oldOrderLine->Save();
+                }
             }
         }
-
-        //Обнуляем удаленные записи
 
         return $order;
     }

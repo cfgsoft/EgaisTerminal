@@ -46,23 +46,41 @@ class HomeController extends Controller
 
     public function test()
     {
-        //$order = Order::find('10');
-        //$lines = $order->orderlines;
+        $order = Order::find('10');
+        $lines = $order->orderlines;
+        $lines2 = $order->orderlines;
 
-        //$result = $lines->firstWhere('productcode', '0123130000002476973');
-
-        //return var_dump($result);
-
-        $collection = collect([
-            ['name' => 'Regena', 'age' => 12],
-            ['name' => 'Linda', 'age' => 14],
-            ['name' => 'Diego', 'age' => 23],
-            ['name' => 'Linda', 'age' => 84],
-        ]);
-
-        $result = $collection->firstWhere('name', 'Linda');
-
+        $result = $lines->firstWhere('productcode', '0123130000002476973');
         return var_dump($result);
+
+        //foreach ($lines as $key => $value){
+        //    //echo $key;
+        //    //echo $value;
+        //    $lines2->forget($key);
+        //}
+
+        //$lines->forget(0);
+
+        //return var_dump($lines2);
+
+        //$collection = collect([
+        //    ['name' => 'Regena', 'age' => 12],
+        //    ['name' => 'Linda', 'age' => 14],
+        //    ['name' => 'Diego', 'age' => 23],
+        //    ['name' => 'Linda', 'age' => 84],
+        //]);
+
+        //$result = $collection->firstWhere('name', 'Linda');
+
+        //$collection->forget(0);
+
+
+        //$collection = collect(['name' => 'taylor', 'framework' => 'laravel']);
+        //$collection->forget('name');
+        //$collection->all();
+
+
+        return var_dump($collection);
 
         return view('test');
     }

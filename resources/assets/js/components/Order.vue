@@ -22,6 +22,9 @@
                 <th>
                     Набор
                 </th>
+                <th>
+                    Изменен
+                </th>
             </tr>
             </thead>
             <tbody>
@@ -37,6 +40,9 @@
                 </td>
                 <td>
                     {{line.quantitymarks}}
+                </td>
+                <td>
+                    {{line.updated_at}}
                 </td>
             </tr>
 
