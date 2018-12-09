@@ -61,7 +61,8 @@ class OrderController extends Controller
     {
         $newOrder = $request->all();
 
-        $order = Order::where('number', $newOrder['number'])->first();
+        //$order = Order::where('number', $newOrder['number'])->first();
+        $order = Order::where('DocId', $newOrder['DocId'])->first();
         if ($order == null) {
             $order = Order::create($newOrder);
         } else {

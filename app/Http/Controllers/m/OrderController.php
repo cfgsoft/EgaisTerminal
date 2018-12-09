@@ -72,21 +72,24 @@ class OrderController extends Controller
 
     public function submitbarcode(Request $request)
     {
-        $barcode = '';
-        if ($request->has('BarCode')) {
-            $barcode = $request->get('BarCode');
-        }
+        $barcode = $request->input('BarCode', '');
+
+        //$barcode = '';
+        //if ($request->has('BarCode')) {
+        //    $barcode = $request->get('BarCode');
+        //}
 
         if ($barcode == '0') {
             return redirect()->action('m\HomeController@index');
         }
 
         if (strlen($barcode) > 8 and strlen($barcode) < 13) {
-            $barcode = str_replace("*", "", $barcode);
-            $barcode = str_replace("C", "С", $barcode);
-            $barcode = substr($barcode, 0, 4) . '_' . substr($barcode, 4);
+            //$barcode = str_replace("*", "", $barcode);
+            //$barcode = str_replace("C", "С", $barcode);
+            //$barcode = substr($barcode, 0, 4) . '_' . substr($barcode, 4);
+            //$order = Order::where('number', '=', $barcode)->first();
 
-            $order = Order::where('number', '=', $barcode)->first();
+            $order = Order::where('barcode', '=', $barcode)->first();
 
             if (isset($order)) {
                 return redirect()->action('m\OrderController@edit', ['id' => $order->id]);
@@ -116,11 +119,12 @@ class OrderController extends Controller
 
         //Переход на другой заказ
         if (strlen($barcode) > 8 and strlen($barcode) < 13) {
-            $barcode = str_replace("*", "", $barcode);
-            $barcode = str_replace("C", "С", $barcode);
-            $barcode = substr($barcode, 0, 4) . '_' . substr($barcode, 4);
+            //$barcode = str_replace("*", "", $barcode);
+            //$barcode = str_replace("C", "С", $barcode);
+            //$barcode = substr($barcode, 0, 4) . '_' . substr($barcode, 4);
+            //$order = Order::where('number', '=', $barcode)->first();
 
-            $order = Order::where('number', '=', $barcode)->first();
+            $order = Order::where('barcode', '=', $barcode)->first();
 
             if (isset($order)) {
                 return redirect()->action('m\OrderController@edit', ['id' => $order->id]);
