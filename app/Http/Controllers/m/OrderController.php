@@ -39,6 +39,7 @@ class OrderController extends Controller
         if ($request->has('barcode')) {
             $barcode = $request->get('barcode');
         }
+        //$request->input('barcode');
 
         return view('m/order/index', ['order' => $order, 'barcode' => $barcode]);
     }

@@ -6,7 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class Order extends Model
 {
-    protected $fillable = ['date', 'number', 'barcode', 'status'];
+    protected $fillable = ['date', 'number', 'barcode', 'status',
+        'Quantity', 'QuantityMarks', 'DocType', 'DocId'];
 
     public function orderlines(){
         return $this->hasMany("App\OrderLine");

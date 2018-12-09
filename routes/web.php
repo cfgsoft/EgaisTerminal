@@ -14,6 +14,7 @@
 Route::get('/', function () {
     return view('welcome');
 });
+//Route::view('/', 'welcome');
 
 Auth::routes();
 
@@ -48,5 +49,5 @@ Route::get('/contact', 'HomeController@contact')->name('contact');
 Route::get('/test', 'HomeController@test')->name('test');
 
 
-Route::get('/admin', 'SpaController@index');//->where('any', '.*');
+Route::get('/admin', 'SpaController@index')->name('admin');
 //Route::get('/admin/{any}', 'SpaController@index')->where('any', '.*');

@@ -66,6 +66,11 @@ class OrderController extends Controller
             $order = Order::create($newOrder);
         } else {
             //$order->update($newOrder);
+
+            $order->barcode = $newOrder['barcode'];
+            $order->DocType = $newOrder['DocType'];
+            $order->DocId   = $newOrder['DocId'];
+            $order->Save();
         }
 
         //Обнуляем количество, загружаем повторно
@@ -111,7 +116,6 @@ class OrderController extends Controller
     {
         //$order = Order::with('orderlines', 'ordermarklines', 'orderpacklines', 'ordererrorlines')
         $order = Order::find($id);
-        $order->ordermarklines;
         $order->ordermarklines;
         $order->orderpacklines;
         $order->ordererrorlines;
