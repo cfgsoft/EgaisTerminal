@@ -191,6 +191,7 @@ class OrderController extends Controller
                                 $orderMarkLine->productcode = $exciseStamp->productcode;
                                 $orderMarkLine->f2regid     = $exciseStamp->f2regid;
                                 $orderMarkLine->markcode    = $barcode;
+                                $orderMarkLine->boxnumber   = "000000000000000000000";
                                 $orderMarkLine->quantity    = 1;
                                 $orderMarkLine->savedin1c   = false;
                                 $orderMarkLine->save();
