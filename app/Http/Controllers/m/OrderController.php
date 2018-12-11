@@ -84,7 +84,7 @@ class OrderController extends Controller
         }
 
         if (strlen($barcode) > 8 and strlen($barcode) < 13) {
-            //$barcode = str_replace("*", "", $barcode);
+            $barcode = str_replace("*", "", $barcode);
             //$barcode = str_replace("C", "С", $barcode);
             //$barcode = substr($barcode, 0, 4) . '_' . substr($barcode, 4);
             //$order = Order::where('number', '=', $barcode)->first();
@@ -112,7 +112,7 @@ class OrderController extends Controller
 
         //Переход на другой заказ
         if (strlen($barcode) > 8 and strlen($barcode) < 13) {
-            //$barcode = str_replace("*", "", $barcode);
+            $barcode = str_replace("*", "", $barcode);
             //$barcode = str_replace("C", "С", $barcode);
             //$barcode = substr($barcode, 0, 4) . '_' . substr($barcode, 4);
             //$order = Order::where('number', '=', $barcode)->first();
@@ -268,7 +268,7 @@ class OrderController extends Controller
                     foreach ($lines as $line){
 
                         //1. Ищем штрих код в уже набранных товарах, если находим ошибка.
-                        $orderMarkLine = OrderMarkLine::where('markcode', '=', $line->markcode)->first();
+                        $orderMarkLine = OrderMarkLine::where([['markcode', '=', $line->markcode],['quantity', '=', '1']])->first();
                         if (isset($orderMarkLine)) {
                             $errorBarCode = true;
                             $errorMessage = "Товар уже сканировался " . $line->markcode;
@@ -296,6 +296,7 @@ class OrderController extends Controller
                                 $orderMarkLine->productcode = $exciseStamp->productcode;
                                 $orderMarkLine->f2regid     = $exciseStamp->f2regid;
                                 $orderMarkLine->markcode    = $line->markcode;
+                                $orderMarkLine->boxnumber   = $barcode;
                                 $orderMarkLine->quantity    = 1;
                                 $orderMarkLine->savedin1c   = false;
                                 $orderMarkLine->save();

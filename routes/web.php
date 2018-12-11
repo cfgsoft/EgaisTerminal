@@ -42,6 +42,7 @@ Route::get('/api/v1/utmegais/index', 'api\v1\UtmEgaisController@index')->name('a
 Route::get('/opt/in',  'api\v1\UtmEgaisController@opt_in');
 Route::get('/opt/out', 'api\v1\UtmEgaisController@opt_out');
 Route::get('/opt/out/WayBill_v3/{id?}', 'api\v1\UtmEgaisController@waybill_v3');
+Route::get('/opt/out/FORM2REGINFO/{id?}', 'api\v1\UtmEgaisController@form2RegInfo');
 
 Route::get('/home', 'HomeController@index')->name('home');
 Route::get('/about', 'HomeController@about')->name('about');
