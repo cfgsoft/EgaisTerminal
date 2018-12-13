@@ -93,5 +93,6 @@ https://www.youtube.com/watch?v=uIXScyhCtPc
     });)
 3. Создание API контроллера (php artisan make:controller api/v1/ProductController --resource --model=Product)	
 
+4. Тестирование https://www.youtube.com/watch?v=5VN-_VjLB5M
 
 npm run watch

@@ -1,0 +1,34 @@
+<?php
+
+namespace Tests\Feature;
+
+use Tests\TestCase;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+
+class ReadBarCodeTest extends TestCase
+{
+    /**
+     * A basic test example.
+     *
+     * @return void
+     */
+    public function testGet()
+    {
+        $response = $this->get('/m/readbarcode');
+        $response->assertStatus(200);
+    }
+
+    public function testPostBarCode()
+    {
+        $value = str_random(40);
+
+        $response = $this->post('/m/readbarcode/submitbarcode',['BarCode' => $value]);
+        $response->assertStatus(302);
+
+        //$response = $this->get('/m/readbarcode');
+        //$response->assertStatus(200)->assertSee($value);
+
+        $this->assertDatabaseHas('read_bar_codes', ['barcode' => $value]);
+    }
+
+}

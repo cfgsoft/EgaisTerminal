@@ -42,6 +42,9 @@
                     </td>
                     <td class="tddescr">
                         {{$item->productdescr}}
+                        <h6>
+                            {{$item->f2regid}}
+                        </h6>
                     </td>
                     <td>
                         {{$item->quantity}}

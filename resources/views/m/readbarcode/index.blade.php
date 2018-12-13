@@ -12,7 +12,11 @@
 
     @foreach ($barcode as $item)
         <h6> {{ $item->barcode }} </h6>
-        <h5> {{ $item->created_at }} </h5>
+        @isset($item->f2regid)
+            <h5> {{ $item->f2regid }} </h5>
+        @endisset
+        <h6> {{ $item->created_at }} </h6>
+        <hr>
     @endforeach
 
 @endsection

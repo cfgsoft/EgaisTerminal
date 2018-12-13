@@ -15,195 +15,48 @@ class OrderTableSeeder extends Seeder
      */
     public function run()
     {
+        DB::table('order_error_lines')->delete();
+        DB::table('order_pack_lines')->delete();
+        DB::table('order_mark_lines')->delete();
+        DB::table('order_lines')->delete();
+        DB::table('orders')->delete();
 
-        DB::table('orders')->insert(['id' => '1', 'date' => Carbon::create('2018', '01', '01'), 'number' => '0000001', 'barcode' => '0000001', 'status' => '0']);
-        DB::table('orders')->insert(['id' => '2', 'date' => Carbon::create('2018', '01', '01'), 'number' => '0000002', 'barcode' => '0000002', 'status' => '0']);
-        DB::table('orders')->insert(['id' => '3', 'date' => Carbon::create('2018', '01', '01'), 'number' => '0000003', 'barcode' => '0000003', 'status' => '0']);
+        //DB::table('order_error_lines')->truncate();
+        //DB::table('order_error_lines')->truncate();
+        //DB::table('order_pack_lines')->truncate();
+        //DB::table('order_mark_lines')->truncate();
+        //DB::table('order_lines')->truncate();
+        //DB::table('orders')->truncate(); //Запрещена для таблиц с ForeignKey
 
-        DB::table('order_lines')->insert(['productdescr' => 'Водка беленькая 0,5', 'productcode' => '0000001', 'quantity' => '20', 'quantitymarks' => '0', 'showfirst' => '0', 'order_id' => '1']);
-        DB::table('order_lines')->insert(['productdescr' => 'Водка ликсар 0,5',    'productcode' => '0000002', 'quantity' => '20', 'quantitymarks' => '0', 'showfirst' => '0', 'order_id' => '1']);
+        DB::table('orders')->insert(['id' =>  '9', 'date' => Carbon::create('2018', '11', '24'), 'number' => 'С13_111434', 'barcode' => 'C13111434', 'status' => '0', 'Quantity' => '0', 'QuantityMarks' => '0', 'DocType' => '1', 'DocId' => '30a257bf-efe0-11e8-8ed6-0026832c8747']);
+        DB::table('orders')->insert(['id' => '10', 'date' => Carbon::create('2018', '11', '24'), 'number' => 'С13_111435', 'barcode' => 'C13111435', 'status' => '0', 'Quantity' => '0', 'QuantityMarks' => '0', 'DocType' => '1', 'DocId' => '30a257c0-efe0-11e8-8ed6-0026832c8747']);
+        DB::table('orders')->insert(['id' => '11', 'date' => Carbon::create('2018', '11', '24'), 'number' => 'С13_000004', 'barcode' => 'AC13000004', 'status' => '0', 'Quantity' => '0', 'QuantityMarks' => '0', 'DocType' => '1', 'DocId' => '7ef20513-fbb1-11e8-b84e-0026832c8747']);
+
+
+        DB::table('order_lines')->insert(['id' =>  '7', 'order_id' => '9', 'orderlineid' => '1', 'productdescr' => 'Водка ФИННОРД 0.1л./30', 'productcode' => '0037150000001399460', 'quantity' => '1', 'quantitymarks' => '0', 'showfirst' => '0', 'f2regid' => 'FB-000001309598237']);
+        DB::table('order_lines')->insert(['id' =>  '8', 'order_id' => '9', 'orderlineid' => '2', 'productdescr' => 'Вино столовое полусладкое красное  МЕРЛО  САН МАРКО 1л/12', 'productcode' => '0123130000002476973', 'quantity' => '12', 'quantitymarks' => '0', 'showfirst' => '0', 'f2regid' => 'FB-000001309598228']);
+
+        DB::table('order_lines')->insert(['id' =>  '9', 'order_id' => '10', 'orderlineid' => '1', 'productdescr' => 'Вино столовое полусладкое белое  ШАРДОНЕ САН МАРКО 1л/12', 'productcode' => '0123130000002476970', 'quantity' => '2', 'quantitymarks' => '0', 'showfirst' => '0', 'f2regid' => 'FB-000001309598232']);
+        DB::table('order_lines')->insert(['id' =>  '10', 'order_id' => '10', 'orderlineid' => '2', 'productdescr' => 'Водка ФИННОРД 0.1л./30', 'productcode' => '0037150000001399460', 'quantity' => '3', 'quantitymarks' => '0', 'showfirst' => '0', 'f2regid' => 'FB-000001309598237']);
+
+
+//        7	9	1	Водка ФИННОРД 0.1л./30	0037150000001399460	1	0	0	2018-12-13 12:27:07	2018-12-13 12:27:35	FB-000001309598237
+//        8	9	2	Вино столовое полусладкое красное  "МЕРЛО"  САН МАРКО 1л/12	0123130000002476973	12	0	0	2018-12-13 12:27:07	2018-12-13 12:27:35	FB-000001309598228
+
+//        9	16	1	Вино столовое полусладкое белое  "ШАРДОНЕ" САН МАРКО 1л/12	0123130000002476970	2	0	0	2018-12-13 12:27:08	2018-12-13 12:27:35	FB-000001309598232
+//        10	16	2	Водка ФИННОРД 0.1л./30	0037150000001399460	3	0	0	2018-12-13 12:27:08	2018-12-13 12:27:35	FB-000001309598237
+
+//        11	17	1	Вино столовое полусладкое белое  "ШАРДОНЕ" САН МАРКО 1л/12	0123130000002476970	1	0	0	2018-12-13 12:27:08	2018-12-13 12:27:35	FB-000001309598232
+//        12	17	2	Водка ФИННОРД 0.1л./30	0037150000001399460	1	0	0	2018-12-13 12:27:08	2018-12-13 12:27:35	FB-000001309598237
 
 
 
+        //DB::table('orders')->insert(['id' => '1', 'date' => Carbon::create('2018', '01', '01'), 'number' => '0000001', 'barcode' => '0000001', 'status' => '0']);
+        //DB::table('orders')->insert(['id' => '2', 'date' => Carbon::create('2018', '01', '01'), 'number' => '0000002', 'barcode' => '0000002', 'status' => '0']);
+        //DB::table('orders')->insert(['id' => '3', 'date' => Carbon::create('2018', '01', '01'), 'number' => '0000003', 'barcode' => '0000003', 'status' => '0']);
 
-
-//        $categories = [
-//            [
-//                "parent_id" => 0,
-//                "code" => "mebfc",
-//                "position" => 1,
-//                "image" => "",
-//                "color" => "#73492a",
-//                "translate" => [
-//                    "dk" => [
-//                        "name" => "MIX EN BOKS FYLDTE CHOKOLADER",
-//                        "sub_description" => "Med 12 fyldte chokolader & flГёdekarameller VГ¦lg 12 lГ¦kre stykker for 155 kr.",
-//                        "short_description" => " Hold musen over stykket for mere info!"
-//                    ],
-//                    "en" => [
-//                        "name" => "MIX A BOX FILLED CHOCOLADER",
-//                        "sub_description" => "With 12 stuffed chocolates & cream karamels Choose 12 delicious pieces for 155 kr.",
-//                        "short_description" => " Hold your mouse over the piece for more info!"
-//                    ]
-//                ]
-//            ],
-//            [
-//                "parent_id" => 0,
-//                "code" => "mebfc2",
-//                "position" => 2,
-//                "image" => "",
-//                "color" => "#fef7ed",
-//                "translate" => [
-//                    "dk" => [
-//                        "name" => "MIX EN BOKS FYLDTE CHOKOLADER",
-//                        "sub_description" => "Med 6 fyldte chokolader & flГёdekarameller VГ¦lg 6 lГ¦kre stykker for 65 kr.",
-//                        "short_description" => " Hold musen over stykket for mere info!"
-//                    ],
-//                    "en" => [
-//                        "name" => "MIX A BOX FILLED CHOCOLADER",
-//                        "sub_description" => "With 6 stuffed chocolates & cream karamels Choose 6 delicious pieces for 65 kr.",
-//                        "short_description" => " Hold your mouse over the piece for more info!"
-//                    ]
-//                ]
-//            ],
-//            [
-//                "parent_id" => 0,
-//                "code" => "vc",
-//                "position" => 3,
-//                "image" => "public/image/pic.png",
-//                "color" => "#422918",
-//                "translate" => [
-//                    "dk" => [
-//                        "name" => "VARM CHOKOLADE",
-//                        "sub_description" => "",
-//                        "short_description" => "6 stk. varmechokolade stГ¦nger"
-//                    ],
-//                    "en" => [
-//                        "name" => "HOT CHOCOLATE",
-//                        "sub_description" => "",
-//                        "short_description" => "6 pieces. hot chocolate bars"
-//                    ]
-//                ]
-//            ],
-//            [
-//                "parent_id" => 0,
-//                "code" => "ob",
-//                "position" => 3,
-//                "image" => "",
-//                "color" => "#fd1f8c",
-//                "translate" => [
-//                    "dk" => [
-//                        "name" => "ORIGINAL BEANS",
-//                        "sub_description" => "",
-//                        "short_description" => "59 kr. stk.- 3 stk. 155 kr."
-//                    ],
-//                    "en" => [
-//                        "name" => "ORIGINAL BEANS",
-//                        "sub_description" => "",
-//                        "short_description" => "59 kr. pcs. 155 kr."
-//                    ]
-//                ]
-//            ],
-//            [
-//                "parent_id" => 4,
-//                "code" => "70g",
-//                "position" => 3,
-//                "image" => "",
-//                "color" => "#fd1f8c",
-//                "translate" => [
-//                    "dk" => [
-//                        "name" => "70 g. barer ",
-//                        "sub_description" => "",
-//                        "short_description" => "59 kr. stk.- 3 stk. 155 kr."
-//                    ],
-//                    "en" => [
-//                        "name" => "70 g. Bars",
-//                        "sub_description" => "",
-//                        "short_description" => "59 kr. stk.- 3 stk. 155 kr."
-//                    ]
-//                ]
-//            ],
-//            [
-//                "parent_id" => 4,
-//                "code" => "12g",
-//                "position" => 3,
-//                "image" => "",
-//                "translate" => [
-//                    "dk" => [
-//                        "name" => "12 g. barer",
-//                        "sub_description" => "",
-//                        "short_description" => "15 kr. stk. - 3 stk. 40 kr."
-//                    ],
-//                    "en" => [
-//                        "name" => "12 g. Bars",
-//                        "sub_description" => "",
-//                        "short_description" => "15 kr. pcs. - 3 pcs. 40 kr."
-//                    ]
-//                ]
-//            ],
-//            [
-//                "parent_id" => 4,
-//                "code" => "200g",
-//                "position" => 3,
-//                "image" => "public/image/border.png",
-//                "translate" => [
-//                    "dk" => [
-//                        "name" => "2000g. poser",
-//                        "sub_description" => "",
-//                        "short_description" => "110 kr. stk."
-//                    ],
-//                    "en" => [
-//                        "name" => "2000g. to pose",
-//                        "sub_description" => "",
-//                        "short_description" => "110 kr. pcs."
-//                    ]
-//                ]
-//            ],
-//            [
-//                "parent_id" => 4,
-//                "code" => "2000g",
-//                "position" => 3,
-//                "image" => "",
-//                "translate" => [
-//                    "dk" => [
-//                        "name" => "2000g. poser",
-//                        "sub_description" => "",
-//                        "short_description" => "500 - 626 kr"
-//                    ],
-//                    "en" => [
-//                        "name" => "2000g. pose",
-//                        "sub_description" => "",
-//                        "short_description" => "500 - 626 kr "
-//                    ]
-//                ]
-//            ]
-//        ];
-//
-//        Category::truncate();
-//        Translate::truncate();
-//        $langs = Lang::get()->keyBy('code');
-//
-//        foreach($categories as $c) {
-//            $category = new Category;
-//            $category->parent_id = $c["parent_id"];
-//            $category->name = "";
-//            $category->code = $c["code"];
-//            $category->position = $c["position"];
-//            $category->image = $c["image"];
-//            $category->color = ! empty($c["color"]) ? $c["color"] : "#ffffff";
-//            $category->short_description = "";
-//            $category->sub_description = "";
-//            $category->save();
-//
-//            foreach($c["translate"] as $code => $lng) {
-//                Translate::create([
-//                    'table' => 'categories',
-//                    'table_id' => $category->id,
-//                    'langs_id' => $langs[$code]->id,
-//                    'transalte' => json_encode($lng)
-//                ]);
-//            }
-//        }
+        //DB::table('order_lines')->insert(['productdescr' => 'Водка беленькая 0,5', 'productcode' => '0000001', 'quantity' => '20', 'quantitymarks' => '0', 'showfirst' => '0', 'order_id' => '1']);
+        //DB::table('order_lines')->insert(['productdescr' => 'Водка ликсар 0,5',    'productcode' => '0000002', 'quantity' => '20', 'quantitymarks' => '0', 'showfirst' => '0', 'order_id' => '1']);
 
     }
 }

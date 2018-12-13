@@ -216,7 +216,7 @@ class OrderController extends Controller
 
                     } else {
                         $errorBarCode = true;
-                        $errorMessage = "Товар не зайден в заказе " . $barcode;
+                        $errorMessage = "Раздел Б " . $exciseStamp->f2regid . " не зайден в заказе " . $barcode;
                     }
                 }
 
@@ -314,7 +314,7 @@ class OrderController extends Controller
                             }
                         } else {
                             $errorBarCode = true;
-                            $errorMessage = "Сканирование ящика. Товар не зайден в заказе " . $line->markcode;
+                            $errorMessage = "Разд Б " . $exciseStamp->f2regid . " не зайден в заказе " . $line->markcode;
 
                             break;
                         }
