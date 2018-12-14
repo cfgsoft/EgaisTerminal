@@ -6,6 +6,7 @@ use App\ExciseStampBox;
 use App\ExciseStampBoxLine;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\DB;
 
 class ExciseStampBoxController extends Controller
 {
@@ -52,14 +53,25 @@ class ExciseStampBoxController extends Controller
             //$exciseStampBox->update($newExciseStampBox);
         }
 
-        ExciseStampBoxLine::where('excise_stamp_box_id', '=', $exciseStampBox->id)->delete();
+        DB::beginTransaction();
 
-        $lines = $newExciseStampBox['lines'];
-        foreach ($lines as $line){
-            $newLine = new ExciseStampBoxLine();
-            $newLine->excise_stamp_box_id = $exciseStampBox->id;
-            $newLine->markcode = $line['markcode'];
-            $newLine->Save();
+        try{
+
+            ExciseStampBoxLine::where('excise_stamp_box_id', '=', $exciseStampBox->id)->delete();
+
+            $lines = $newExciseStampBox['lines'];
+            foreach ($lines as $line){
+                $newLine = new ExciseStampBoxLine();
+                $newLine->excise_stamp_box_id = $exciseStampBox->id;
+                $newLine->markcode = $line['markcode'];
+                $newLine->Save();
+            }
+
+            DB::commit();
+
+        } catch(\Exception $exception){
+
+            DB::rollback();
         }
 
         return $exciseStampBox;

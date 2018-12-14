@@ -9,13 +9,23 @@ require('./bootstrap');
 window.Vue = require('vue');
 
 import VueRouter from 'vue-router';
-import store from './store/store'
+import store from './store/store';
+
+import BootstrapVue from 'bootstrap-vue';
+Vue.use(BootstrapVue);
+
+import 'bootstrap/dist/css/bootstrap.css';
+import 'bootstrap-vue/dist/bootstrap-vue.css';
+
+import { Pagination } from 'bootstrap-vue/es/components';
+Vue.use(Pagination);
 
 import App from './components/App.vue';
 import Home from './components/Home.vue';
 import Hello from './components/Hello.vue';
 import Order from './components/Order.vue';
 import OrderEdit from './components/OrderEdit.vue';
+
 
 Vue.use(VueRouter);
 

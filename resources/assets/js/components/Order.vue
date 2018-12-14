@@ -1,61 +1,65 @@
 <template>
     <div class="content">
 
-    <p>Order!</p>
+        <p>Order!</p>
 
-    <div v-for="order in orders"
-         :key="orders.id"
-    >
-        <h4>
-            {{order.id}} {{order.date}} {{order.number}}
-        </h4>
-
-        <table class="table">
-            <thead>
-            <tr>
-                <th>
-                    Наименование
-                </th>
-                <th>
-                    Заказ
-                </th>
-                <th>
-                    Набор
-                </th>
-                <th>
-                    Изменен
-                </th>
-            </tr>
-            </thead>
-            <tbody>
-
-            <tr v-for="line in order.orderlines"
-                :key="line.id"
-            >
-                <td>
-                    {{line.productdescr}}
-                </td>
-                <td>
-                    {{line.quantity}}
-                </td>
-                <td>
-                    {{line.quantitymarks}}
-                </td>
-                <td>
-                    {{line.updated_at}}
-                </td>
-            </tr>
-
-            </tbody>
-        </table>
-
-        <small v-for="err in order.ordererrorlines"
-            :key="err.id"
+        <div v-for="order in orders"
+             :key="orders.id"
         >
-            {{err.id}}. {{err.markcode}}  {{err.message}} {{created_at}}  {{updated_at}}
-        </small>
+            <h4>
+                {{order.id}} {{order.date}} {{order.number}}
+            </h4>
 
-    </div>
+            <table class="table">
+                <thead>
+                <tr>
+                    <th>
+                        Наименование
+                    </th>
+                    <th>
+                        Заказ
+                    </th>
+                    <th>
+                        Набор
+                    </th>
+                    <th>
+                        Изменен
+                    </th>
+                </tr>
+                </thead>
+                <tbody>
+
+                <tr v-for="line in order.orderlines"
+                    :key="line.id"
+                >
+                    <td>
+                        {{line.productdescr}}
+                    </td>
+                    <td>
+                        {{line.quantity}}
+                    </td>
+                    <td>
+                        {{line.quantitymarks}}
+                    </td>
+                    <td>
+                        {{line.updated_at}}
+                    </td>
+                </tr>
+
+                </tbody>
+            </table>
+
+            <small v-for="err in order.ordererrorlines"
+                :key="err.id"
+            >
+                {{err.id}}. {{err.markcode}}  {{err.message}} {{created_at}}  {{updated_at}}
+            </small>
+
+        </div>
+
+
+        <b-pagination align="center" size="md" v-model="currentPage" :total-rows="totalCount" :per-page="pageSize" :limit=10>
+        </b-pagination>
 
     </div>
 
@@ -84,22 +88,24 @@
                 orders: 'orders/items'
             })
         },
+        watch: {
+            'currentPage': 'fetchData'
+        },
         methods:{
             fetchData () {
                 this.itemsLoaded = false;
                 this.$store
-                    .dispatch('orders/loadItems')
+                    .dispatch('orders/loadItems', {page: this.currentPage} )
                     .then((response) => {
-                        console.log(111111);
-                        //this.totalCount = response.data.totalCount;
-                        //this.totalPages = response.data.totalPages;
-                        //this.pageSize = response.data.pageSize;
-                        //this.itemsLoaded = true;
-                        //this.error = null;
+                        this.totalCount = response.data.total;
+                        this.totalPages = response.data.last_page;
+                        this.pageSize = response.data.per_page;
+                        this.itemsLoaded = true;
+                        this.error = null;
                     }).catch(error => {
                     this.itemsLoaded = true;
                     if (error === undefined) {
-                        this.error = 'eroor!!!';
+                        this.error = 'error!!!';
                     } else {
                         this.error = error.data.error;
                     }

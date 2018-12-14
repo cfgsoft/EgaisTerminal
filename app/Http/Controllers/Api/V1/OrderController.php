@@ -15,19 +15,29 @@ class OrderController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
         //$order = Order::find(1);
         //$order->orderlines;
         //$order->ordermarklines;
 
         //$order = Order::with('orderlines', 'ordermarklines', 'orderpacklines', 'ordererrorlines')
+
+
+        //$order = Order::with('orderlines', 'ordererrorlines')
+        //    ->orderBy("number", 'desc')
+        //    ->take(50)
+        //    ->get();
+        //
+        //return response()->json($order);
+
+
         $order = Order::with('orderlines', 'ordererrorlines')
             ->orderBy("number", 'desc')
-            ->take(50)
-            ->get();
+            ->paginate(50);
 
-        return response()->json($order);
+        return $order;
+
     }
 
     public function indexMarkLine()

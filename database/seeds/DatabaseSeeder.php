@@ -14,6 +14,8 @@ class DatabaseSeeder extends Seeder
         $this->call(ReadBarCodeTableSeeder::class);
         $this->call(OrderTableSeeder::class);
 
+        factory(App\Order::class,100)->create();
+
         //$this->call(CategoryTableSeeder::class);
 
         //$this->call([

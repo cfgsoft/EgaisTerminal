@@ -322,7 +322,8 @@ class OrderController extends Controller
                     }
 
                     //Запись ящика
-                    if (!$errorBarCode) {
+                    if (!$errorBarCode)
+                    {
                         $orderPackLine = new OrderPackLine;
                         $orderPackLine->order_id    = $order_id;
                         $orderPackLine->orderlineid = 1;
@@ -335,8 +336,10 @@ class OrderController extends Controller
 
                         DB::commit();
                     }
-
-                    DB::rollBack();
+                    else
+                    {
+                        DB::rollBack();
+                    }
 
                 }
             }

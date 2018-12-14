@@ -4,7 +4,7 @@ import Vue from 'vue';
 export default {
   namespaced: true,
   state: {
-    items: {},
+    items: [],
     order: {}
   },
   getters: {
@@ -27,9 +27,9 @@ export default {
     loadItems(store, params) {
         return new Promise((resolve, reject) => {
             window.axios
-                .get('/api/v1/orders')
+                .get('/api/v1/orders', {params: {page: params.page}} )
                 .then((response) => {
-                    store.commit('setItems', response.data);
+                    store.commit('setItems', response.data.data);
                     resolve(response);
                 }).catch(error => {
                 reject(error.response);
