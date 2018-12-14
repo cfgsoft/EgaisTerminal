@@ -1,14 +1,17 @@
 <template>
-    <div class="content">
+    <div class="content-fluid">
 
-        <p>Order!</p>
+        <div class="row">
+            <p>Order!</p>
+        </div>
 
         <div v-for="order in orders"
              :key="orders.id"
+             class="row"
         >
-            <h4>
+            <h6>
                 {{order.id}} {{order.date}} {{order.number}}
-            </h4>
+            </h6>
 
             <table class="table">
                 <thead>
