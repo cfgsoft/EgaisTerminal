@@ -1,7 +1,6 @@
 <?php
 
 use Faker\Generator as Faker;
-
 use Carbon\Carbon;
 
 /*
@@ -25,5 +24,28 @@ $factory->define(App\Order::class, function (Faker $faker) {
         'QuantityMarks' => '0',
         'DocType' => '1',
         'DocId' => str_random(36)
+    ];
+});
+
+
+$factory->define(App\OrderErrorLine::class, function (Faker $faker) {
+    return [
+        'order_id' => '9',
+        'markcode' => str_random(150),
+        'message' => 'Журнал ошибок ' . str_random(150)
+    ];
+});
+
+
+$factory->define(App\Models\ReturnedInvoice\ReturnedInvoice::class, function (Faker $faker) {
+    return [
+        'date' => Carbon::create('2018', '12', '24'),
+        'number' => str_random(10),
+        'barcode' => str_random(10),
+        'status' => '0',
+        'quantity' => '0',
+        'quantity_marks' => '0',
+        'doc_type' => '3',
+        'doc_id' => str_random(36)
     ];
 });

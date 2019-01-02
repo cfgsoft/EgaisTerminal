@@ -1,5 +1,5 @@
 <template>
-    <div class="content-fluid">
+    <div class="container-fluid">
 
         <div class="row">
             <p>Order!</p>
@@ -55,7 +55,7 @@
             <small v-for="err in order.ordererrorlines"
                 :key="err.id"
             >
-                {{err.id}}. {{err.markcode}}  {{err.message}} {{created_at}}  {{updated_at}}
+                {{err.id}}. {{err.markcode}}  {{err.message}} {{err.created_at}}  {{err.updated_at}}
             </small>
 
         </div>

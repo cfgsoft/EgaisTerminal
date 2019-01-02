@@ -5,6 +5,7 @@ namespace App\Http\Controllers\api\v1;
 use App\Order;
 use App\OrderLine;
 use App\OrderMarkLine;
+use App\OrderErrorLine;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
@@ -33,11 +34,18 @@ class OrderController extends Controller
 
 
         $order = Order::with('orderlines', 'ordererrorlines')
-            ->orderBy("number", 'desc')
+            ->orderBy('number', 'desc')
             ->paginate(50);
 
         return $order;
 
+    }
+
+    public function indexErrorLine(Request $request)
+    {
+        $order = OrderErrorLine::orderBy('id', 'desc')->paginate(50);
+
+        return $order;
     }
 
     public function indexMarkLine()
@@ -78,6 +86,7 @@ class OrderController extends Controller
         } else {
             //$order->update($newOrder);
 
+            $order->date    = $newOrder['date'];
             $order->barcode = $newOrder['barcode'];
             $order->DocType = $newOrder['DocType'];
             $order->DocId   = $newOrder['DocId'];
@@ -172,8 +181,18 @@ class OrderController extends Controller
      * @param  \App\Order  $order
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Order $order)
+    public function destroy(Request $request, $id)
     {
-        //
+        $order = Order::findOrFail($id);
+
+        if ($request->has('f2regid')) {
+            $f2regid = $request->get('f2regid');
+
+            $order->removeLineF2RegId($f2regid);
+        }
+
+        $order->ordermarklines;
+
+        return $order;
     }
 }

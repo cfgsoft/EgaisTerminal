@@ -4,11 +4,11 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
-class OrderIncoming extends Model
+class Incoming extends Model
 {
     protected $fillable = ['date', 'number', 'barcode'];
 
-    public function orderIncomingLines(){
-        return $this->hasMany("App\OrderIncomingLine");
+    public function incomingLines(){
+        return $this->hasMany("App\IncomingLine");
     }
 }

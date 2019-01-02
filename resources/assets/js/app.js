@@ -25,6 +25,7 @@ import Home from './components/Home.vue';
 import Hello from './components/Hello.vue';
 import Order from './components/Order.vue';
 import OrderEdit from './components/OrderEdit.vue';
+import OrderError from './components/OrderError.vue';
 
 
 Vue.use(VueRouter);
@@ -48,8 +49,13 @@ export var router = new VueRouter({
         },
         {
             path: '/order/:id',
-            name: 'orderedit',
+            name: 'orderEdit',
             component: OrderEdit
+        },
+        {
+            path: '/orderError',
+            name: 'orderError',
+            component: OrderError
         }
     ]
 });

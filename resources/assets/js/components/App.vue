@@ -4,13 +4,13 @@
 
         <p>
             <router-link :to="{ name: 'home' }">Home</router-link> |
-            <router-link :to="{ name: 'hello' }">Hello World</router-link>
-            <router-link :to="{ name: 'order' }">Order</router-link>
+            <router-link :to="{ name: 'hello' }">Hello World</router-link> |
+            <router-link :to="{ name: 'order' }">Order</router-link> |
+            <router-link :to="{ name: 'orderError' }">Order error</router-link>
         </p>
 
-        <div class="container">
-            <router-view></router-view>
-        </div>
+        <router-view></router-view>
+
     </div>
 </template>
 

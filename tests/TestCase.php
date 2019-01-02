@@ -22,7 +22,6 @@ abstract class TestCase extends BaseTestCase
     public function setupDatabase()
     {
         //Artisan::call('migrate');
-        //Artisan::call('db:seed');
 
         $this->artisan('db:seed');
         self::$setupDatabase = false;

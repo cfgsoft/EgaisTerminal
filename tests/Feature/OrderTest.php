@@ -18,6 +18,18 @@ class OrderTest extends TestCase
         $response->assertStatus(200);
     }
 
+    public function testOrderApiStatus()
+    {
+        $response = $this->get('/api/v1/orders');
+        $response->assertStatus(200);
+    }
+
+    public function testOrderDestroyStatus()
+    {
+        $response = $this->delete('/api/v1/orders/9');
+        $response->assertStatus(200);
+    }
+
     public function testOrderEdit()
     {
         $value = 'C13111434';
@@ -27,8 +39,5 @@ class OrderTest extends TestCase
 
         $response = $this->get('/m/order/edit?id=9');
         $response->assertStatus(200)->assertSee('Считайте штрихкод');
-
-
-
     }
 }

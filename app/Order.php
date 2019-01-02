@@ -24,4 +24,15 @@ class Order extends Model
     public function ordererrorlines(){
         return $this->hasMany("App\OrderErrorLine");
     }
+
+    public function removeLineF2RegId($f2regid)
+    {
+        if($f2regid == null) { return; }
+
+        OrderPackLine::where([ ['id','=',$this->id], ['f2regid','=',$f2regid] ])->delete();
+        $deletedRows = OrderMarkLine::where([ ['id','=',$this->id], ['f2regid','=',$f2regid] ])->delete();
+
+        return $deletedRows;
+    }
+
 }

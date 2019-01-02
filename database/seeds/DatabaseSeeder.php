@@ -15,6 +15,7 @@ class DatabaseSeeder extends Seeder
         $this->call(OrderTableSeeder::class);
 
         factory(App\Order::class,100)->create();
+        factory(App\OrderErrorLine::class,100)->create();
 
         //$this->call(CategoryTableSeeder::class);
 

@@ -5,7 +5,8 @@ export default {
   namespaced: true,
   state: {
     items: [],
-    order: {}
+    order: {},
+    itemsErrorLine: []
   },
   getters: {
     items(state) {
@@ -13,7 +14,10 @@ export default {
     },
     order(state) {
       return state.order;
-    }
+    },
+    itemsErrorLine(state) {
+      return state.itemsErrorLine;
+    },
   },
   mutations: {
     setItems(state, data) {
@@ -21,7 +25,10 @@ export default {
     },
     setOrder(state, data) {
       state.order = data
-    }
+    },
+    setItemsErrorLine(state, data) {
+      state.itemsErrorLine = data
+    },
   },
   actions: {
     loadItems(store, params) {
@@ -32,8 +39,8 @@ export default {
                     store.commit('setItems', response.data.data);
                     resolve(response);
                 }).catch(error => {
-                reject(error.response);
-            });
+                    reject(error.response);
+                });
         });
     },
     loadOrder(store, orderId) {
@@ -44,8 +51,20 @@ export default {
                   store.commit('setOrder', response.data);
                   resolve(response);
               }).catch(error => {
+                reject(error.response);
+              });
+      });
+    },
+    loadItemsErrorLine(store, params) {
+      return new Promise((resolve, reject) => {
+        window.axios
+            .get('/api/v1/orders/indexerrorline', {params: {page: params.page}} )
+            .then((response) => {
+              store.commit('setItemsErrorLine', response.data.data);
+              resolve(response);
+            }).catch(error => {
               reject(error.response);
-          });
+            });
       });
     }
   }

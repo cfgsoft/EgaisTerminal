@@ -73,8 +73,23 @@ class UtmEgaisController extends Controller
         } else {
             $contents = Storage::get('utmegais/TTNInformF2Reg_FORM2REGINFO-030x898D3DF4-9BBC-45B8-A63A-4961A6865AF7.xml');
         }
-        return response($contents)
-            ->header('Content-Type', 'text/xml');
+
+        return response($contents)->header('Content-Type', 'text/xml');
+    }
+
+    public function wayBillAct_v3($id = 0)
+    {
+        if ($id == 8) {
+            $contents = Storage::get('utmegais/WayBillAct_v3.xml');
+        }
+
+        return response($contents)->header('Content-Type', 'text/xml');
+    }
+
+    public function rsa(Request $request)
+    {
+        $contents = Storage::get('utmegais/user.crt');
+        return response($contents)->header('Content-Type', 'text/xml');
     }
 
 }

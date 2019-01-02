@@ -37,12 +37,22 @@ Route::get('/m/order/edit', 'm\OrderController@edit')->name('m.order.edit');
 Route::post('/m/order/submitbarcode', 'm\OrderController@submitbarcode')->name('m.order.submitbarcode');
 Route::post('/m/order/submiteditbarcode', 'm\OrderController@submiteditbarcode')->name('m.order.submiteditbarcode');
 
+Route::get('/m/returnedinvoice', 'm\ReturnedInvoiceController@index')->name('m.returnedinvoice');
+Route::get('/m/returnedinvoice/index', 'm\ReturnedInvoiceController@index')->name('m.returnedinvoice.index');
+Route::get('/m/returnedinvoice/edit', 'm\ReturnedInvoiceController@edit')->name('m.returnedinvoice.edit');
+Route::post('/m/returnedinvoice/submitbarcode', 'm\ReturnedInvoiceController@submitbarcode')->name('m.returnedinvoice.submitbarcode');
+Route::post('/m/returnedinvoice/submiteditbarcode', 'm\ReturnedInvoiceController@submiteditbarcode')->name('m.returnedinvoice.submiteditbarcode');
+
+
 Route::get('/api/v1/utmegais', 'api\v1\UtmEgaisController@index')->name('api.v1.utmegais');
 Route::get('/api/v1/utmegais/index', 'api\v1\UtmEgaisController@index')->name('api.v1.utmegais.index');
 Route::get('/opt/in',  'api\v1\UtmEgaisController@opt_in');
 Route::get('/opt/out', 'api\v1\UtmEgaisController@opt_out');
 Route::get('/opt/out/WayBill_v3/{id?}', 'api\v1\UtmEgaisController@waybill_v3');
 Route::get('/opt/out/FORM2REGINFO/{id?}', 'api\v1\UtmEgaisController@form2RegInfo');
+Route::get('/opt/out/WayBillAct_v3/{id?}', 'api\v1\UtmEgaisController@wayBillAct_v3');
+Route::get('/info/certificate/RSA', 'api\v1\UtmEgaisController@rsa');
+
 
 Route::get('/home', 'HomeController@index')->name('home');
 Route::get('/about', 'HomeController@about')->name('about');
