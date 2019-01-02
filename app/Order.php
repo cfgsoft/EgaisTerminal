@@ -29,8 +29,8 @@ class Order extends Model
     {
         if($f2regid == null) { return; }
 
-        OrderPackLine::where([ ['id','=',$this->id], ['f2regid','=',$f2regid] ])->delete();
-        $deletedRows = OrderMarkLine::where([ ['id','=',$this->id], ['f2regid','=',$f2regid] ])->delete();
+        OrderPackLine::where([ ['order_id','=',$this->id], ['f2regid','=',$f2regid] ])->delete();
+        $deletedRows = OrderMarkLine::where([ ['order_id','=',$this->id], ['f2regid','=',$f2regid] ])->delete();
 
         return $deletedRows;
     }

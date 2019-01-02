@@ -39,6 +39,9 @@ class OrderTableSeeder extends Seeder
         DB::table('order_lines')->insert(['id' =>  '9', 'order_id' => '10', 'orderlineid' => '1', 'productdescr' => 'Вино столовое полусладкое белое  ШАРДОНЕ САН МАРКО 1л/12', 'productcode' => '0123130000002476970', 'quantity' => '2', 'quantitymarks' => '0', 'showfirst' => '0', 'f2regid' => 'FB-000001309598232']);
         DB::table('order_lines')->insert(['id' =>  '10', 'order_id' => '10', 'orderlineid' => '2', 'productdescr' => 'Водка ФИННОРД 0.1л./30', 'productcode' => '0037150000001399460', 'quantity' => '3', 'quantitymarks' => '0', 'showfirst' => '0', 'f2regid' => 'FB-000001309598237']);
 
+        DB::table('order_mark_lines')->insert(['id' =>  '10', 'order_id' => '10', 'orderlineid' => '1', 'productcode' => '0037150000001399460', 'quantity' => '1', 'savedin1c' => '0', 'markcode' => '101100261679680118001D5CCFC794963898C1B13E41231CKY42T7UDIJJY2AWLHS7HPGINLMY7PQPDNJALVS42WNCHYRCO257SPCSCF4ASM37BZNTLIASYRVGFUTCXDXDJPML5MMVLEEHZWPWJVI',
+            'f2regid' => 'FB-000001309598232', 'boxnumber' => '0000000000000000']);
+
 
 //        7	9	1	Водка ФИННОРД 0.1л./30	0037150000001399460	1	0	0	2018-12-13 12:27:07	2018-12-13 12:27:35	FB-000001309598237
 //        8	9	2	Вино столовое полусладкое красное  "МЕРЛО"  САН МАРКО 1л/12	0123130000002476973	12	0	0	2018-12-13 12:27:07	2018-12-13 12:27:35	FB-000001309598228
