@@ -1,7 +1,7 @@
 @extends('layouts.mobile')
 
 @section('content')
-    <p>Выберите действие:</p>
+    <div>Выберите действие:</div>
 
     <form action="{{ action('m\HomeController@submitbarcode') }}" id="formInputBarCode" method="post">
         <input id="InputBarCode" name="BarCode" title="Barcode" size="22" />
@@ -19,7 +19,4 @@
 @endsection
 
 @section('scripts')
-    window.onload = setFocus;
-    document.getElementById('InputBarCode').onpaste = setPasteInputBarCode;
 @endsection
-

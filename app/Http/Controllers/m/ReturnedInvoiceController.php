@@ -61,7 +61,7 @@ class ReturnedInvoiceController extends Controller
             $barcode = str_replace("*", "", $barcode);
             $returnedInvoice = ReturnedInvoice::where('barcode', '=', $barcode)->first();
 
-            if ($order != null) {
+            if ($returnedInvoice != null) {
                 return redirect()->action('m\ReturnedInvoiceController@edit', ['id' => $returnedInvoice->id]);
             }
         }
@@ -90,19 +90,22 @@ class ReturnedInvoiceController extends Controller
 //                return redirect()->action('m\ReturnedInvoiceController@edit', ['id' => $order->id]);
 //            }
 //        }
-//
+
+        $returnedInvoice = ReturnedInvoice::find($returned_invoice_id);
+        $result = $returnedInvoice->addBarCode($barcode);
+
 //        if (strlen($barcode) == 26) {
 //            $result = $this->addPackExciseStamp($barcode, $order_id);
 //        } else {
 //            $result = $this->addExciseStamp($barcode, $order_id);
 //        }
 //
-//        $errorBarCode = $result['error'];
-//        $errorMessage = $result['errorMessage'];
-//
-//        if ($errorBarCode) {
-//            return redirect()->action('m\ReturnedInvoiceController@edit', ['id' => $order_id, 'errorMessage' => $errorMessage ]);
-//        }
+        $errorBarCode = $result['error'];
+        $errorMessage = $result['errorMessage'];
+
+        if ($errorBarCode) {
+            return redirect()->action('m\ReturnedInvoiceController@edit', ['id' => $returned_invoice_id, 'errorMessage' => $errorMessage ]);
+        }
 
         return redirect()->action('m\ReturnedInvoiceController@edit', ['id' => $returned_invoice_id]);
 

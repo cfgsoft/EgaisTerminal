@@ -4,6 +4,7 @@ namespace App\Http\Controllers\api\v1;
 
 use App\Models\ReturnedInvoice\ReturnedInvoice;
 use App\Models\ReturnedInvoice\ReturnedInvoiceLine;
+use App\Models\ReturnedInvoice\ReturnedInvoiceMarkLine;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -17,11 +18,18 @@ class ReturnedInvoiceController extends Controller
      */
     public function index()
     {
-        $returnedInvoice = ReturnedInvoice::with('returnedInvoiceLine')
+        $returnedInvoice = ReturnedInvoice::with('returnedInvoiceLines')
             ->orderBy('number', 'desc')
             ->paginate(50);
 
         return $returnedInvoice;
+    }
+
+    public function indexMarkLine()
+    {
+        $returnedInvoice = ReturnedInvoiceMarkLine::where('savedin1c', '=', false)->orderBy('returned_invoice_id')->get();
+
+        return response()->json($returnedInvoice);
     }
 
     /**
@@ -121,6 +129,15 @@ class ReturnedInvoiceController extends Controller
     public function update(Request $request, ReturnedInvoice $returnedInvoice)
     {
         //
+    }
+
+    public function updateMarkLine(Request $request, $id)
+    {
+        $returnedInvoiceMarkLine = ReturnedInvoiceMarkLine::findOrFail($id);
+        $returnedInvoiceMarkLine->savedin1c = true;
+        $returnedInvoiceMarkLine->save();
+
+        return $returnedInvoiceMarkLine;
     }
 
     /**

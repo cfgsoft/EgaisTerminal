@@ -43,6 +43,8 @@ Route::get('/m/returnedinvoice/edit', 'm\ReturnedInvoiceController@edit')->name(
 Route::post('/m/returnedinvoice/submitbarcode', 'm\ReturnedInvoiceController@submitbarcode')->name('m.returnedinvoice.submitbarcode');
 Route::post('/m/returnedinvoice/submiteditbarcode', 'm\ReturnedInvoiceController@submiteditbarcode')->name('m.returnedinvoice.submiteditbarcode');
 
+Route::get('/m/login', 'm\LoginController@login')->name('m.login');
+Route::post('/m/login/submitbarcode', 'm\LoginController@submitbarcode')->name('m.login.submitbarcode');
 
 Route::get('/api/v1/utmegais', 'api\v1\UtmEgaisController@index')->name('api.v1.utmegais');
 Route::get('/api/v1/utmegais/index', 'api\v1\UtmEgaisController@index')->name('api.v1.utmegais.index');

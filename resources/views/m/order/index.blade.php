@@ -37,12 +37,10 @@
         </tbody>
     </table>
 
-
+    {{ $order->links("pagination.m-simple") }}
 
 @endsection
 
 @section('scripts')
-    window.onload = setFocus;
-    document.getElementById('InputBarCode').onpaste = setPasteInputBarCode;
 @endsection
 

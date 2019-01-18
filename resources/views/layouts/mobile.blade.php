@@ -23,7 +23,9 @@
     </div>
 
     <script type="text/javascript">
-    @yield('scripts')
+        window.onload = setFocus;
+        document.getElementById('InputBarCode').onpaste = setPasteInputBarCode;
+        @yield('scripts')
     </script>
 </body>
 </html>

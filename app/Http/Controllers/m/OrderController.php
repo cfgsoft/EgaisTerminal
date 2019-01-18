@@ -32,14 +32,18 @@ class OrderController extends Controller
      */
     public function index(Request $request)
     {
-        $order = Order::orderBy("number", 'desc')
-                 ->take(10)->get();
+        //$order = Order::orderBy("number", 'desc')->take(10)->get();
 
-        $barcode = '';
-        if ($request->has('barcode')) {
-            $barcode = $request->get('barcode');
-        }
-        //$request->input('barcode');
+        //$barcode = '';
+        //if ($request->has('barcode')) {
+        //    $barcode = $request->get('barcode');
+        //}
+
+        $order = Order::orderBy("number", 'desc')->simplePaginate(4);
+
+        $barcode = $request->input('barcode', '');
+
+        //dd($order);
 
         return view('m/order/index', ['order' => $order, 'barcode' => $barcode]);
     }
@@ -81,6 +85,11 @@ class OrderController extends Controller
 
         if ($barcode == '0') {
             return redirect()->action('m\HomeController@index');
+        } elseif ($barcode == '1') {
+            //Prev
+            //dd($request);
+        } elseif ($barcode == '3') {
+            //Next
         }
 
         if (strlen($barcode) > 8 and strlen($barcode) < 13) {
@@ -91,7 +100,7 @@ class OrderController extends Controller
 
             $order = Order::where('barcode', '=', $barcode)->first();
 
-            if (isset($order)) {
+            if ($order != null) {
                 return redirect()->action('m\OrderController@edit', ['id' => $order->id]);
             }
         }

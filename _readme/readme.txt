@@ -71,6 +71,12 @@ sudo apt-get install php-mbstring
 
 https://www.youtube.com/watch?v=uIXScyhCtPc
 
+//Установка Node js Ubuntu
+https://www.digitalocean.com/community/tutorials/node-js-ubuntu-18-04-ru
+//авто запуск сайта на node (npm i pm2 -g)
+https://habr.com/sandbox/96765/
+
+
 0. php artisan key:generate (генерация нового ключа)
 1. Создан новый проект для терминала.
 2. Добавляем аутентификацию в проект (php artisan make:auth)
