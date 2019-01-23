@@ -1,7 +1,7 @@
 @extends('layouts.mobile')
 
 @section('content')
-    <h6>Считайте номер документa:</h6>
+    <div>Отгрузка товара</div>
     <form action="{{ action('m\OrderController@submitbarcode') }}" id="formInputBarCode" method="post">
         <input id="InputBarCode" name="BarCode" title="Barcode" size="22" />
         <input type="hidden" name="_token" value="{{ csrf_token() }}" >

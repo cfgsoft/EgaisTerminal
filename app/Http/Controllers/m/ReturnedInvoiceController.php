@@ -54,7 +54,7 @@ class ReturnedInvoiceController extends Controller
     {
         $barcode = $request->input('BarCode', '');
         if ($barcode == '0') {
-            return redirect()->action('m\ReturnedInvoiceController@index');
+            return redirect()->action('m\HomeController@index');
         }
 
         if (strlen($barcode) > 8 and strlen($barcode) < 13) {

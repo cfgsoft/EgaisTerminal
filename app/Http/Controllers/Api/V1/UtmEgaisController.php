@@ -92,4 +92,12 @@ class UtmEgaisController extends Controller
         return response($contents)->header('Content-Type', 'text/xml');
     }
 
+    public function replyRestBCode($id = 0)
+    {
+        if ($id == 9) {
+            $contents = Storage::get('utmegais/ReplyRestBCode-010x919540B1-E248-4291-BFCA-7294443AB6B4.xml');
+        }
+
+        return response($contents)->header('Content-Type', 'text/xml');
+    }
 }
