@@ -20,6 +20,10 @@ class ReadBarCodeTest extends TestCase
 
     public function testPostBarCode()
     {
+        //$this->withoutMiddleware();
+
+        //$this->app['env'] local
+
         $value = str_random(40);
 
         $response = $this->post('/m/readbarcode/submitbarcode',['BarCode' => $value]);

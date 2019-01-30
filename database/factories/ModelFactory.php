@@ -27,7 +27,6 @@ $factory->define(App\Order::class, function (Faker $faker) {
     ];
 });
 
-
 $factory->define(App\OrderErrorLine::class, function (Faker $faker) {
     return [
         'order_id' => '9',
@@ -35,7 +34,6 @@ $factory->define(App\OrderErrorLine::class, function (Faker $faker) {
         'message' => 'Журнал ошибок ' . str_random(150)
     ];
 });
-
 
 $factory->define(App\Models\ReturnedInvoice\ReturnedInvoice::class, function (Faker $faker) {
     return [
@@ -45,6 +43,16 @@ $factory->define(App\Models\ReturnedInvoice\ReturnedInvoice::class, function (Fa
         'status' => '0',
         'quantity' => '0',
         'quantity_marks' => '0',
+        'doc_type' => '3',
+        'doc_id' => str_random(36)
+    ];
+});
+
+$factory->define(App\Models\Invoice\Invoice::class, function (Faker $faker) {
+    return [
+        'date' => Carbon::create('2019', '01', '24'),
+        'number' => str_random(11),
+        'barcode' => str_random(12),
         'doc_type' => '3',
         'doc_id' => str_random(36)
     ];

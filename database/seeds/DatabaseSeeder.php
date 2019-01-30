@@ -13,9 +13,12 @@ class DatabaseSeeder extends Seeder
     {
         $this->call(ReadBarCodeTableSeeder::class);
         $this->call(OrderTableSeeder::class);
+        $this->call(InvoiceTableSeeder::class);
 
         factory(App\Order::class,100)->create();
         factory(App\OrderErrorLine::class,100)->create();
+        factory(App\Models\Invoice\Invoice::class,10)->create();
+
 
         //$this->call(CategoryTableSeeder::class);
 

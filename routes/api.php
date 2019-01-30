@@ -31,5 +31,5 @@ Route::group(['prefix' => '/v1',  'namespace' => 'Api\V1', 'as' => 'api.'], func
     Route::resource('excisestamps',     'ExciseStampController',     ['except' => ['create', 'edit']]);
     Route::resource('excisestampbox',   'ExciseStampBoxController',  ['except' => ['create', 'edit']]);
     Route::resource('returnedinvoices', 'ReturnedInvoiceController', ['except' => ['create', 'edit']]);
-
+    Route::resource('invoices',         'InvoiceController',    ['except' => ['create', 'edit']]);
 });
