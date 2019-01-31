@@ -24,7 +24,12 @@
 
     <script type="text/javascript">
         window.onload = setFocus;
-        document.getElementById('InputBarCode').onpaste = setPasteInputBarCode;
+
+        var el = document.getElementById('InputBarCode');
+        if (el !== null)
+        {
+            el.onpaste = setPasteInputBarCode;
+        }
         @yield('scripts')
     </script>
 </body>

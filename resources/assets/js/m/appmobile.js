@@ -3,14 +3,16 @@
 function setFocus() {
     //var el = document.querySelector('#InputBarCode');
     var el = document.getElementById('InputBarCode');
-    el.focus();
+    if (el !== null)
+    {
+        el.focus();
 
-    el.onblur = function () {
-        setTimeout(function () {
-            el.focus();            
-        });
-    };
-
+        el.onblur = function () {
+            setTimeout(function () {
+                el.focus();
+            });
+        };
+    }
     //document.getElementById("test").innerHTML="11111111111";
 }
 

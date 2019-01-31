@@ -13,4 +13,27 @@ class InvoiceMarkLine extends Model
     public function invoice(){
         return $this->belongsTo("App\Models\Invoice\Invoice");
     }
+
+    public static function add($fields, Invoice $invoice)
+    {
+        $invoiceMarkLine = new static;
+        $invoiceMarkLine->fill($fields);
+        $invoiceMarkLine->invoice_id = $invoice->id;
+        $invoiceMarkLine->save();
+
+        return $invoice;
+    }
+
+    public function edit($fields)
+    {
+        $this->fill($fields);
+        $this->save();
+
+        return $this;
+    }
+
+    public function remove()
+    {
+        $this->delete();
+    }
 }

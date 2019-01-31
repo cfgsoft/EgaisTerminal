@@ -87,6 +87,9 @@ class HomeController extends Controller
             case '2':
                 return redirect()->action('m\ReturnedInvoiceController@index');
                 break;
+            case '3':
+                return redirect()->action('m\InvoiceController@index');
+                break;
             default:
                 return redirect()->action('m\ReadBarCodeController@index');
                 break;

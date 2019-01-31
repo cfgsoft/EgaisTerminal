@@ -5,6 +5,7 @@ namespace App\Http\Controllers\api\v1;
 use App\Models\Invoice\Invoice;
 use App\Models\Invoice\InvoiceLine;
 
+use App\Models\Invoice\InvoiceMarkLine;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
@@ -17,21 +18,12 @@ class InvoiceController extends Controller
      */
     public function index()
     {
+        //GET
         $invoice = Invoice::with('invoiceLines')
             ->orderBy('number', 'desc')
             ->paginate(50);
 
         return $invoice;
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
     }
 
     /**
@@ -42,6 +34,7 @@ class InvoiceController extends Controller
      */
     public function store(Request $request)
     {
+        //POST
         $newInvoice = $request->all();
 
         $invoice = Invoice::where('doc_id', $newInvoice['doc_id'])->first();
@@ -90,20 +83,10 @@ class InvoiceController extends Controller
      * @param  \App\Invoice  $invoice
      * @return \Illuminate\Http\Response
      */
-    public function show(Invoice $invoice)
+    public function show($id)
     {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Invoice  $invoice
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Invoice $invoice)
-    {
-        //
+        //GET
+        return Invoice::findOrFail($id);
     }
 
     /**
@@ -115,7 +98,24 @@ class InvoiceController extends Controller
      */
     public function update(Request $request, Invoice $invoice)
     {
-        //
+        //PUT
+        $newInvoice = $request->all();
+
+        if (array_key_exists('marklines', $newInvoice))
+        {
+            $newMarkInvoicesLines = $newInvoice['marklines'];
+            foreach ($newMarkInvoicesLines as $line) {
+                $invoiceMarkLine = InvoiceMarkLine::where([['invoice_id', '=', $invoice->id],['mark_code', '=', $line['mark_code']]])->first();
+                if ($invoiceMarkLine == null) {
+                    $invoiceMarkLine = InvoiceMarkLine::add($line, $invoice);
+                } else {
+                    $invoiceMarkLine->edit($line);
+                }
+
+            }
+        }
+
+        return $invoice;
     }
 
     /**
@@ -126,6 +126,7 @@ class InvoiceController extends Controller
      */
     public function destroy(Invoice $invoice)
     {
+        //DELETE
         //
     }
 }
