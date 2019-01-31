@@ -8,7 +8,7 @@ class Invoice extends Model
 {
     protected $table = 'doc_invoice';
 
-    protected $fillable = ['date', 'number', 'barcode',
+    protected $fillable = ['date', 'number', 'barcode', 'incoming_number', 'incoming_date', 'sum',
         'quantity', 'quantity_pack',
         'doc_type', 'doc_id'];
 

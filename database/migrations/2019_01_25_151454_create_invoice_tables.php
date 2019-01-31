@@ -47,6 +47,11 @@ class CreateInvoiceTables extends Migration
             $table->date('date');
             $table->string('number', 11);
             $table->string('barcode', 12)->unique();
+
+            $table->string('incoming_number', 20)->nullable();
+            $table->date('incoming_date')->nullable();
+            $table->decimal('sum',15,2)->default(0)->unsigned();
+
             $table->integer('shipper_id')->unsigned()->nullable();
             $table->integer('consignee_id')->unsigned()->nullable();
 
