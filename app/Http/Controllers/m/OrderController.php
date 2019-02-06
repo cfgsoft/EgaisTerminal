@@ -166,7 +166,11 @@ class OrderController extends Controller
                 $order->orderlines;
 
                 //1. Ищем штрих код в уже набранных товарах, если находим ошибка.
-                $orderMarkLine = OrderMarkLine::where([['markcode', '=', $barcode],['quantity', '=', '1']])->first();
+                $orderMarkLine = OrderMarkLine::where([['markcode', '=', $barcode],
+                                                       ['quantity', '=', '1'],
+                                                       ["f2regid",  "=", $exciseStamp->f2regid]
+                ])->first();
+
                 if (isset($orderMarkLine)) {
                     $errorBarCode = true;
                     $errorMessage = "Товар уже сканировался " . $barcode;
@@ -277,15 +281,18 @@ class OrderController extends Controller
                     $lines = $exciseStampBox->excisestampboxlines;
                     foreach ($lines as $line){
 
+                        $exciseStamp = ExciseStamp::find($line->markcode);
+
                         //1. Ищем штрих код в уже набранных товарах, если находим ошибка.
-                        $orderMarkLine = OrderMarkLine::where([['markcode', '=', $line->markcode],['quantity', '=', '1']])->first();
+                        $orderMarkLine = OrderMarkLine::where([['markcode', '=', $line->markcode],
+                                                               ['quantity', '=', '1'],
+                                                               ["f2regid",  "=", $exciseStamp->f2regid]
+                        ])->first();
                         if (isset($orderMarkLine)) {
                             $errorBarCode = true;
                             $errorMessage = "Товар уже сканировался " . $line->markcode;
                             break;
                         }
-
-                        $exciseStamp = ExciseStamp::find($line->markcode);
 
                         //2. Ищем товар в строке заказов
                         $orderLine = null;

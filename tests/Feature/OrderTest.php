@@ -7,11 +7,12 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class OrderTest extends TestCase
 {
-    /**
-     * A basic test example.
-     *
-     * @return void
-     */
+
+    private function newOrder()
+    {
+
+    }
+
     public function testOrderStatus()
     {
         $response = $this->get('/m/order');
