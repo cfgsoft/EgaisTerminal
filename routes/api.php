@@ -31,6 +31,9 @@ Route::group(
         Route::get('returnedinvoices/indexMarkLine',  'ReturnedInvoiceController@indexMarkLine');
         Route::put('returnedinvoices/updateMarkLine/{id}', 'ReturnedInvoiceController@updateMarkLine');
 
+        Route::get('invoices/indexReadLine',  'InvoiceController@indexReadLine');
+        Route::put('invoices/updateReadLine/{id}', 'InvoiceController@updateReadLine');
+
         Route::resource('categories',       'CategoryController',   ['except' => ['create', 'edit']]);
         Route::resource('products',         'ProductController',    ['except' => ['create', 'edit']]);
         Route::resource('orders',           'OrderController',      ['except' => ['create', 'edit']]);

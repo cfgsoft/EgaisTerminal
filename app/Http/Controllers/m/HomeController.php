@@ -43,6 +43,10 @@ class HomeController extends Controller
 
     public function ajax()
     {
+        //https://stackoverflow.com/questions/3993598/ajax-call-what-is-the-difference-between-new-activexobjectmsxml2-xmlhttp-an
+
+
+
         return view('m/ajax');
     }
 
@@ -58,6 +62,9 @@ class HomeController extends Controller
 
     public function ajaxpostresult(Request $request)
     {
+        //все версии
+        //http://code.jquery.com/jquery/
+
         $barcode = '';
         if ($request->has('BarCode')) {
             $barcode = $request->get('BarCode');

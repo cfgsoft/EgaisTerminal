@@ -35,4 +35,17 @@ class Order extends Model
         return $deletedRows;
     }
 
+    private function addErrorLine($barcode, $product_code, $f2reg_id, $errorMessage)
+    {
+        $orderErrorLine = new OrderErrorLine;
+        $orderErrorLine->order_id = $this->id;
+        $orderErrorLine->markcode = $barcode;
+        $orderErrorLine->message = $errorMessage;
+        $orderErrorLine->product_code = $product_code;
+        $orderErrorLine->f2reg_id = $f2reg_id;
+        $orderErrorLine->save();
+
+        return $orderErrorLine;
+    }
+
 }

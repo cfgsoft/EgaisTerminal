@@ -80,26 +80,9 @@ class ReturnedInvoiceController extends Controller
             return redirect()->action('m\ReturnedInvoiceController@index');
         }
 
-        //Переход на другой заказ
-//        if (strlen($barcode) > 8 and strlen($barcode) < 13) {
-//            $barcode = str_replace("*", "", $barcode);
-//
-//            $order = Order::where('barcode', '=', $barcode)->first();
-//
-//            if (isset($order)) {
-//                return redirect()->action('m\ReturnedInvoiceController@edit', ['id' => $order->id]);
-//            }
-//        }
-
         $returnedInvoice = ReturnedInvoice::find($returned_invoice_id);
         $result = $returnedInvoice->addBarCode($barcode);
 
-//        if (strlen($barcode) == 26) {
-//            $result = $this->addPackExciseStamp($barcode, $order_id);
-//        } else {
-//            $result = $this->addExciseStamp($barcode, $order_id);
-//        }
-//
         $errorBarCode = $result['error'];
         $errorMessage = $result['errorMessage'];
 

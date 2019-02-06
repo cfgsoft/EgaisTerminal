@@ -4,8 +4,8 @@ namespace App\Http\Controllers\api\v1;
 
 use App\Models\Invoice\Invoice;
 use App\Models\Invoice\InvoiceLine;
-
 use App\Models\Invoice\InvoiceMarkLine;
+
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
@@ -24,6 +24,13 @@ class InvoiceController extends Controller
             ->paginate(50);
 
         return $invoice;
+    }
+
+    public function indexReadLine()
+    {
+        $invoiceReadLine = InvoiceReadLine::where('savedin1c', '=', false)->orderBy('invoice_id')->get();
+
+        return response()->json($invoiceReadLine);
     }
 
     /**
@@ -116,6 +123,17 @@ class InvoiceController extends Controller
         }
 
         return $invoice;
+    }
+
+    public function updateMarkLine(Request $request, $id)
+    {
+        //PUT
+
+        $invoiceReadLine = InvoiceReadLine::findOrFail($id);
+        $invoiceReadLine->savedin1c = true;
+        $invoiceReadLine->save();
+
+        return $invoiceReadLine;
     }
 
     /**

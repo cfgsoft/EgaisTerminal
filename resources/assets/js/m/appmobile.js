@@ -17,12 +17,13 @@ function setFocus() {
 }
 
 function setPasteInputBarCode() {    
-    setTimeout(function () {        
-        //var el = document.getElementById('InputBarCode');
-        //console.log(el.value);
-
+    setTimeout(function () {
         var frm = document.getElementById('formInputBarCode');
-        frm.submit();    
+        if (frm.onsubmit === null) {
+            frm.submit();
+        } else {
+            frm.onsubmit();
+        }
 
     }, 1); // 1ms should be enough
 }

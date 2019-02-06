@@ -6,10 +6,13 @@ body {
   margin: 0px;
 }
 
-h6 {
+h1 {
   margin: 0px;
-  font-size: xx-small;
+  font-size: small;
   font-style: normal;
+  a {
+    font-size: xx-small;
+  }
 }
 
 h5 {
@@ -17,7 +20,14 @@ h5 {
   font-style: normal;
 }
 
-.mainmenu {
+h6 {
+  margin: 0px;
+  font-size: xx-small;
+  font-style: normal;
+}
+
+
+ul.mainmenu {
   margin: 10px;
   padding: 0px;
 
@@ -44,12 +54,29 @@ h5 {
   }
 }
 
-.pagination {
+ul.pagination {
+  margin: 8px 10%;
+  padding: 0;
+
   li {
-    list-style-type: none;
     display: inline;
+    list-style-type: none;
+    a {
+      text-decoration: none;
+      padding: 6px 6px;
+      border: 1px solid #ddd;
+    }
   }
 }
+
+.card {
+  margin: 2px;
+  border: 1px solid silver;
+  a {
+    text-decoration: none;
+  }
+}
+
 
 /*
 .mainmenu li {

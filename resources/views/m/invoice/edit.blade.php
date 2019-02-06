@@ -6,7 +6,7 @@
 
     <form action="{{ action('m\InvoiceController@submiteditbarcode') }}" id="formInputBarCode" method="post">
         <input id="InputBarCode" name="BarCode" title="Barcode" size="22" />
-        <input type="hidden" id="order_id" name="order_id" value="{{ $invoice->id }}" />
+        <input type="hidden" id="invoice_id" name="invoice_id" value="{{ $invoice->id }}" />
         <input type="hidden" name="_token" value="{{ csrf_token() }}" >
         <input type="submit" value=".." />
     </form>
@@ -34,7 +34,7 @@
         </thead>
         <tbody>
 
-        @foreach ($invoice->invoicelines as $item)
+        @foreach ($invoice->invoiceLines as $item)
             @if ($item->quantity != $item->quantity_mark)
                 <tr>
                     <td>

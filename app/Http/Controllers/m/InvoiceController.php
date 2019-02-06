@@ -36,8 +36,9 @@ class InvoiceController extends Controller
     public function edit(Request $request)
     {
         $invoice = Invoice::find($request->get('id'));
-        $invoice->invoicelines;
-        //$invoice->invoicelines = $invoice->invoicelines->sortBy('line_id')->sortByDesc('show_first');
+        $invoice->invoiceLines;
+        //$invoice->invoiceLines = $invoice->invoiceLines->sortBy('line_id')->sortByDesc('show_first');
+        $invoice->invoiceLines = $invoice->invoiceLines->sortBy('line_id')->sortByDesc('show_first');
 
         $errorMessage = '';
         if ($request->has('errorMessage')) {
@@ -79,36 +80,22 @@ class InvoiceController extends Controller
         $barcode  = $request->input('BarCode', '');
         $invoice_id = $request->input('invoice_id', '');
 
-//        if ($barcode == '0') {
-//            return redirect()->action('m\OrderController@index');
-//        }
-//
-//        //Переход на другой заказ
-//        if (strlen($barcode) > 8 and strlen($barcode) < 13) {
-//            $barcode = str_replace("*", "", $barcode);
-//            //$barcode = str_replace("C", "С", $barcode);
-//            //$barcode = substr($barcode, 0, 4) . '_' . substr($barcode, 4);
-//            //$order = Order::where('number', '=', $barcode)->first();
-//
-//            $order = Order::where('barcode', '=', $barcode)->first();
-//
-//            if (isset($order)) {
-//                return redirect()->action('m\OrderController@edit', ['id' => $order->id]);
-//            }
-//        }
-//
-//        if (strlen($barcode) == 26) {
-//            $result = $this->addPackExciseStamp($barcode, $order_id);
-//        } else {
-//            $result = $this->addExciseStamp($barcode, $order_id);
-//        }
-//
-//        $errorBarCode = $result['error'];
-//        $errorMessage = $result['errorMessage'];
-//
-//        if ($errorBarCode) {
-//            return redirect()->action('m\OrderController@edit', ['id' => $order_id, 'errorMessage' => $errorMessage ]);
-//        }
+        if ($barcode == '0') {
+            return redirect()->action('m\InvoiceController@index');
+        }
+
+        if ($barcode != '')
+        {
+            $invoice = Invoice::find($invoice_id);
+            $result = $invoice->addBarCode($barcode);
+
+            $errorBarCode = $result['error'];
+            $errorMessage = $result['errorMessage'];
+
+            if ($errorBarCode) {
+                return redirect()->action('m\InvoiceController@edit', ['id' => $invoice_id, 'errorMessage' => $errorMessage]);
+            }
+        }
 
         return redirect()->action('m\InvoiceController@edit', ['id' => $invoice_id]);
 
