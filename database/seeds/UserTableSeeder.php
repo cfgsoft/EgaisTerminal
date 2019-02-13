@@ -16,11 +16,20 @@ class UserTableSeeder extends Seeder
     {
         $roleAdminApi = Role::where('name', 'AdminAPI')->first();
 
-        $adminApi = new User();
-        $adminApi->name = 'Admin Api';
-        $adminApi->email = 'AdminApi@example.com';
-        $adminApi->password = bcrypt('secret');
-        $adminApi->save();
-        $adminApi->roles()->attach($roleAdminApi);
+        $adminApi = User::firstOrNew(['email' => 'AdminApi@example.com']);
+        if (!$adminApi->exists) {
+            $adminApi->name = 'Admin Api';
+            $adminApi->email = 'AdminApi@example.com';
+            $adminApi->password = bcrypt('secret');
+            $adminApi->save();
+            $adminApi->roles()->attach($roleAdminApi);
+        }
+
+        //$adminApi = new User();
+        //$adminApi->name = 'Admin Api';
+        //$adminApi->email = 'AdminApi@example.com';
+        //$adminApi->password = bcrypt('secret');
+        //$adminApi->save();
+        //$adminApi->roles()->attach($roleAdminApi);
     }
 }

@@ -9,10 +9,23 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Carbon\Carbon;
 
 use App\Models\Invoice\Invoice;
+use App\User;
 
 class InvoiceTest extends TestCase
 {
     const DOC_ID = 'YTD2B2BLqXhCAEdltKSio2lhsfPWB95I9LQa';
+
+    public static $token = '';
+    public static $headers =[];
+
+    public function setUp()
+    {
+        parent::setUp();
+
+        $user = User::Where('email', '=', 'AdminApi@example.com')->first();
+        //self::$token = $user->generateToken();
+        //self::$headers = ['Authorization' => "Bearer $token"];
+    }
 
     private function newInvoice()
     {
@@ -198,7 +211,11 @@ class InvoiceTest extends TestCase
 
     public function testApiInvoiceStatus()
     {
-        $response = $this->get('/api/v1/invoices');
+        $user = User::Where('email', '=', 'AdminApi@example.com')->first();
+        $token = $user->generateToken();
+        $headers = ['Authorization' => "Bearer $token"];
+
+        $response = $this->get('/api/v1/invoices', $headers);
         $response->assertStatus(200);
     }
 
@@ -206,9 +223,9 @@ class InvoiceTest extends TestCase
     {
         //https://softobzor.com.ua/laravel-restful-api-testirovanie/
 
-        //$user = factory(User::class)->create();
-        //$token = $user->generateToken();
-        //$headers = ['Authorization' => "Bearer $token"];
+        $user = User::Where('email', '=', 'AdminApi@example.com')->first();
+        $token = $user->generateToken();
+        $headers = ['Authorization' => "Bearer $token"];
 
         $payload = $this->newInvoice();
         //$payload = $this->newInvoiceBig();
@@ -216,14 +233,16 @@ class InvoiceTest extends TestCase
         $number = $payload['number'];
         $barcode = $payload['barcode'];
 
-        $response = $this->post('/api/v1/invoices', $payload);
+        $response = $this->post('/api/v1/invoices', $payload, $headers);
         $response->assertStatus(201)
                  ->assertJsonFragment(['number' => $number, 'barcode' => $barcode]);
     }
 
     public function testApiInvoiceAreUpdatedCorrectly()
     {
-        //https://softobzor.com.ua/laravel-restful-api-testirovanie/
+        $user = User::Where('email', '=', 'AdminApi@example.com')->first();
+        $token = $user->generateToken();
+        $headers = ['Authorization' => "Bearer $token"];
 
         $payload = $this->newInvoice();
 
@@ -236,13 +255,17 @@ class InvoiceTest extends TestCase
         $number = $payload['number'];
         $barcode = $payload['barcode'];
 
-        $response = $this->post('/api/v1/invoices', $payload);
+        $response = $this->post('/api/v1/invoices', $payload, $headers);
         $response->assertStatus(200)
             ->assertJsonFragment(['number' => $number, 'barcode' => $barcode]);
     }
 
     public function testApiInvoiceMarkAreUpdatedCorrectly()
     {
+        $user = User::Where('email', '=', 'AdminApi@example.com')->first();
+        $token = $user->generateToken();
+        $headers = ['Authorization' => "Bearer $token"];
+
         $payload = $this->newInvoiceMark();
 
         $invoice = Invoice::where('doc_id', '11YTD2B2BLqXhCAEdltKSio2lhsfPWB95I9L')->first();
@@ -250,14 +273,18 @@ class InvoiceTest extends TestCase
         $number  = $invoice->number;
         $barcode = $invoice->barcode;
 
-        $response = $this->put('/api/v1/invoices/' . $invoice->id , $payload);
+        $response = $this->put('/api/v1/invoices/' . $invoice->id , $payload, $headers);
         $response->assertStatus(200)
             ->assertJsonFragment(['number' => $number, 'barcode' => $barcode]);
     }
 
     public function testApiInvoiceAreListedCorrectly()
     {
-        $response = $this->get('/api/v1/invoices');
+        $user = User::Where('email', '=', 'AdminApi@example.com')->first();
+        $token = $user->generateToken();
+        $headers = ['Authorization' => "Bearer $token"];
+
+        $response = $this->get('/api/v1/invoices', $headers);
         $response->assertStatus(200)
             ->assertJsonFragment(['current_page' => 1])
             ->assertJsonFragment(['doc_id' => InvoiceTest::DOC_ID]);
