@@ -29,7 +29,27 @@ class ReturnedInvoice extends Model
         return $this->hasMany("App\Models\ReturnedInvoice\ReturnedInvoiceErrorLine");
     }
 
+    public static function add($fields)
+    {
+        $returnedInvoice = new static;
+        $returnedInvoice->fill($fields);
+        //$returnedInvoice->save();
 
+        return $returnedInvoice;
+    }
+
+    public function edit($fields)
+    {
+        $this->fill($fields);
+        //$this->save();
+
+        return $this;
+    }
+
+    public function remove()
+    {
+        $this->delete();
+    }
 
     public function addBarCode($barcode)
     {

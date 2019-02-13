@@ -77,6 +77,15 @@ ul.pagination {
   }
 }
 
+ul.alert {
+  margin: 2px;
+  padding: 2px;
+  background-color: LightSalmon;
+
+  li {
+    list-style-type: none;
+  }
+}
 
 /*
 .mainmenu li {

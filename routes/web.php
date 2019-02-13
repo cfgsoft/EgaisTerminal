@@ -18,44 +18,13 @@ Route::get('/', function () {
 
 Auth::routes();
 
-//Route::get('/m', 'm\HomeController@index')->name('m.home.index');
-//Route::get('/m/index', 'm\HomeController@index')->name('m.home.index');
-//Route::get('/m/about', 'm\HomeController@about')->name('m.home.about');
-//Route::get('/m/ajax', 'm\HomeController@ajax')->name('m.home.ajax');
-//Route::get('/m/ajaxresult', 'm\HomeController@ajaxresult')->name('m.home.ajaxresult');
-//Route::post('/m/ajaxpostresult', 'm\HomeController@ajaxpostresult')->name('m.home.ajaxpostresult');
-//Route::post('/m/submitbarcode', 'm\HomeController@submitbarcode')->name('m.home.submitbarcode');
-//
-//Route::get('/m/readbarcode', 'm\ReadBarCodeController@index')->name('m.readbarcode');
-//Route::get('/m/readbarcode/index', 'm\ReadBarCodeController@index')->name('m.readbarcode.index');
-//Route::post('/m/readbarcode/submitbarcode', 'm\ReadBarCodeController@submitbarcode')->name('m.readbarcode.submitbarcode');
-//Route::post('/m/readbarcode/submitbarcodeajax', 'm\ReadBarCodeController@submitbarcodeajax')->name('m.readbarcode.submitbarcodeajax');
-//
-//Route::get('/m/order', 'm\OrderController@index')->name('m.order');
-//Route::get('/m/order/index', 'm\OrderController@index')->name('m.order.index');
-//Route::get('/m/order/edit', 'm\OrderController@edit')->name('m.order.edit');
-//Route::post('/m/order/submitbarcode', 'm\OrderController@submitbarcode')->name('m.order.submitbarcode');
-//Route::post('/m/order/submiteditbarcode', 'm\OrderController@submiteditbarcode')->name('m.order.submiteditbarcode');
-//
-//Route::get('/m/returnedinvoice', 'm\ReturnedInvoiceController@index')->name('m.returnedinvoice');
-//Route::get('/m/returnedinvoice/index', 'm\ReturnedInvoiceController@index')->name('m.returnedinvoice.index');
-//Route::get('/m/returnedinvoice/edit', 'm\ReturnedInvoiceController@edit')->name('m.returnedinvoice.edit');
-//Route::post('/m/returnedinvoice/submitbarcode', 'm\ReturnedInvoiceController@submitbarcode')->name('m.returnedinvoice.submitbarcode');
-//Route::post('/m/returnedinvoice/submiteditbarcode', 'm\ReturnedInvoiceController@submiteditbarcode')->name('m.returnedinvoice.submiteditbarcode');
-//
-//Route::get('/m/invoice', 'm\InvoiceController@index')->name('m.invoice');
-//Route::get('/m/invoice/index', 'm\InvoiceController@index')->name('m.invoice.index');
-//Route::get('/m/invoice/edit', 'm\InvoiceController@edit')->name('m.invoice.edit');
-//Route::post('/m/invoice/submitbarcode', 'm\InvoiceController@submitbarcode')->name('m.invoice.submitbarcode');
-//Route::post('/m/invoice/submiteditbarcode', 'm\InvoiceController@submiteditbarcode')->name('m.invoice.submiteditbarcode');
-
 Route::group(
     ['prefix' => '/m'
     ],
     function ()
     {
         Route::get('', 'm\HomeController@index')->name('m.home.index');
-        Route::get('/index', 'm\HomeController@index')->name('m.home.index');
+        //Route::get('/index', 'm\HomeController@index')->name('m.home.index');
         Route::get('/about', 'm\HomeController@about')->name('m.home.about');
         Route::get('/ajax', 'm\HomeController@ajax')->name('m.home.ajax');
         Route::get('/ajaxresult', 'm\HomeController@ajaxresult')->name('m.home.ajaxresult');
@@ -67,23 +36,23 @@ Route::group(
         Route::post('/readbarcode/submitbarcode', 'm\ReadBarCodeController@submitbarcode')->name('m.readbarcode.submitbarcode');
         Route::post('/readbarcode/submitbarcodeajax', 'm\ReadBarCodeController@submitbarcodeajax')->name('m.readbarcode.submitbarcodeajax');
 
-        Route::get('/order', 'm\OrderController@index')->name('m.order');
-        Route::get('/order/index', 'm\OrderController@index')->name('m.order.index');
-        Route::get('/order/edit', 'm\OrderController@edit')->name('m.order.edit');
-        Route::post('/order/submitbarcode', 'm\OrderController@submitbarcode')->name('m.order.submitbarcode');
-        Route::post('/order/submiteditbarcode', 'm\OrderController@submiteditbarcode')->name('m.order.submiteditbarcode');
+        Route::get('/order',  'm\OrderController@index')->name('m.order');
+        Route::post('/order', 'm\OrderController@submitbarcode')->name('m.order.submitbarcode');
+        Route::get('/order/edit/{id}',  'm\OrderController@edit')->name('m.order.edit');
+        Route::post('/order/edit/{id}', 'm\OrderController@submiteditbarcode')->name('m.order.submiteditbarcode');
 
-        Route::get('/returnedinvoice', 'm\ReturnedInvoiceController@index')->name('m.returnedinvoice');
-        Route::get('/returnedinvoice/index', 'm\ReturnedInvoiceController@index')->name('m.returnedinvoice.index');
-        Route::get('/returnedinvoice/edit', 'm\ReturnedInvoiceController@edit')->name('m.returnedinvoice.edit');
-        Route::post('/returnedinvoice/submitbarcode', 'm\ReturnedInvoiceController@submitbarcode')->name('m.returnedinvoice.submitbarcode');
-        Route::post('/returnedinvoice/submiteditbarcode', 'm\ReturnedInvoiceController@submiteditbarcode')->name('m.returnedinvoice.submiteditbarcode');
+        Route::get('/returnedinvoice',  'm\ReturnedInvoiceController@index')->name('m.returnedinvoice');
+        Route::post('/returnedinvoice', 'm\ReturnedInvoiceController@submitbarcode')->name('m.returnedinvoice.submitbarcode');
+        //Route::get('/returnedinvoice/index', 'm\ReturnedInvoiceController@index')->name('m.returnedinvoice.index');
+        Route::get('/returnedinvoice/edit/{id}',  'm\ReturnedInvoiceController@edit')->name('m.returnedinvoice.edit');
+        Route::post('/returnedinvoice/edit/{id}', 'm\ReturnedInvoiceController@submiteditbarcode')->name('m.returnedinvoice.submiteditbarcode');
+        //Route::post('/returnedinvoice/submitbarcode', 'm\ReturnedInvoiceController@submitbarcode')->name('m.returnedinvoice.submitbarcode');
+        //Route::post('/returnedinvoice/submiteditbarcode', 'm\ReturnedInvoiceController@submiteditbarcode')->name('m.returnedinvoice.submiteditbarcode');
 
-        Route::get('/invoice', 'm\InvoiceController@index')->name('m.invoice');
-        Route::get('/invoice/index', 'm\InvoiceController@index')->name('m.invoice.index');
-        Route::get('/invoice/edit', 'm\InvoiceController@edit')->name('m.invoice.edit');
-        Route::post('/invoice/submitbarcode', 'm\InvoiceController@submitbarcode')->name('m.invoice.submitbarcode');
-        Route::post('/invoice/submiteditbarcode', 'm\InvoiceController@submiteditbarcode')->name('m.invoice.submiteditbarcode');
+        Route::get('/invoice',  'm\InvoiceController@index')->name('m.invoice');
+        Route::post('/invoice', 'm\InvoiceController@submitbarcode')->name('m.invoice.submitbarcode');
+        Route::get('/invoice/edit/{id}',  'm\InvoiceController@edit')->name('m.invoice.edit');
+        Route::post('/invoice/edit/{id}', 'm\InvoiceController@submiteditbarcode')->name('m.invoice.submiteditbarcode');
     }
 );
 

@@ -80,18 +80,26 @@ class OrderController extends Controller
         $newOrder = $request->all();
 
         //$order = Order::where('number', $newOrder['number'])->first();
-        $order = Order::where('DocId', $newOrder['DocId'])->first();
+        $order = Order::where('DocId', $newOrder['doc_id'])->first();
         if ($order == null) {
-            $order = Order::create($newOrder);
-        } else {
-            //$order->update($newOrder);
+            $order = Order::add($newOrder);
+            $order->save();
 
-            $order->date    = $newOrder['date'];
-            $order->barcode = $newOrder['barcode'];
-            $order->DocType = $newOrder['DocType'];
-            $order->DocId   = $newOrder['DocId'];
-            $order->Save();
+        } else {
+            $order->edit($newOrder);
+            $order->save();
         }
+
+        if (array_key_exists('lines', $newOrder))
+        {
+            //$order->deleteLines();
+            //$newInvoicesLines = $newInvoice['lines'];
+            //foreach ($newInvoicesLines as $line) {
+            //    $invoice->addLines($line);
+            //}
+        }
+
+
 
         //Обнуляем количество, загружаем повторно
         OrderLine::where('order_id', '=', $order->id)->update(['quantity' => 0]);
@@ -99,25 +107,25 @@ class OrderController extends Controller
         $oldOrderLines = $order->orderlines;
 
         //Добавляем новые записи, изменяем существующее количество
-        $orderlines = $newOrder['orderlines'];
+        $orderlines = $newOrder['lines'];
         foreach ($orderlines as $line){
-            $oldOrderLine = $oldOrderLines->firstWhere('f2regid', $line['F2RegId']);
+            $oldOrderLine = $oldOrderLines->firstWhere('f2regid', $line['f2reg_id']);
 
             if (!isset($oldOrderLine)) {
                 //add
                 $newOrderLine = new OrderLine();
-                $newOrderLine->orderlineid   = $line['OrderLineId'];
-                $newOrderLine->productdescr  = $line['ProductDescr'];
-                $newOrderLine->productcode   = $line['ProductCode'];
-                $newOrderLine->f2regid       = $line['F2RegId'];
-                $newOrderLine->quantity      = $line['Quantity'];
+                $newOrderLine->orderlineid   = $line['line_id'];
+                $newOrderLine->productdescr  = $line['product_descr'];
+                $newOrderLine->productcode   = $line['product_code'];
+                $newOrderLine->f2regid       = $line['f2reg_id'];
+                $newOrderLine->quantity      = $line['quantity'];
                 $newOrderLine->order_id      = $order->id;
                 $newOrderLine->showfirst     = 0;
                 $newOrderLine->Save();
             } else {
                 //update
-                if ($oldOrderLine->quantity != $line['Quantity']) {
-                    $oldOrderLine->quantity  = $line['Quantity'];
+                if ($oldOrderLine->quantity != $line['quantity']) {
+                    $oldOrderLine->quantity  = $line['quantity'];
                     $oldOrderLine->Save();
                 }
             }

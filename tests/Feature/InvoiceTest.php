@@ -227,6 +227,12 @@ class InvoiceTest extends TestCase
 
         $payload = $this->newInvoice();
 
+        $invoice = Invoice::where('doc_id', '11YTD2B2BLqXhCAEdltKSio2lhsfPWB95I9L')->first();
+
+        $payload['doc_id'] = $invoice->doc_id;
+        $payload['number'] = $invoice->number;
+        $payload['barcode'] = $invoice->barcode;
+
         $number = $payload['number'];
         $barcode = $payload['barcode'];
 

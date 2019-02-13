@@ -8,6 +8,13 @@ use App\Http\Controllers\Controller;
 
 class CategoryController extends Controller
 {
+    public function __construct()
+    {
+        //$this->middleware('auth');
+        //$this->middleware('APIToken');
+        $this->middleware('auth:api');
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -15,6 +22,8 @@ class CategoryController extends Controller
      */
     public function index(Request $request)
     {
+        //$request->user()->authorizeRoles('AdminApi');
+
         header('Access-Control-Allow-Origin: *');
 
         $category = Category::orderBy("descr");

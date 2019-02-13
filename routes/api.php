@@ -17,13 +17,30 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
 
+Route::group(['prefix' => 'auth'],
+    function ()
+    {
+        Route::post('login', 'Auth\LoginController@loginApi');
+        Route::middleware('auth:api')->post('logout', 'Auth\LoginController@logoutApi');
+        Route::post('register', 'Auth\RegisterController@register');
+    }
+);
+
+
 Route::group(
-    ['prefix' => '/v1',
+    ['middleware' => 'auth:api',
+     'prefix' => '/v1',
      'namespace' => 'Api\V1',
-     'as' => 'api.'
+     'as' => 'api.',
     ],
     function ()
     {
+        //Route::post('/login','AuthController@postLogin');
+        //Route::post('/register','AuthController@postRegister');
+        //Route::middleware('APIToken')->group(function () {
+        //    Route::post('/logout','AuthController@postLogout');
+        //});
+
         Route::get('orders/indexMarkLine',  'OrderController@indexMarkLine');
         Route::get('orders/indexerrorline', 'OrderController@indexErrorLine');
         Route::put('orders/updateMarkLine/{id}', 'OrderController@updateMarkLine');

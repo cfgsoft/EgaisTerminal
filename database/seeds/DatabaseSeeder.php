@@ -11,21 +11,31 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
-        $this->call(ReadBarCodeTableSeeder::class);
-        $this->call(OrderTableSeeder::class);
-        $this->call(InvoiceTableSeeder::class);
+        $appDebug = config('app.debug');
 
-        factory(App\Order::class,100)->create();
-        factory(App\OrderErrorLine::class,100)->create();
-        factory(App\Models\Invoice\Invoice::class,10)->create();
+        $this->call(RoleTableSeeder::class);
+        $this->call(UserTableSeeder::class);
+
+        if ($appDebug) {
+            $this->call(ExciseStampTableSeeder::class);
+
+            $this->call(ReadBarCodeTableSeeder::class);
+            $this->call(OrderTableSeeder::class);
+            $this->call(InvoiceTableSeeder::class);
+            $this->call(ReturnedInvoiceTableSeeder::class);
+
+            factory(App\Order::class,3)->create();
+            //factory(App\OrderErrorLine::class,100)->create();
+            factory(App\Models\Invoice\Invoice::class,10)->create();
 
 
-        //$this->call(CategoryTableSeeder::class);
+            //$this->call(CategoryTableSeeder::class);
 
-        //$this->call([
-        //    UsersTableSeeder::class,
-        //    PostsTableSeeder::class,
-        //    CommentsTableSeeder::class,
-        //]);
+            //$this->call([
+            //    UsersTableSeeder::class,
+            //    PostsTableSeeder::class,
+            //    CommentsTableSeeder::class,
+            //]);
+        }
     }
 }

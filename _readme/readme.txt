@@ -100,5 +100,8 @@ https://habr.com/sandbox/96765/
 3. Создание API контроллера (php artisan make:controller api/v1/ProductController --resource --model=Product)	
 
 4. Тестирование https://www.youtube.com/watch?v=5VN-_VjLB5M
+5. Создание ролей https://medium.com/@ezp127/laravel-5-4-native-user-authentication-role-authorization-3dbae4049c8a
+6. API authentication  https://codebriefly.com/laravel-5-6-custom-token-base-api-authentication/
+                       https://softobzor.com.ua/laravel-restful-api/
 
 npm run watch

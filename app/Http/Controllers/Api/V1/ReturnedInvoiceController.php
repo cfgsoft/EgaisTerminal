@@ -54,13 +54,11 @@ class ReturnedInvoiceController extends Controller
 
         $returnedInvoice = ReturnedInvoice::where('doc_id', $newReturnedInvoice['doc_id'])->first();
         if ($returnedInvoice == null) {
-            $returnedInvoice = ReturnedInvoice::create($newReturnedInvoice);
+            $returnedInvoice = ReturnedInvoice::add($newReturnedInvoice);
+            $returnedInvoice->save();
         } else {
-            $returnedInvoice->date     = $newReturnedInvoice['date'];
-            $returnedInvoice->barcode  = $newReturnedInvoice['barcode'];
-            $returnedInvoice->doc_type = $newReturnedInvoice['doc_type'];
-            $returnedInvoice->doc_id   = $newReturnedInvoice['doc_id'];
-            $returnedInvoice->Save();
+            $returnedInvoice->edit($newReturnedInvoice);
+            $returnedInvoice->save();
         }
 
         //Обнуляем количество, загружаем повторно
@@ -69,26 +67,26 @@ class ReturnedInvoiceController extends Controller
         $oldReturnedInvoiceLines = $returnedInvoice->returnedInvoiceLines;
 
         //Добавляем новые записи, изменяем существующее количество
-        $returnedInvoicesLinesLines = $newReturnedInvoice['ReturnedInvoicesLines'];
+        $returnedInvoicesLinesLines = $newReturnedInvoice['lines'];
         foreach ($returnedInvoicesLinesLines as $line){
-            $oldReturnedInvoiceLine = $oldReturnedInvoiceLines->firstWhere('f2regid', $line['F2RegId']);
+            $oldReturnedInvoiceLine = $oldReturnedInvoiceLines->firstWhere('f2regid', $line['f2reg_id']);
 
             if ($oldReturnedInvoiceLine == null) {
                 //add
                 $newReturnedInvoiceLine = new ReturnedInvoiceLine();
-                $newReturnedInvoiceLine->lineid         = $line['OrderLineId'];
-                $newReturnedInvoiceLine->productdescr   = $line['ProductDescr'];
-                $newReturnedInvoiceLine->productcode    = $line['ProductCode'];
-                $newReturnedInvoiceLine->f1regid        = $line['F1RegId'];
-                $newReturnedInvoiceLine->f2regid        = $line['F2RegId'];
-                $newReturnedInvoiceLine->quantity       = $line['Quantity'];
+                $newReturnedInvoiceLine->lineid         = $line['line_id'];
+                $newReturnedInvoiceLine->productdescr   = $line['product_descr'];
+                $newReturnedInvoiceLine->productcode    = $line['product_code'];
+                $newReturnedInvoiceLine->f1regid        = $line['f1reg_id'];
+                $newReturnedInvoiceLine->f2regid        = $line['f2reg_id'];
+                $newReturnedInvoiceLine->quantity       = $line['quantity'];
                 $newReturnedInvoiceLine->returned_invoice_id = $returnedInvoice->id;
                 $newReturnedInvoiceLine->show_first          = 0;
                 $newReturnedInvoiceLine->Save();
             } else {
                 //update
-                if ($oldReturnedInvoiceLine->quantity != $line['Quantity']) {
-                    $oldReturnedInvoiceLine->quantity  = $line['Quantity'];
+                if ($oldReturnedInvoiceLine->quantity != $line['quantity']) {
+                    $oldReturnedInvoiceLine->quantity  = $line['quantity'];
                     $oldReturnedInvoiceLine->Save();
                 }
             }

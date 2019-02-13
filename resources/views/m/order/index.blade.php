@@ -12,8 +12,11 @@
 
     {{ isset($barcode) ? $barcode : '0' }}
 
+    @include('m.errors')
+
     <h5>Документы набора</h5>
 
+    <!--
     <table class="table">
         <thead>
         <tr>
@@ -37,6 +40,16 @@
 
         </tbody>
     </table>
+    -->
+
+
+    @foreach ($order as $item)
+    <div class="card">
+        <a href="{{ route('m.order.edit', ['id' => $item->id]) }}" >
+            <div>{{$item->date}} № {{$item->number}}</div>
+        </a>
+    </div>
+    @endforeach
 
     {{ $order->links("pagination.m-simple") }}
 

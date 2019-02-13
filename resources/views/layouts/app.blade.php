@@ -10,10 +10,8 @@
 
     <title>{{ config('app.name', 'Laravel') }}</title>
 
-    <!-- Scripts
-    подгружает vue а он нам ненужен
-    <script src="{{ asset('js/app.js') }}" defer></script>
-    -->
+    <!-- Scripts -->
+    <script src="{{ asset('js/appjq.js') }}" defer></script>
 
     <!-- Fonts -->
     <link rel="dns-prefetch" href="https://fonts.gstatic.com">
@@ -65,6 +63,8 @@
                                     <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
                                         @csrf
                                     </form>
+
+
                                 </div>
                             </li>
                         @endguest
@@ -77,5 +77,6 @@
             @yield('content')
         </main>
     </div>
+
 </body>
 </html>

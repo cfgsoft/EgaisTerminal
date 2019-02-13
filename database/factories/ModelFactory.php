@@ -27,13 +27,13 @@ $factory->define(App\Order::class, function (Faker $faker) {
     ];
 });
 
-$factory->define(App\OrderErrorLine::class, function (Faker $faker) {
-    return [
-        'order_id' => '9',
-        'markcode' => str_random(150),
-        'message' => 'Журнал ошибок ' . str_random(150)
-    ];
-});
+//$factory->define(App\OrderErrorLine::class, function (Faker $faker) {
+//    return [
+//        'order_id' => '9',
+//        'markcode' => str_random(150),
+//        'message' => 'Журнал ошибок ' . str_random(150)
+//    ];
+//});
 
 $factory->define(App\Models\ReturnedInvoice\ReturnedInvoice::class, function (Faker $faker) {
     return [

@@ -5,38 +5,190 @@ namespace Tests\Feature;
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
+use Carbon\Carbon;
+
+use App\Models\ReturnedInvoice\ReturnedInvoice;
+
 class ReturnedInvoiceTest extends TestCase
 {
-    /**
-     * A basic test example.
-     *
-     * @return void
-     */
+    const DOC_ID = 'YTD3B2BLqXhCAEdltKSio2lhsfPWB95I9LQa';
+
+    public function newReturnedInvoice()
+    {
+        $date = Carbon::now();
+        $number = str_random(11);
+        $barcode = str_random(12);
+
+        $payload = [
+            'date' => $date,
+            'number' => $number,
+            'barcode' => $barcode,
+            'doc_type' => '4',
+            'doc_id' => ReturnedInvoiceTest::DOC_ID,
+            'lines' => [
+                '1' => [
+                    'line_id' => '1',
+                    'product_descr' => 'товар',
+                    'product_code' => '111111',
+                    'f1reg_id' => '1111',
+                    'f2reg_id' => '22222',
+                    'quantity' => '10'
+                ],
+                '2' => [
+                    'line_id' => '2',
+                    'product_descr' => 'товар',
+                    'product_code' => '111111',
+                    'f1reg_id' => '1111',
+                    'f2reg_id' => '3333',
+                    'quantity' => '5'
+                ]
+            ]
+        ];
+
+        return $payload;
+    }
+
+    public function testApiReturnedInvoiceStatus()
+    {
+        $response = $this->get('/api/v1/returnedinvoices');
+        $response->assertStatus(200);
+    }
+
+    public function testApiReturnedInvoiceAreCreatedCorrectly()
+    {
+        $payload = $this->newReturnedInvoice();
+
+        $number = $payload['number'];
+        $barcode = $payload['barcode'];
+
+        $response = $this->post('/api/v1/returnedinvoices', $payload);
+        $response->assertStatus(201)
+            ->assertJsonFragment(['number' => $number, 'barcode' => $barcode]);
+    }
+
+    public function testApiReturnedInvoiceAreUpdatedCorrectly()
+    {
+        $payload = $this->newReturnedInvoice();
+
+        $returnedInvoice = ReturnedInvoice::where('doc_id', '114TD2B2BLqXhCAEdltKSio2lhsfPWB95I9L')->first();
+        $payload['doc_id'] = $returnedInvoice->doc_id;
+        $payload['number'] = $returnedInvoice->number;
+        $payload['barcode'] = $returnedInvoice->barcode;
+
+        $number  = $returnedInvoice->number;
+        $barcode = $returnedInvoice->barcode;
+
+        $response = $this->post('/api/v1/returnedinvoices/', $payload);
+        $response->assertStatus(200)
+            ->assertJsonFragment(['number' => $number, 'barcode' => $barcode]);
+    }
+
+    public function testApiReturnedInvoiceAreListedCorrectly()
+    {
+        $response = $this->get('/api/v1/returnedinvoices');
+        $response->assertStatus(200)
+            ->assertJsonFragment(['current_page' => 1])
+            ->assertJsonFragment(['doc_id' => ReturnedInvoiceTest::DOC_ID]);
+
+    }
+
+
+
+    public function from(string $url)
+    {
+        $this->app['session']->setPreviousUrl($url);
+
+        return $this;
+    }
+
     public function testReturnedInvoiceStatus()
     {
         $response = $this->get('/m/returnedinvoice');
         $response->assertStatus(200);
     }
 
-    public function testReturnedInvoiceEdit()
+    public function testReturnedInvoiceEditValidate()
     {
-        $value = 'C13004315';
+        //https://www.neontsunami.com/posts/testing-the-redirect-url-in-laravel
+        //$response = $this->from('/comments/create')->post('/comments', []);
+        //$response->assertRedirect('/comments/create');
 
-        $response = $this->post('/m/returnedinvoice/submitbarcode', ['BarCode' => $value]);
+        $testUrl = '/m/returnedinvoice';
+
+        $value = '';
+
+        $response = $this->from($testUrl)->post($testUrl, ['BarCode' => $value]);
         $response->assertStatus(302);
+        $response->assertSessionHasErrors([
+            'BarCode' => 'Заполните ШК'
+        ]);
 
-        $response = $this->get('/m/returnedinvoice/edit?id=1');
-        $response->assertStatus(200)->assertSee('Считайте штрихкод');
+        $response->assertRedirect($testUrl);
+
+        $this->followRedirects($response)
+            ->assertStatus(200)
+            ->assertSee('Возврат от покупателя');
+
+
+        $value = '11';
+
+        $response = $this->from($testUrl)->post($testUrl, ['BarCode' => $value]);
+        $response->assertStatus(302);
+        $response->assertSessionHasErrors([
+            'BarCode' => 'ШК минимум 9 символов'
+        ]);
+
+        $response->assertRedirect($testUrl);
+
+        $this->followRedirects($response)
+            ->assertStatus(200)
+            ->assertSee('Возврат от покупателя');
+
+
+
+        $value = '1111111111111111111111111111111111111111111111';
+
+        $response = $this->from($testUrl)->post($testUrl, ['BarCode' => $value]);
+        $response->assertStatus(302);
+        $response->assertSessionHasErrors([
+            'BarCode' => 'ШК максимум 12 символов'
+        ]);
+
+        $response->assertRedirect($testUrl);
+
+        $this->followRedirects($response)
+            ->assertStatus(200)
+            ->assertSee('Возврат от покупателя');
     }
 
-    public function testReturnedInvoiceSubmitEditBarcode()
+    public function testReturnedInvoiceEditSuccess()
+    {
+        $value = '111111111';
+        $returnedInvoice = ReturnedInvoice::where('doc_id', '114TD2B2BLqXhCAEdltKSio2lhsfPWB95I9L')->first();
+
+        $response = $this->post('/m/returnedinvoice', ['BarCode' => $value]);
+        $response->assertStatus(302);
+        $response->assertRedirect('/m/returnedinvoice/edit/' . $returnedInvoice->id);
+
+        $this->followRedirects($response)
+            ->assertStatus(200)
+            ->assertSee('Считайте штрихкод');
+    }
+
+    /*
+    public function testReturnedInvoiceEditSubmitBarcode()
     {
         $value = '111100261679680118001D5CCFC794963898C1B13E41231CKY42T7UDIJJY2AWLHS7HPGINLMY7PQPDNJALVS42WNCHYRCO257SPCSCF4ASM37BZNTLIASYRVGFUTCXDXDJPML5MMVLEEHZWPWJVI';
+        $returnedInvoice = ReturnedInvoice::where('doc_id', '114TD2B2BLqXhCAEdltKSio2lhsfPWB95I9L')->first();
 
-        $response = $this->post('/m/returnedinvoice/submiteditbarcode', ['BarCode' => $value, 'returned_invoice_id' => 1]);
+        $response = $this->post('/m/returnedinvoice/edit/' . $returnedInvoice->id, ['BarCode' => $value, 'returned_invoice_id' => $returnedInvoice->id]);
         $response->assertStatus(302);
+        //$response->assertRedirect('/m/returnedinvoice/edit/' . $returnedInvoice->id);
 
-        $response = $this->get('/m/returnedinvoice/edit?id=1');
-        $response->assertStatus(200)->assertSee('Считайте штрихкод');
+        $this->followRedirects($response)
+            ->assertStatus(200)
+            ->assertSee('Считайте штрихкод');
     }
+    */
+
 }

@@ -13,6 +13,8 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\DB;
 
+use Illuminate\Validation\Rule;
+
 class OrderController extends Controller
 {
     /**
@@ -48,9 +50,14 @@ class OrderController extends Controller
         return view('m/order/index', ['order' => $order, 'barcode' => $barcode]);
     }
 
-    public function edit(Request $request)
+    public function edit(Request $request, $id)
     {
-        $order = Order::find($request->get('id'));
+        //$order = Order::find($request->get('id'));
+        $order = Order::find($id);
+        if ($order == null)
+        {
+            return redirect()->action('m\OrderController@index');
+        }
         $order->orderlines;
         $order->orderlines = $order->orderlines->sortBy('orderlineid')->sortByDesc('showfirst');
 
@@ -78,11 +85,6 @@ class OrderController extends Controller
     {
         $barcode = $request->input('BarCode', '');
 
-        //$barcode = '';
-        //if ($request->has('BarCode')) {
-        //    $barcode = $request->get('BarCode');
-        //}
-
         if ($barcode == '0') {
             return redirect()->action('m\HomeController@index');
         } elseif ($barcode == '1') {
@@ -92,6 +94,34 @@ class OrderController extends Controller
             //Next
         }
 
+        $this->validate($request,
+            ['BarCode'	=>
+                ['required',
+                 'min:9',
+                 'max:12',
+                ]
+            ]
+            ,
+            ['BarCode.required' => 'Заполните ШК',
+             'BarCode.min'      => 'ШК минимум 9 символов',
+             'BarCode.max'      => 'ШК максимум 12 символов'
+            ]
+        );
+
+        if (strlen($barcode) > 8 and strlen($barcode) < 13) {
+            $barcode = str_replace("*", "", $barcode);
+        }
+
+        $order = Order::where('barcode', '=', $barcode)->first();
+        if ($order != null) {
+            return redirect()->action('m\OrderController@edit', ['id' => $order->id]);
+        } else {
+            //return redirect()->action('m\OrderController@index');
+            return redirect()->back()->withErrors(['BarCode' => 'Не найден заказ № ' . $barcode]);
+        }
+
+
+        /*
         if (strlen($barcode) > 8 and strlen($barcode) < 13) {
             $barcode = str_replace("*", "", $barcode);
             //$barcode = str_replace("C", "С", $barcode);
@@ -108,6 +138,7 @@ class OrderController extends Controller
         $barcode = 'Не найден заказ №' . $barcode;
 
         return redirect()->action('m\OrderController@index', ['barcode' => $barcode]);
+        */
     }
 
     public function submiteditbarcode(Request $request)
@@ -119,35 +150,52 @@ class OrderController extends Controller
             return redirect()->action('m\OrderController@index');
         }
 
+        $this->validate($request,
+            ['BarCode'	=>
+                ['required',
+                    'min:9',
+                    'max:150',
+                ]
+            ]
+            ,
+            ['BarCode.required' => 'Заполните ШК',
+                'BarCode.min'      => 'ШК минимум 9 символов',
+                'BarCode.max'      => 'ШК максимум 150 символов'
+            ]
+        );
+
         //Переход на другой заказ
         if (strlen($barcode) > 8 and strlen($barcode) < 13) {
             $barcode = str_replace("*", "", $barcode);
-            //$barcode = str_replace("C", "С", $barcode);
-            //$barcode = substr($barcode, 0, 4) . '_' . substr($barcode, 4);
-            //$order = Order::where('number', '=', $barcode)->first();
 
             $order = Order::where('barcode', '=', $barcode)->first();
-
-            if (isset($order)) {
+            if ($order != null) {
                 return redirect()->action('m\OrderController@edit', ['id' => $order->id]);
             }
         }
 
+
+        $order = Order::find($order_id);
+        $result = $order->addBarCode($barcode);
+
+
+        /*
         if (strlen($barcode) == 26) {
             $result = $this->addPackExciseStamp($barcode, $order_id);
         } else {
             $result = $this->addExciseStamp($barcode, $order_id);
         }
+        */
 
         $errorBarCode = $result['error'];
         $errorMessage = $result['errorMessage'];
 
         if ($errorBarCode) {
-            return redirect()->action('m\OrderController@edit', ['id' => $order_id, 'errorMessage' => $errorMessage ]);
+            //return redirect()->action('m\OrderController@edit', ['id' => $order_id, 'errorMessage' => $errorMessage ]);
+            return redirect()->back()->withErrors(['errorMessage' => $errorMessage]);
         }
 
         return redirect()->action('m\OrderController@edit', ['id' => $order_id]);
-
     }
 
     private function addExciseStamp($barcode, $order_id)
@@ -229,7 +277,7 @@ class OrderController extends Controller
 
                     } else {
                         $errorBarCode = true;
-                        $errorMessage = "Раздел Б " . $exciseStamp->f2regid . " не зайден в заказе " . $barcode;
+                        $errorMessage = "Раздел Б " . $exciseStamp->f2regid . " не найден в заказе " . $barcode;
                     }
                 }
 

@@ -2,9 +2,9 @@
 
 @section('content')
     <h5>Считайте штрихкод</h5>
-    <h6><a href="{{ route('m.returnedinvoice.index') }}" >0-Выход</a></h6>
+    <h6><a href="{{ route('m.returnedinvoice') }}" >0-Выход</a></h6>
 
-    <form action="{{ action('m\ReturnedInvoiceController@submiteditbarcode') }}" id="formInputBarCode" method="post">
+    <form action="{{ action('m\ReturnedInvoiceController@submiteditbarcode', ['id' => $returnedInvoice->id]) }}" id="formInputBarCode" method="post">
         <input id="InputBarCode" name="BarCode" title="Barcode" size="22" />
         <input type="hidden" id="returned_invoice_id" name="returned_invoice_id" value="{{ $returnedInvoice->id }}" />
         <input type="hidden" name="_token" value="{{ csrf_token() }}" >
@@ -12,6 +12,8 @@
     </form>
 
     {{ isset($errorMessage) ? $errorMessage : '' }}
+
+    @include('m.errors')
 
     <div> {{ $returnedInvoice->number  }} </div>
 

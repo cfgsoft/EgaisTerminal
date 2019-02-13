@@ -33,9 +33,10 @@ class InvoiceController extends Controller
         return view('m/invoice/index', ['invoice' => $invoice, 'barcode' => $barcode]);
     }
 
-    public function edit(Request $request)
+    public function edit(Request $request, $id)
     {
-        $invoice = Invoice::find($request->get('id'));
+        //$invoice = Invoice::find($request->get('id'));
+        $invoice = Invoice::find($id);
         $invoice->invoiceLines;
         //$invoice->invoiceLines = $invoice->invoiceLines->sortBy('line_id')->sortByDesc('show_first');
         $invoice->invoiceLines = $invoice->invoiceLines->sortBy('line_id')->sortByDesc('show_first');
