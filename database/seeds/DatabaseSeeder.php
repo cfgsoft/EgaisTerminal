@@ -24,8 +24,8 @@ class DatabaseSeeder extends Seeder
             $this->call(InvoiceTableSeeder::class);
             $this->call(ReturnedInvoiceTableSeeder::class);
 
-            factory(App\Order::class,3)->create();
-            //factory(App\OrderErrorLine::class,100)->create();
+            factory(App\Models\Order\Order::class,3)->create();
+            //factory(App\Models\Order\OrderErrorLine::class,100)->create();
             factory(App\Models\Invoice\Invoice::class,10)->create();
 
 

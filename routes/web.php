@@ -67,6 +67,7 @@ Route::get('/opt/out/WayBill_v3/{id?}', 'api\v1\UtmEgaisController@waybill_v3');
 Route::get('/opt/out/FORM2REGINFO/{id?}', 'api\v1\UtmEgaisController@form2RegInfo');
 Route::get('/opt/out/WayBillAct_v3/{id?}', 'api\v1\UtmEgaisController@wayBillAct_v3');
 Route::get('/opt/out/ReplyRestBCode/{id?}', 'api\v1\UtmEgaisController@replyRestBCode');
+Route::get('/opt/out/TTNHistoryF2Reg/{id?}', 'api\v1\UtmEgaisController@TTNHistoryF2Reg');
 Route::get('/info/certificate/RSA', 'api\v1\UtmEgaisController@rsa');
 
 

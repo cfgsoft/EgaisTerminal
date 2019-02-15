@@ -1,11 +1,14 @@
 <?php
 
-namespace App;
+namespace App\Models\Order;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 
 use Carbon\Carbon;
-use Illuminate\Support\Facades\DB;
+
+use App\ExciseStamp;
+use App\ExciseStampBox;
 
 class Order extends Model
 {
@@ -13,19 +16,19 @@ class Order extends Model
         'Quantity', 'QuantityMarks', 'DocType', 'DocId'];
 
     public function orderlines(){
-        return $this->hasMany("App\OrderLine");
+        return $this->hasMany("App\Models\Order\OrderLine");
     }
 
     public function ordermarklines(){
-        return $this->hasMany("App\OrderMarkLine");
+        return $this->hasMany("App\Models\Order\OrderMarkLine");
     }
 
     public function orderpacklines(){
-        return $this->hasMany("App\OrderPackLine");
+        return $this->hasMany("App\Models\Order\OrderPackLine");
     }
 
     public function ordererrorlines(){
-        return $this->hasMany("App\OrderErrorLine");
+        return $this->hasMany("App\Models\Order\OrderErrorLine");
     }
 
 
@@ -108,12 +111,12 @@ class Order extends Model
         }
 
         //3. Ищем марку в уже сканированных заказах, за 3 дня
-        $created_at = Carbon::now()->subDays(3);
+        //$created_at = Carbon::now()->subDays(3);
+        //["created_at", ">", $created_at]
 
         $orderMarkLine = OrderMarkLine::where([['markcode',   '=', $barcode],
                                                ['quantity',   '=', '1'],
-                                               ["f2regid",    "=", $exciseStamp->f2regid],
-                                               ["created_at", ">", $created_at]
+                                               ["f2regid",    "=", $exciseStamp->f2regid]
         ])->first();
         if ($orderMarkLine != null)
         {
@@ -238,12 +241,13 @@ class Order extends Model
             $exciseStamp = ExciseStamp::find($line->markcode);
 
             //1. Ищем штрих код в уже набранных товарах, если находим ошибка.
-            $created_at = Carbon::now()->subDays(3);
+            // ошибки из-за пересортицы
+            //$created_at = Carbon::now()->subDays(3);
+            //["created_at", ">", $created_at]
 
             $orderMarkLine = OrderMarkLine::where([['markcode', '=', $line->markcode],
                                                    ['quantity', '=', '1'],
-                                                   ["f2regid",  "=", $exciseStamp->f2regid],
-                                                   ["created_at", ">", $created_at]
+                                                   ["f2regid",  "=", $exciseStamp->f2regid]
             ])->first();
             if ($orderMarkLine != null) {
                 $errorBarCode = true;

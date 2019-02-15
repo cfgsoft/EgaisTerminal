@@ -100,4 +100,14 @@ class UtmEgaisController extends Controller
 
         return response($contents)->header('Content-Type', 'text/xml');
     }
+
+    public function TTNHistoryF2Reg($id = 0)
+    {
+        if ($id == 10) {
+            $contents = Storage::get('utmegais/TTNHISTORYF2REG-030x700EB19E-1B84-42CE-BEB7-55577085AC32.xml');
+        }
+
+        return response($contents)->header('Content-Type', 'text/xml');
+    }
+
 }

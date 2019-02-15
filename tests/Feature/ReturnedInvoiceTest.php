@@ -8,10 +8,23 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Carbon\Carbon;
 
 use App\Models\ReturnedInvoice\ReturnedInvoice;
+use App\User;
 
 class ReturnedInvoiceTest extends TestCase
 {
     const DOC_ID = 'YTD3B2BLqXhCAEdltKSio2lhsfPWB95I9LQa';
+
+    private $token;
+    private $headers;
+
+    public function setUp()
+    {
+        parent::setUp();
+
+        $user = User::Where('email', '=', 'AdminApi@example.com')->first();
+        $this->token = $user->generateToken();
+        $this->headers = ['Authorization' => "Bearer $this->token"];
+    }
 
     public function newReturnedInvoice()
     {
@@ -50,7 +63,7 @@ class ReturnedInvoiceTest extends TestCase
 
     public function testApiReturnedInvoiceStatus()
     {
-        $response = $this->get('/api/v1/returnedinvoices');
+        $response = $this->get('/api/v1/returnedinvoices', $this->headers);
         $response->assertStatus(200);
     }
 
@@ -61,7 +74,7 @@ class ReturnedInvoiceTest extends TestCase
         $number = $payload['number'];
         $barcode = $payload['barcode'];
 
-        $response = $this->post('/api/v1/returnedinvoices', $payload);
+        $response = $this->post('/api/v1/returnedinvoices', $payload, $this->headers);
         $response->assertStatus(201)
             ->assertJsonFragment(['number' => $number, 'barcode' => $barcode]);
     }
@@ -78,14 +91,14 @@ class ReturnedInvoiceTest extends TestCase
         $number  = $returnedInvoice->number;
         $barcode = $returnedInvoice->barcode;
 
-        $response = $this->post('/api/v1/returnedinvoices/', $payload);
+        $response = $this->post('/api/v1/returnedinvoices/', $payload, $this->headers);
         $response->assertStatus(200)
             ->assertJsonFragment(['number' => $number, 'barcode' => $barcode]);
     }
 
     public function testApiReturnedInvoiceAreListedCorrectly()
     {
-        $response = $this->get('/api/v1/returnedinvoices');
+        $response = $this->get('/api/v1/returnedinvoices', $this->headers);
         $response->assertStatus(200)
             ->assertJsonFragment(['current_page' => 1])
             ->assertJsonFragment(['doc_id' => ReturnedInvoiceTest::DOC_ID]);

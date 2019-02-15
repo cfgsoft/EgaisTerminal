@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers\m;
 
-use App\Order;
-use App\OrderLine;
-use App\OrderMarkLine;
-use App\OrderPackLine;
-use App\OrderErrorLine;
+use App\Models\Order\Order;
+use App\Models\Order\OrderLine;
+use App\Models\Order\OrderMarkLine;
+use App\Models\Order\OrderPackLine;
+use App\Models\Order\OrderErrorLine;
 use App\ExciseStamp;
 use App\ExciseStampBox;
 use Illuminate\Http\Request;

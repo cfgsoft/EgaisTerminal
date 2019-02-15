@@ -1,6 +1,6 @@
 <?php
 
-namespace App;
+namespace App\Models\Order;
 
 use Illuminate\Database\Eloquent\Model;
 
@@ -10,6 +10,6 @@ class OrderPackLine extends Model
                            'quantity', 'savedin1c', 'order_id'];
 
     public function order(){
-        return $this->belongsTo("App\Order");
+        return $this->belongsTo("App\Models\Order\Order");
     }
 }

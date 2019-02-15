@@ -14,7 +14,7 @@ use Carbon\Carbon;
 |
 */
 
-$factory->define(App\Order::class, function (Faker $faker) {
+$factory->define(App\Models\Order\Order::class, function (Faker $faker) {
     return [
         'date' => Carbon::create('2018', '11', '24'),
         'number' => str_random(10),
@@ -27,7 +27,7 @@ $factory->define(App\Order::class, function (Faker $faker) {
     ];
 });
 
-//$factory->define(App\OrderErrorLine::class, function (Faker $faker) {
+//$factory->define(App\Models\Order\OrderErrorLine::class, function (Faker $faker) {
 //    return [
 //        'order_id' => '9',
 //        'markcode' => str_random(150),

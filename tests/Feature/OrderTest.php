@@ -7,12 +7,25 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 
 use Carbon\Carbon;
 
-use App\Order;
+use App\Models\Order\Order;
+use App\User;
 
 class OrderTest extends TestCase
 {
     const DOC_ID_UPD = '30a257bf-efe0-11e8-8ed6-0026832c8747'; //С13_111434
     const DOC_ID_ADD = '30a257c0-efe0-11e8-8ed6-0026832c8747';
+
+    private $token;
+    private $headers;
+
+    public function setUp()
+    {
+        parent::setUp();
+
+        $user = User::Where('email', '=', 'AdminApi@example.com')->first();
+        $this->token = $user->generateToken();
+        $this->headers = ['Authorization' => "Bearer $this->token"];
+    }
 
     private function newOrder()
     {
@@ -47,7 +60,7 @@ class OrderTest extends TestCase
 
     public function testApiOrderStatus()
     {
-        $response = $this->get('/api/v1/orders');
+        $response = $this->get('/api/v1/orders', $this->headers);
         $response->assertStatus(200);
     }
 
@@ -58,7 +71,7 @@ class OrderTest extends TestCase
         $number = $payload['number'];
         $barcode = $payload['barcode'];
 
-        $response = $this->post('/api/v1/orders', $payload);
+        $response = $this->post('/api/v1/orders', $payload, $this->headers);
         $response->assertStatus(201)
             ->assertJsonFragment(['number' => $number, 'barcode' => $barcode]);
     }
@@ -75,14 +88,14 @@ class OrderTest extends TestCase
         $number  = $order->number;
         $barcode = $order->barcode;
 
-        $response = $this->post('/api/v1/orders/', $payload);
+        $response = $this->post('/api/v1/orders/', $payload, $this->headers);
         $response->assertStatus(200)
             ->assertJsonFragment(['number' => $number, 'barcode' => $barcode]);
     }
 
-    public function testApiReturnedInvoiceAreListedCorrectly()
+    public function testApiOrderAreListedCorrectly()
     {
-        $response = $this->get('/api/v1/orders');
+        $response = $this->get('/api/v1/orders', $this->headers);
         $response->assertStatus(200)
             ->assertJsonFragment(['current_page' => 1])
             ->assertJsonFragment(['DocId' => OrderTest::DOC_ID_UPD]);
@@ -272,8 +285,6 @@ class OrderTest extends TestCase
         $testUrl = '/m/order/edit/' . $order->id;
 
         $value = '02000000029510118000087245';
-
-        $valueDebyg = config('app.debug');
 
         $response = $this->post($testUrl, ['BarCode' => $value, 'order_id' => $order->id]);
         $response->assertStatus(302);

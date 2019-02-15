@@ -69,6 +69,20 @@ class ExciseStampTableSeeder extends Seeder
                         'markcode' => '501100261679680118001D5CCFC794963898C1B13E41231CKY42T7UDIJJY2AWLHS7HPGINLMY7PQPDNJALVS42WNCHYRCO257SPCSCF4ASM37BZNTLIASYRVGFUTCXDXDJPML5MMVLEEHZWPWJVI'
                     ]
                 ]
+            ],
+            [
+                'barcode' => '01000000054710219024019879',
+                'productcode' => '0037150000001399460',
+                'f1regid' => 'FA-000000039597226',
+                'f2regid' => 'FB-000001309598237',
+                'lines' => [
+                    '1' => [
+                        'markcode' => '601100261679680118001D5CCFC794963898C1B13E41231CKY42T7UDIJJY2AWLHS7HPGINLMY7PQPDNJALVS42WNCHYRCO257SPCSCF4ASM37BZNTLIASYRVGFUTCXDXDJPML5MMVLEEHZWPWJVI'
+                    ],
+                    '2' => [
+                        'markcode' => '701100261679680118001D5CCFC794963898C1B13E41231CKY42T7UDIJJY2AWLHS7HPGINLMY7PQPDNJALVS42WNCHYRCO257SPCSCF4ASM37BZNTLIASYRVGFUTCXDXDJPML5MMVLEEHZWPWJVI'
+                    ]
+                ]
             ]
         ];
 

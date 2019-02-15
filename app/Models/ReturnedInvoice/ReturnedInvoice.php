@@ -3,8 +3,9 @@
 namespace App\Models\ReturnedInvoice;
 
 use Illuminate\Database\Eloquent\Model;
-use App\ExciseStamp;
 use Illuminate\Support\Facades\DB;
+
+use App\ExciseStamp;
 
 class ReturnedInvoice extends Model
 {

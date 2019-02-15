@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers\api\v1;
 
-use App\Order;
-use App\OrderLine;
-use App\OrderMarkLine;
-use App\OrderErrorLine;
+use App\Models\Order\Order;
+use App\Models\Order\OrderLine;
+use App\Models\Order\OrderMarkLine;
+use App\Models\Order\OrderErrorLine;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 

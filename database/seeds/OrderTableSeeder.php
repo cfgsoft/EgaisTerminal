@@ -3,9 +3,9 @@
 use Illuminate\Database\Seeder;
 
 use Carbon\Carbon;
-use App\Order;
-use App\OrderLine;
-use App\OrderMarkLine;
+use App\Models\Order\Order;
+use App\Models\Order\OrderLine;
+use App\Models\Order\OrderMarkLine;
 
 class OrderTableSeeder extends Seeder
 {

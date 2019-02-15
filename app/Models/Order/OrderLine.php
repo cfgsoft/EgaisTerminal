@@ -1,6 +1,6 @@
 <?php
 
-namespace App;
+namespace App\Models\Order;
 
 use Illuminate\Database\Eloquent\Model;
 
@@ -10,6 +10,6 @@ class OrderLine extends Model
                            'quantitymarks', 'showfirst', 'order_id'];
 
     public function order(){
-        return $this->belongsTo("App\Order");
+        return $this->belongsTo("App\Models\Order\Order");
     }
 }
