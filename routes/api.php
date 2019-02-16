@@ -42,8 +42,13 @@ Route::group(
         //});
 
         Route::get('orders/indexMarkLine',  'OrderController@indexMarkLine');
-        Route::get('orders/indexerrorline', 'OrderController@indexErrorLine');
+        Route::get('orders/indexErrorLine', 'OrderController@indexErrorLine');
         Route::put('orders/updateMarkLine/{id}', 'OrderController@updateMarkLine');
+
+        Route::get('orders/MarkLine',       'OrderController@indexMarkLine1c');
+        Route::put('orders/MarkLine/{id}',  'OrderController@updateMarkLine1c');
+        Route::get('orders/ErrorLine',      'OrderController@indexErrorLine1c');
+        Route::put('orders/ErrorLine/{id}', 'OrderController@updateErrorLine1c');
 
         Route::get('returnedinvoices/indexMarkLine',  'ReturnedInvoiceController@indexMarkLine');
         Route::put('returnedinvoices/updateMarkLine/{id}', 'ReturnedInvoiceController@updateMarkLine');

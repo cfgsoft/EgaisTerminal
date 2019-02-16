@@ -174,13 +174,36 @@ class OrderController extends Controller
         //
     }
 
-    public function updateMarkLine(Request $request, $id)
+    public function indexMarkLine1c()
+    {
+        $orderMarkLine = OrderMarkLine::where('savedin1c', '=', false)->orderBy('order_id')->get();
+
+        return $orderMarkLine;
+    }
+
+    public function indexErrorLine1c()
+    {
+        $orderErrorLine = OrderErrorLine::where('savedin1c', '=', false)->orderBy('order_id')->get();
+
+        return $orderErrorLine;
+    }
+
+    public function updateMarkLine1c(Request $request, $id)
     {
         $orderMarkLine = OrderMarkLine::findOrFail($id);
         $orderMarkLine->savedin1c = true;
         $orderMarkLine->save();
 
         return $orderMarkLine;
+    }
+
+    public function updateErrorLine1c(Request $request, $id)
+    {
+        $orderErrorLine = OrderErrorLine::findOrFail($id);
+        $orderErrorLine->savedin1c = true;
+        $orderErrorLine->save();
+
+        return $orderErrorLine;
     }
 
     /**
