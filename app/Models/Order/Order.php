@@ -68,7 +68,7 @@ class Order extends Model
     public function addBarCode($barcode)
     {
         //СКАНИРОВАНИЕ АКЦИЗНОЙ МАРКИ, ЯЩИКА, ПАЛЛЕТА
-        if (strlen($barcode) != 150 and strlen($barcode) != 68 and  strlen($barcode) != 26)
+        if (strlen($barcode) != 150 and strlen($barcode) != 68 and strlen($barcode) != 26 and strlen($barcode) != 18)
         {
             $errorMessage = "Не опознан ШК " . $barcode;
 
@@ -77,7 +77,7 @@ class Order extends Model
         }
 
 
-        if (strlen($barcode) == 26) {
+        if (strlen($barcode) == 26 and strlen($barcode) == 18) {
             $exciseStampPallet = ExciseStampPallet::where('barcode', '=', $barcode)->first();
             if ($exciseStampPallet == null) {
                 $result = $this->addPackExciseStamp($barcode);
