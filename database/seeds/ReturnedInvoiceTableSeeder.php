@@ -22,6 +22,7 @@ class ReturnedInvoiceTableSeeder extends Seeder
         DB::table('doc_returned_invoice')->delete();
 
         $date = Carbon::create('2018', '11', '24');
+        $dateNew = Carbon::create('2019', '02', '20');
 
         $returnedInvoices = [
             [
@@ -50,7 +51,34 @@ class ReturnedInvoiceTableSeeder extends Seeder
                         'quantity' => '5'
                     ]
                 ]
-            ]
+            ],
+            [
+                'date' => $dateNew,
+                'number' => 'С13_000001',
+                'barcode' => 'C13000001',
+                'doc_type' => '4',
+                'doc_id' => '30a257bf-efe0-11e8-8ed6-0026832c8748',
+                'lines' => [
+                    '1' => [
+                        'line_id' => '1',
+                        'line_identifier' => '1',
+                        'product_descr' => 'Водка ФИННОРД 0.1л./30',
+                        'product_code' => '0037150000001399460',
+                        'f1reg_id' => 'FA-000000039597226',
+                        'f2reg_id' => 'FB-000001309598237',
+                        'quantity' => '15'
+                    ],
+                    '2' => [
+                        'line_id' => '2',
+                        'line_identifier' => '2',
+                        'product_descr' => 'Вино столовое полусладкое красное  \"МЕРЛО\"  САН МАРКО 1л/12',
+                        'product_code' => '0123130000002476973',
+                        'f1reg_id' => 'FA-000000039565813',
+                        'f2reg_id' => 'FB-000001309598228',
+                        'quantity' => '12'
+                    ]
+                ]
+            ],
         ];
 
         foreach($returnedInvoices as $i)

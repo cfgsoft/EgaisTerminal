@@ -150,7 +150,7 @@ class ReturnedInvoiceController extends Controller
 
     public function submiteditbarcode(Request $request)
     {
-        $barcode  = $request->input('BarCode', '');
+        $barcode             = $request->input('BarCode', '');
         $returned_invoice_id = $request->input('returned_invoice_id', '');
 
         if ($barcode == '0') {
@@ -160,13 +160,13 @@ class ReturnedInvoiceController extends Controller
         $this->validate($request,
             ['BarCode'	=>
                 ['required',
-                 'min:28',
+                 'min:26',
                  'max:150',
                 ]
             ]
             ,
             ['BarCode.required' => 'Не считан ШК акцизной марки',
-             'BarCode.min'      => 'ШК минимум 28 символов',
+             'BarCode.min'      => 'ШК минимум 26 символов',
              'BarCode.max'      => 'ШК максимум 150 символов'
             ]
         );

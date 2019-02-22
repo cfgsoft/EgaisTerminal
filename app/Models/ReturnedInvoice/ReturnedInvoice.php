@@ -6,6 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 
 use App\ExciseStamp;
+use App\ExciseStampBox;
+use App\Models\ReturnedInvoice\ReturnedInvoicePackLine;
 
 class ReturnedInvoice extends Model
 {
@@ -54,11 +56,11 @@ class ReturnedInvoice extends Model
 
     public function addBarCode($barcode)
     {
-        //if (strlen($barcode) == 26) {
-        //    $result = $this->addPackExciseStamp($barcode);
-        //} else {
+        if (strlen($barcode) == 26) {
+            $result = $this->addPackExciseStamp($barcode);
+        } else {
             $result = $this->addExciseStamp($barcode);
-        //}
+        }
 
         return $result;
     }
@@ -111,9 +113,10 @@ class ReturnedInvoice extends Model
         //2. Ищем товар в строке заказов
         //Временно ищем без привязки в разделуБ
         //["f2regid",             "=", $exciseStamp->f2regid]
+        //["productcode",         "=", $exciseStamp->productcode]
         $returnedInvoiceLine = ReturnedInvoiceLine::where([
             ["returned_invoice_id", "=", $this->id],
-            ["productcode",         "=", $exciseStamp->productcode]
+            ["f2regid",             "=", $exciseStamp->f2regid]
         ])->first();
 
         if ($returnedInvoiceLine == null)
@@ -179,7 +182,122 @@ class ReturnedInvoice extends Model
 
     private function addPackExciseStamp($barcode)
     {
+        //СКАНИРОВАНИЕ ЯЩИКА
+        if (strlen($barcode) != 26) {
+            $errorMessage = "Не опознан ШК ящика " . $barcode;
 
+            $this->addErrorLine($barcode, '', '', $errorMessage);
+            return ['error' => true, 'errorMessage' => $errorMessage ];
+        }
 
+        //1.
+        $exciseStampBox = ExciseStampBox::where('barcode', '=', $barcode)->first();
+        if ($exciseStampBox == null) {
+            $errorMessage = "Не опознан ШК ящика " . $barcode;
+
+            $this->addErrorLine($barcode, '', '', $errorMessage);
+            return ['error' => true, 'errorMessage' => $errorMessage ];
+        }
+
+        //2.
+        $returnedInvoicePackLine = ReturnedInvoicePackLine::where([
+            ["returned_invoice_id", "=", $this->id],
+            ["markcode",            "=", $barcode]
+        ])->first();
+
+        if ($returnedInvoicePackLine != null)
+        {
+            $errorMessage = "Ящик уже сканировался " . $barcode;
+
+            $this->addErrorLine($barcode, $errorMessage);
+            return ['error' => true, 'errorMessage' => $errorMessage ];
+        }
+
+        //Обнуление showFirst  у заказа
+        $this->returnedInvoiceLines->each(function ($item, $key) {
+            if ($item->show_first) {
+                $item->show_first = false;
+                $item->save();
+            }
+        });
+
+        DB::beginTransaction();
+
+        $linesBox = $exciseStampBox->excisestampboxlines;
+        foreach ($linesBox as $line)
+        {
+            $exciseStamp = ExciseStamp::find($line->markcode);
+            if ($exciseStamp == null)
+            {
+                $errorMessage = "Не найдена марка в БД " . $barcode;
+
+                DB::rollBack();
+
+                $this->addErrorLine($line->id, $errorMessage);
+                return ['error' => true, 'errorMessage' => $errorMessage ];
+            }
+
+            $returnedInvoiceLine = ReturnedInvoiceLine::where([
+                ["returned_invoice_id", "=", $this->id],
+                ["f2regid",             "=", $exciseStamp->f2regid]
+            ])->first();
+
+            if ($returnedInvoiceLine == null)
+            {
+                $errorMessage = "Раздел Б " . $exciseStamp->f2regid . " не зайден в возврате " . $barcode;
+
+                DB::rollBack();
+
+                $this->addErrorLine($barcode, $errorMessage);
+                return ['error' => true, 'errorMessage' => $errorMessage ];
+            }
+
+            if ($returnedInvoiceLine->quantity <= $returnedInvoiceLine->quantitymarks )
+            {
+                $errorMessage = "Превышено количество в наборе " . $barcode;
+
+                DB::rollBack();
+
+                $this->addErrorLine($barcode, $errorMessage);
+                return ['error' => true, 'errorMessage' => $errorMessage ];
+            }
+
+            try{
+                $returnedInvoiceMarkLine = new ReturnedInvoiceMarkLine;
+                $returnedInvoiceMarkLine->returned_invoice_id  = $this->id;
+                $returnedInvoiceMarkLine->lineid               = $returnedInvoiceLine->lineid;
+                $returnedInvoiceMarkLine->f2regid     = $exciseStamp->f2regid;
+                $returnedInvoiceMarkLine->markcode    = $line->markcode;
+                $returnedInvoiceMarkLine->pack_number = $exciseStampBox->barcode;
+                $returnedInvoiceMarkLine->quantity    = 1;
+                $returnedInvoiceMarkLine->savedin1c   = false;
+                $returnedInvoiceMarkLine->save();
+
+                $returnedInvoiceLine->increment('quantity_mark');
+                $returnedInvoiceLine->show_first = true;
+                $returnedInvoiceLine->save();
+
+            } catch(\Exception $exception){
+                $errorMessage = "Ошибка при записи " . $barcode;
+
+                DB::rollback();
+
+                return ['error' => true, 'errorMessage' => $errorMessage ];
+            }
+
+        }
+
+        $returnedInvoicePackLine = new ReturnedInvoicePackLine;
+        $returnedInvoicePackLine->returned_invoice_id = $this->id;
+        $returnedInvoicePackLine->lineid        = 1;
+        $returnedInvoicePackLine->f2regid       = $exciseStampBox->f2regid;
+        $returnedInvoicePackLine->markcode      = $exciseStampBox->barcode;
+        $returnedInvoicePackLine->quantity      = 1;
+        $returnedInvoicePackLine->savedin1c     = false;
+        $returnedInvoicePackLine->save();
+
+        DB::commit();
+
+        return ['error' => false, 'errorMessage' => ''];
     }
 }

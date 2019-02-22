@@ -13,6 +13,7 @@ use App\User;
 class ReturnedInvoiceTest extends TestCase
 {
     const DOC_ID = 'YTD3B2BLqXhCAEdltKSio2lhsfPWB95I9LQa';
+    const DOC_ID_PACK = '30a257bf-efe0-11e8-8ed6-0026832c8748'; //С13_000001
 
     private $token;
     private $headers;
@@ -204,4 +205,35 @@ class ReturnedInvoiceTest extends TestCase
     }
     */
 
+
+    public function testReturnedInvoiceEditSubmitBarcodeBoxDoubleClick()
+    {
+        $returnedInvoice = ReturnedInvoice::where('doc_id', ReturnedInvoiceTest::DOC_ID_PACK)->first();
+
+        $testUrl = '/m/returnedinvoice/edit/' . $returnedInvoice->id;
+
+        $value = '02000000029510118000087245';
+
+        $response = $this->post($testUrl, ['BarCode' => $value, 'returned_invoice_id' => $returnedInvoice->id]);
+        $response->assertStatus(302);
+        $response->assertRedirect($testUrl);
+
+        $this->followRedirects($response)
+            ->assertStatus(200)
+            ->assertSee('Считайте штрихкод');
+
+
+        $response = $this->post($testUrl, ['BarCode' => $value, 'returned_invoice_id' => $returnedInvoice->id]);
+        $response->assertStatus(302);
+        $response->assertRedirect($testUrl);
+
+        $response->assertSessionHasErrors([
+            'errorMessage' => 'Ящик уже сканировался ' . $value
+        ]);
+
+        $this->followRedirects($response)
+            ->assertStatus(200)
+            ->assertSee('Считайте штрихкод');
+
+    }
 }
