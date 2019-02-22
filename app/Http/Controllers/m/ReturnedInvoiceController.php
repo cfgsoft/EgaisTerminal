@@ -27,13 +27,16 @@ class ReturnedInvoiceController extends Controller
      */
     public function index(Request $request)
     {
-        $returnedInvoice = ReturnedInvoice::orderBy("number", 'desc')
-            ->take(10)->get();
+        //$returnedInvoice = ReturnedInvoice::orderBy("number", 'desc')->take(10)->get();
+        //
+        //$barcode = '';
+        //if ($request->has('barcode')) {
+        //    $barcode = $request->get('barcode');
+        //}
 
-        $barcode = '';
-        if ($request->has('barcode')) {
-            $barcode = $request->get('barcode');
-        }
+        $returnedInvoice= ReturnedInvoice::orderBy("id", 'desc')->simplePaginate(4);
+
+        $barcode = $request->input('barcode', '');
 
         return view('m/returnedinvoice/index', ['returnedInvoice' => $returnedInvoice, 'barcode' => $barcode]);
     }
@@ -177,8 +180,7 @@ class ReturnedInvoiceController extends Controller
 
             if ($errorBarCode) {
                 //return redirect()->action('m\ReturnedInvoiceController@edit', ['id' => $returned_invoice_id, 'errorMessage' => $errorMessage]);
-                //return Redirect::back()->withErrors(['msg', $errorMessage]);
-                return redirect()->back()->withErrors(['msg', $errorMessage]);
+                return redirect()->back()->withErrors(['errorMessage' => $errorMessage]);
             }
         }
 

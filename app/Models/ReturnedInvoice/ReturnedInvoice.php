@@ -61,13 +61,6 @@ class ReturnedInvoice extends Model
         //}
 
         return $result;
-
-        //$post = new static;
-        //$post->fill($fields);
-        //$post->user_id = Auth::user()->id;
-        //$post->save();
-
-        //return $post;
     }
 
     private function addErrorLine($barcode, $errorMessage)
@@ -106,20 +99,21 @@ class ReturnedInvoice extends Model
         }
 
         //1. Ищем штрих код в уже набранных товарах, если находим ошибка.
-        $returnedInvoiceMarkLine = ReturnedInvoiceMarkLine::where([['markcode', '=', $barcode],['quantity', '=', '1']])->first();
-        if ($returnedInvoiceMarkLine != null)
-        {
-            $errorMessage = "Товар уже сканировался " . $barcode;
-
-            $this->addErrorLine($barcode, $errorMessage);
-            return ['error' => true, 'errorMessage' => $errorMessage ];
-        }
+        //$returnedInvoiceMarkLine = ReturnedInvoiceMarkLine::where([['markcode', '=', $barcode],['quantity', '=', '1']])->first();
+        //if ($returnedInvoiceMarkLine != null)
+        //{
+        //    $errorMessage = "Товар уже сканировался " . $barcode;
+        //
+        //    $this->addErrorLine($barcode, $errorMessage);
+        //    return ['error' => true, 'errorMessage' => $errorMessage ];
+        //}
 
         //2. Ищем товар в строке заказов
+        //Временно ищем без привязки в разделуБ
+        //["f2regid",             "=", $exciseStamp->f2regid]
         $returnedInvoiceLine = ReturnedInvoiceLine::where([
             ["returned_invoice_id", "=", $this->id],
-            ["productcode",         "=", $exciseStamp->productcode],
-            ["f2regid",             "=", $exciseStamp->f2regid]
+            ["productcode",         "=", $exciseStamp->productcode]
         ])->first();
 
         if ($returnedInvoiceLine == null)
@@ -137,8 +131,6 @@ class ReturnedInvoice extends Model
             $this->addErrorLine($barcode, $errorMessage);
             return ['error' => true, 'errorMessage' => $errorMessage ];
         }
-
-
 
 
         //Обнуление showFirst  у заказа
@@ -162,7 +154,8 @@ class ReturnedInvoice extends Model
             $returnedInvoiceMarkLine->savedin1c   = false;
             $returnedInvoiceMarkLine->save();
 
-            $returnedInvoiceLine->quantity_mark = $returnedInvoiceLine->quantity_mark + 1;
+            //$returnedInvoiceLine->quantity_mark = $returnedInvoiceLine->quantity_mark + 1;
+            $returnedInvoiceLine->increment('quantity_mark');
             $returnedInvoiceLine->show_first = true;
             $returnedInvoiceLine->save();
 

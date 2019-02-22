@@ -11,8 +11,6 @@
         <input type="submit" value=".." />
     </form>
 
-    {{ isset($errorMessage) ? $errorMessage : '' }}
-
     @include('m.errors')
 
     <div> {{ $returnedInvoice->number  }} </div>

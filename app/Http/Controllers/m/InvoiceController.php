@@ -35,18 +35,11 @@ class InvoiceController extends Controller
 
     public function edit(Request $request, $id)
     {
-        //$invoice = Invoice::find($request->get('id'));
         $invoice = Invoice::find($id);
         $invoice->invoiceLines;
-        //$invoice->invoiceLines = $invoice->invoiceLines->sortBy('line_id')->sortByDesc('show_first');
         $invoice->invoiceLines = $invoice->invoiceLines->sortBy('line_id')->sortByDesc('show_first');
 
-        $errorMessage = '';
-        if ($request->has('errorMessage')) {
-            $errorMessage = $request->get('errorMessage');
-        }
-
-        return view('m/invoice/edit', ['invoice' => $invoice, 'errorMessage' => $errorMessage]);
+        return view('m/invoice/edit', ['invoice' => $invoice]);
     }
 
     public function submitbarcode(Request $request)

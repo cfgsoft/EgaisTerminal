@@ -50,7 +50,7 @@ class OrderTest extends TestCase
                     'product_descr' => 'Водка ФИННОРД 0.1л./30',
                     'product_code' => '0037150000001399460',
                     'f2reg_id' => 'FB-000001309598237',
-                    'quantity' => '5'
+                    'quantity' => '15'
                 ]
             ]
         ];
@@ -306,6 +306,59 @@ class OrderTest extends TestCase
         $this->followRedirects($response)
             ->assertStatus(200)
             ->assertSee('Считайте штрихкод');
+    }
+
+    public function testOrderEditSubmitBarcodePalletDoubleClick()
+    {
+        $order = Order::where('DocId', OrderTest::DOC_ID_UPD)->first();
+
+        $testUrl = '/m/order/edit/' . $order->id;
+
+        $value = '03000000029510118000087245';
+
+        $response = $this->post($testUrl, ['BarCode' => $value, 'order_id' => $order->id]);
+        $response->assertStatus(302);
+        $response->assertRedirect($testUrl);
+
+        $this->followRedirects($response)
+            ->assertStatus(200)
+            ->assertSee('Считайте штрихкод');
+
+        $response = $this->post($testUrl, ['BarCode' => $value, 'order_id' => $order->id]);
+        $response->assertStatus(302);
+        $response->assertRedirect($testUrl);
+
+        $response->assertSessionHasErrors([
+            'errorMessage' => 'Паллет уже сканировался ' . $value
+        ]);
+
+        $this->followRedirects($response)
+            ->assertStatus(200)
+            ->assertSee('Считайте штрихкод');
+    }
+
+    public function testOrderEditSubmitBarcodePalletBoxExistClick()
+    {
+        $order = Order::where('DocId', OrderTest::DOC_ID_UPD)->first();
+
+        $testUrl = '/m/order/edit/' . $order->id;
+
+        $value = '05000000029510118000087245';
+
+        $response = $this->post($testUrl, ['BarCode' => $value, 'order_id' => $order->id]);
+        $response->assertStatus(302);
+
+        /*
+        $response->assertRedirect($testUrl);
+
+        $response->assertSessionHasErrors([
+            'errorMessage' => 'Ящик в паллете уже сканировался 02000000029510118000087245'
+        ]);
+
+        $this->followRedirects($response)
+            ->assertStatus(200)
+            ->assertSee('Считайте штрихкод');
+        */
     }
 
 }

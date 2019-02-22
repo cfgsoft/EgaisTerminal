@@ -4,6 +4,8 @@ use Illuminate\Database\Seeder;
 
 use App\ExciseStampBox;
 use App\ExciseStampBoxLine;
+use App\Models\ExciseStamp\ExciseStampPallet;
+use App\Models\ExciseStamp\ExciseStampPalletLine;
 
 class ExciseStampTableSeeder extends Seeder
 {
@@ -14,6 +16,8 @@ class ExciseStampTableSeeder extends Seeder
      */
     public function run()
     {
+        DB::table('excise_stamp_pallet_line')->delete();
+        DB::table('excise_stamp_pallet')->delete();
         DB::table('excise_stamp_box_lines')->delete();
         DB::table('excise_stamp_boxes')->delete();
         DB::table('excise_stamps')->delete();
@@ -83,6 +87,45 @@ class ExciseStampTableSeeder extends Seeder
                         'markcode' => '701100261679680118001D5CCFC794963898C1B13E41231CKY42T7UDIJJY2AWLHS7HPGINLMY7PQPDNJALVS42WNCHYRCO257SPCSCF4ASM37BZNTLIASYRVGFUTCXDXDJPML5MMVLEEHZWPWJVI'
                     ]
                 ]
+            ],
+            [
+                'barcode' => '04000000054710219024019879',
+                'productcode' => '0037150000001399460',
+                'f1regid' => 'FA-000000039597226',
+                'f2regid' => 'FB-000001309598237',
+                'lines' => [
+                    '1' => [
+                        'markcode' => '801100261679680118001D5CCFC794963898C1B13E41231CKY42T7UDIJJY2AWLHS7HPGINLMY7PQPDNJALVS42WNCHYRCO257SPCSCF4ASM37BZNTLIASYRVGFUTCXDXDJPML5MMVLEEHZWPWJVI'
+                    ]
+                ]
+            ]
+        ];
+
+        $pallets = [
+            [
+                'barcode' => '03000000029510118000087245',
+                'productcode' => '0037150000001399460',
+                'f1regid' => 'FA-000000039597226',
+                'f2regid' => 'FB-000001309598237',
+                'lines' => [
+                    '1' => [
+                        'markcode' => '01000000054710219024019879'
+                    ],
+                    '2' => [
+                        'markcode' => '04000000054710219024019879'
+                    ]
+                ]
+            ],
+            [
+                'barcode' => '05000000029510118000087245',
+                'productcode' => '0037150000001399460',
+                'f1regid' => 'FA-000000039597226',
+                'f2regid' => 'FB-000001309598237',
+                'lines' => [
+                    '1' => [
+                        'markcode' => '02000000029510118000087245'
+                    ]
+                ]
             ]
         ];
 
@@ -100,6 +143,26 @@ class ExciseStampTableSeeder extends Seeder
                 $exciseStampBoxLine->excise_stamp_box_id = $exciseStampBox->id;
                 $exciseStampBoxLine->markcode            = $l["markcode"];
                 $exciseStampBoxLine->save();
+            }
+        }
+
+
+        foreach($pallets as $p)
+        {
+            $exciseStampPallet = new ExciseStampPallet;
+            $exciseStampPallet->barcode     = $p["barcode"];
+            $exciseStampPallet->productcode = $p["productcode"];
+            $exciseStampPallet->f1regid     = $p["f1regid"];
+            $exciseStampPallet->f2regid     = $p["f2regid"];
+            $exciseStampPallet->save();
+
+            foreach($p["lines"] as $l) {
+                $exciseStampBox = ExciseStampBox::where('barcode', '=', $l["markcode"])->first();
+
+                $exciseStampPalletLine = new ExciseStampPalletLine;
+                $exciseStampPalletLine->pallet_id = $exciseStampPallet->id;
+                $exciseStampPalletLine->box_id = $exciseStampBox->id;
+                $exciseStampPalletLine->save();
             }
         }
 

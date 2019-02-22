@@ -19,7 +19,9 @@
             <a href="{{ route('m.invoice.edit', ['id' => $item->id]) }}" >
                 <div>{{$item->incoming_date}} № {{$item->incoming_number}}</div>
 
+                <!--
                 <div>Руссалко.....ООО</div>
+                -->
 
                 <div>{{$item->date}} № {{$item->number}}</div>
 

@@ -14,8 +14,16 @@
 
     @include('m.errors')
 
-    <h5>Документы набора</h5>
+    @foreach ($returnedInvoice as $item)
+        <div class="card">
+            <a href="{{ route('m.returnedinvoice.edit', ['id' => $item->id]) }}" >
+                <div>{{$item->date}} № {{$item->number}}</div>
+            </a>
+        </div>
+    @endforeach
 
+    <!--
+    <h5>Документы набора</h5>
     <table class="table">
         <thead>
         <tr>
@@ -39,6 +47,10 @@
 
         </tbody>
     </table>
+    -->
+
+    {{ $returnedInvoice->links("pagination.m-simple") }}
+
 @endsection
 
 @section('scripts')

@@ -17,6 +17,7 @@ class OrderTableSeeder extends Seeder
     public function run()
     {
         DB::table('order_error_lines')->delete();
+        DB::table('order_pallet_line')->delete();;
         DB::table('order_pack_lines')->delete();
         DB::table('order_mark_lines')->delete();
         DB::table('order_lines')->delete();
@@ -39,7 +40,7 @@ class OrderTableSeeder extends Seeder
                         'product_descr' => 'Водка ФИННОРД 0.1л./30',
                         'product_code' => '0037150000001399460',
                         'f2reg_id' => 'FB-000001309598237',
-                        'quantity' => '1',
+                        'quantity' => '15',
                         'quantitymarks' => '0',
                     ],
                     '2' => [

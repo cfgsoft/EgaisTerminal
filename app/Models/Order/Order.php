@@ -9,6 +9,7 @@ use Carbon\Carbon;
 
 use App\ExciseStamp;
 use App\ExciseStampBox;
+use App\Models\ExciseStamp\ExciseStampPallet;
 
 class Order extends Model
 {
@@ -25,6 +26,10 @@ class Order extends Model
 
     public function orderpacklines(){
         return $this->hasMany("App\Models\Order\OrderPackLine");
+    }
+
+    public function orderPalletLines(){
+        return $this->hasMany("App\Models\Order\OrderPalletLine");
     }
 
     public function ordererrorlines(){
@@ -51,10 +56,34 @@ class Order extends Model
         return $this;
     }
 
+    public function findLineF2RegId($f2reg_id)
+    {
+        if($f2reg_id == null) { return; }
+
+        $orderLine = OrderLine::where([ ['order_id','=',$this->id], ['f2regid','=',$f2reg_id] ])->first();
+
+        return $orderLine;
+    }
+
     public function addBarCode($barcode)
     {
+        //СКАНИРОВАНИЕ АКЦИЗНОЙ МАРКИ, ЯЩИКА, ПАЛЛЕТА
+        if (strlen($barcode) != 150 and strlen($barcode) != 68 and  strlen($barcode) != 26)
+        {
+            $errorMessage = "Не опознан ШК " . $barcode;
+
+            $this->addErrorLine($barcode, '', '', $errorMessage);
+            return ['error' => true, 'errorMessage' => $errorMessage ];
+        }
+
+
         if (strlen($barcode) == 26) {
-            $result = $this->addPackExciseStamp($barcode);
+            $exciseStampPallet = ExciseStampPallet::where('barcode', '=', $barcode)->first();
+            if ($exciseStampPallet == null) {
+                $result = $this->addPackExciseStamp($barcode);
+            } else {
+                $result = $this->addPalletExciseStamp($exciseStampPallet);
+            }
         } else {
             $result = $this->addExciseStamp($barcode);
         }
@@ -335,6 +364,145 @@ class Order extends Model
     }
 
 
+
+    private function addExciseStamp_New($orderLine, $exciseStamp, $exciseStampBox)
+    {
+        if ($orderLine->quantity <= $orderLine->quantitymarks ) {
+            $errorMessage = "Сканирование паллета. Превышено количество в наборе " . $exciseStamp->id;
+
+            $this->addErrorLine($exciseStamp->id, $exciseStamp->productcode, $exciseStamp->f2regid, $errorMessage);
+            return ['error' => true, 'errorMessage' => $errorMessage ];
+        }
+
+        try{
+            $orderMarkLine = new OrderMarkLine;
+            $orderMarkLine->order_id    = $this->id;
+            $orderMarkLine->orderlineid = $orderLine->orderlineid;
+            $orderMarkLine->productcode = $exciseStamp->productcode;
+            $orderMarkLine->f2regid     = $exciseStamp->f2regid;
+            $orderMarkLine->markcode    = $exciseStamp->id;
+            $orderMarkLine->boxnumber   = $exciseStampBox->barcode;
+            $orderMarkLine->quantity    = 1;
+            $orderMarkLine->savedin1c   = false;
+            $orderMarkLine->save();
+
+            $orderLine->increment('quantitymarks');  //$orderLine->quantitymarks = $orderLine->quantitymarks + 1;
+            $orderLine->showfirst = true;
+            $orderLine->save();
+
+        } catch(\Exception $exception){
+            $errorMessage = "Ошибка при записи марки " . $exciseStamp->id;
+
+            $this->addErrorLine($exciseStamp->id, $exciseStamp->productcode, $exciseStamp->f2regid, $errorMessage);
+            return ['error' => true, 'errorMessage' => $errorMessage ];
+        }
+
+        return ['error' => false, 'errorMessage' => ''];
+    }
+
+    private function addPackStamp_New($orderLine, $exciseStampBox, $pallet_number)
+    {
+        $linesBox = $exciseStampBox->excisestampboxlines;
+        foreach ($linesBox as $line)
+        {
+            $exciseStamp = ExciseStamp::find($line->markcode);
+            $result = $this->addExciseStamp_New($orderLine, $exciseStamp, $exciseStampBox);
+
+            if ($result['error'])
+            {
+                return $result;
+            }
+        }
+
+        //try{
+            $orderPackLine = new OrderPackLine;
+            $orderPackLine->order_id      = $this->id;
+            $orderPackLine->orderlineid   = 1;
+            $orderPackLine->productcode   = $exciseStampBox->productcode;
+            $orderPackLine->f2regid       = $exciseStampBox->f2regid;
+            $orderPackLine->markcode      = $exciseStampBox->barcode;
+            $orderPackLine->pallet_number = $pallet_number;
+            $orderPackLine->quantity      = 1;
+            $orderPackLine->savedin1c     = false;
+            $orderPackLine->save();
+        //}
+        //catch(\Exception $exception){
+        //    $errorMessage = "Ошибка при записи " . $exciseStampBox->barcode;
+        //
+        //    return ['error' => true, 'errorMessage' => $errorMessage ];
+        //}
+
+        return ['error' => false, 'errorMessage' => ''];
+    }
+
+    private function addPalletExciseStamp_New($orderLine, $exciseStampPallet)
+    {
+        DB::beginTransaction();
+
+        $linesPallet = $exciseStampPallet->exciseStampPalletLines;
+        foreach ($linesPallet as $line)
+        {
+            $exciseStampBox = ExciseStampBox::find($line->box_id);
+
+            $orderPackLine = OrderPackLine::where('markcode', '=',  $exciseStampBox->barcode)->first();
+            if ($orderPackLine != null) {
+                $errorMessage = "Ящик в паллете уже сканировался " . $exciseStampBox->barcode;
+
+                DB::rollBack();
+
+                $this->addErrorLine($exciseStampBox->barcode, $orderPackLine->productcode, $orderPackLine->f2regid, $errorMessage);
+                return ['error' => true, 'errorMessage' => $errorMessage ];
+            }
+
+            $result = $this->addPackStamp_New($orderLine, $exciseStampBox, $exciseStampPallet->barcode);
+
+            if ($result['error'])
+            {
+                DB::rollBack();
+
+                return $result;
+            }
+        }
+
+        $orderPalletLine = new OrderPalletLine;
+        $orderPalletLine->order_id      = $this->id;
+        $orderPalletLine->f2reg_id      = $exciseStampPallet->f2regid;
+        $orderPalletLine->pallet_number = $exciseStampPallet->barcode;
+        $orderPalletLine->savedin1c     = false;
+        $orderPalletLine->save();
+
+        DB::commit();
+
+        return ['error' => false, 'errorMessage' => ''];
+    }
+
+    private function addPalletExciseStamp($exciseStampPallet)
+    {
+        $orderPalletLine = OrderPalletLine::where('pallet_number', '=', $exciseStampPallet->barcode)->first();
+        if ($orderPalletLine != null)
+        {
+            $errorMessage = "Паллет уже сканировался " . $exciseStampPallet->barcode;
+
+            $this->addErrorLine($exciseStampPallet->barcode, '', $orderPalletLine->f2reg_id, $errorMessage);
+            return ['error' => true, 'errorMessage' => $errorMessage ];
+        }
+
+        $orderLine = $this->findLineF2RegId($exciseStampPallet->f2regid);
+        if ($orderLine == null)
+        {
+            $errorMessage = "Разд Б " . $exciseStampPallet->f2regid . " не зайден в заказе";
+
+            $this->addErrorLine($exciseStampPallet->barcode, '', $orderPalletLine->f2regid, $errorMessage);
+        }
+
+        $result = $this->addPalletExciseStamp_New($orderLine, $exciseStampPallet);
+
+        return $result;
+
+        //$collectionExciseStamp = $this->getCollectionExciseStamp($exciseStampPallet);
+        //dd($collectionExciseStamp);
+    }
+
     public function removeLineF2RegId($f2regid)
     {
         if($f2regid == null) { return; }
@@ -344,4 +512,23 @@ class Order extends Model
 
         return $deletedRows;
     }
+
+    private function getCollectionExciseStamp($exciseStampPallet)
+    {
+        $collectionExciseStamp = DB::table('excise_stamp_pallet')
+            ->leftJoin('excise_stamp_pallet_line', 'excise_stamp_pallet.id', '=', 'excise_stamp_pallet_line.pallet_id')
+            ->leftJoin('excise_stamp_boxes', 'excise_stamp_pallet_line.box_id', '=', 'excise_stamp_boxes.id')
+            ->leftJoin('excise_stamp_box_lines', 'excise_stamp_boxes.id', '=', 'excise_stamp_box_lines.excise_stamp_box_id')
+            ->leftJoin('excise_stamps', 'excise_stamp_box_lines.markcode', '=', 'excise_stamps.id')
+            ->where('excise_stamp_pallet.id', '=', $exciseStampPallet->id )
+            ->select('excise_stamp_pallet.id as pallet_ip',
+                'excise_stamp_pallet.barcode as pallet_barcode',
+                'excise_stamp_boxes.id as box_id',
+                'excise_stamp_boxes.barcode as box_barcode',
+                'excise_stamps.*')
+            ->get();
+
+        return $collectionExciseStamp;
+    }
+
 }

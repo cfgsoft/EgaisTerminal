@@ -47,6 +47,8 @@ Route::group(
 
         Route::get('orders/MarkLine',       'OrderController@indexMarkLine1c');
         Route::put('orders/MarkLine/{id}',  'OrderController@updateMarkLine1c');
+        Route::get('orders/PackLine',       'OrderController@indexPackLine1c');
+        Route::put('orders/PackLine/{id}',  'OrderController@updatePackLine1c');
         Route::get('orders/ErrorLine',      'OrderController@indexErrorLine1c');
         Route::put('orders/ErrorLine/{id}', 'OrderController@updateErrorLine1c');
 
@@ -59,9 +61,10 @@ Route::group(
         Route::resource('categories',       'CategoryController',   ['except' => ['create', 'edit']]);
         Route::resource('products',         'ProductController',    ['except' => ['create', 'edit']]);
         Route::resource('orders',           'OrderController',      ['except' => ['create', 'edit']]);
-        Route::resource('excisestamps',     'ExciseStampController',     ['except' => ['create', 'edit']]);
-        Route::resource('excisestampbox',   'ExciseStampBoxController',  ['except' => ['create', 'edit']]);
-        Route::resource('returnedinvoices', 'ReturnedInvoiceController', ['except' => ['create', 'edit']]);
+        Route::resource('excisestamps',     'ExciseStampController',        ['except' => ['create', 'edit']]);
+        Route::resource('excisestampbox',   'ExciseStampBoxController',     ['except' => ['create', 'edit']]);
+        Route::resource('excisestamppallet','ExciseStampPalletController',  ['except' => ['create', 'edit']]);
+        Route::resource('returnedinvoices', 'ReturnedInvoiceController',    ['except' => ['create', 'edit']]);
         Route::resource('invoices',         'InvoiceController',    ['except' => ['create', 'edit']]);
     }
 );

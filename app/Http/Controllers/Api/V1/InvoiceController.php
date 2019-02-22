@@ -81,6 +81,15 @@ class InvoiceController extends Controller
             }
         }
 
+        if (array_key_exists('palletlines', $newInvoice))
+        {
+            $invoice->deletePalletLines();
+            $newPalletInvoicesLines = $newInvoice['palletlines'];
+            foreach ($newPalletInvoicesLines as $line) {
+                $invoice->addPalletLines($line);
+            }
+        }
+
         return $invoice;
     }
 

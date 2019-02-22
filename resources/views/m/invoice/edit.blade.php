@@ -11,8 +11,6 @@
         <input type="submit" value=".." />
     </form>
 
-    {{ isset($errorMessage) ? $errorMessage : '' }}
-
     <div> {{ $invoice->number  }} </div>
 
     <table class="table">

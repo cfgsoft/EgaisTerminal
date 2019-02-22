@@ -86,6 +86,11 @@ class Invoice extends Model
         InvoicePackLine::where('invoice_id', $this->id)->delete();
     }
 
+    public function deletePalletLines()
+    {
+        InvoicePalletLine::where('invoice_id', $this->id)->delete();
+    }
+
     public function addLines($fields)
     {
         $line = new InvoiceLine();
@@ -116,6 +121,15 @@ class Invoice extends Model
         return $line;
     }
 
+    public function addPalletLines($fields)
+    {
+        $line = new InvoicePalletLine();
+        $line->fill($fields);
+        $line->invoice_id = $this->id;
+        $line->save();
+
+        return $line;
+    }
 
     public function addBarCode($barcode)
     {

@@ -7,6 +7,7 @@ use App\Models\Invoice\Invoice;
 use App\Models\Invoice\InvoiceLine;
 use App\Models\Invoice\InvoiceMarkLine;
 use App\Models\Invoice\InvoicePackLine;
+use App\Models\Invoice\InvoicePalletLine;
 
 class InvoiceTableSeeder extends Seeder
 {
@@ -18,6 +19,7 @@ class InvoiceTableSeeder extends Seeder
     public function run()
     {
         DB::table('doc_invoice_error_line')->delete();
+        DB::table('doc_invoice_pallet_line')->delete();
         DB::table('doc_invoice_pack_line')->delete();
         DB::table('doc_invoice_mark_line')->delete();
         DB::table('doc_invoice_read_line')->delete();
@@ -77,7 +79,19 @@ class InvoiceTableSeeder extends Seeder
                         'line_identifier' => '2',
                         'mark_code' => '444444444'
                     ]
-                ]
+                ],
+                'palletlines' => [
+                    '1' => [
+                        'line_id' => '1',
+                        'line_identifier' => '1',
+                        'mark_code' => '555555555'
+                    ],
+                    '2' => [
+                        'line_id' => '2',
+                        'line_identifier' => '2',
+                        'mark_code' => '66666666'
+                    ]
+                ],
             ],
             [
                 'date' => $date,
@@ -128,7 +142,19 @@ class InvoiceTableSeeder extends Seeder
                         'line_identifier' => '2',
                         'mark_code' => '444444444'
                     ]
-                ]
+                ],
+                'palletlines' => [
+                    '1' => [
+                        'line_id' => '1',
+                        'line_identifier' => '1',
+                        'mark_code' => '555555555'
+                    ],
+                    '2' => [
+                        'line_id' => '2',
+                        'line_identifier' => '2',
+                        'mark_code' => '66666666'
+                    ]
+                ],
             ],
         ];
 
@@ -171,6 +197,15 @@ class InvoiceTableSeeder extends Seeder
                 $invoicePackLine->line_identifier = $l["line_identifier"];
                 $invoicePackLine->mark_code       = $l["mark_code"];
                 $invoicePackLine->save();
+            }
+
+            foreach($i["palletlines"] as $l) {
+                $invoicePalletLine = new InvoicePalletLine;
+                $invoicePalletLine->invoice_id      = $invoice->id;
+                $invoicePalletLine->line_id         = $l["line_id"];
+                $invoicePalletLine->line_identifier = $l["line_identifier"];
+                $invoicePalletLine->mark_code       = $l["mark_code"];
+                $invoicePalletLine->save();
             }
 
         }

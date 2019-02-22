@@ -5,6 +5,7 @@ namespace App\Http\Controllers\api\v1;
 use App\Models\Order\Order;
 use App\Models\Order\OrderLine;
 use App\Models\Order\OrderMarkLine;
+use App\Models\Order\OrderPackLine;
 use App\Models\Order\OrderErrorLine;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -181,6 +182,13 @@ class OrderController extends Controller
         return $orderMarkLine;
     }
 
+    public function indexPackLine1c()
+    {
+        $orderPackLine = OrderPackLine::where('savedin1c', '=', false)->orderBy('order_id')->get();
+
+        return $orderPackLine;
+    }
+
     public function indexErrorLine1c()
     {
         $orderErrorLine = OrderErrorLine::where('savedin1c', '=', false)->orderBy('order_id')->get();
@@ -195,6 +203,15 @@ class OrderController extends Controller
         $orderMarkLine->save();
 
         return $orderMarkLine;
+    }
+
+    public function updatePackLine1c(Request $request, $id)
+    {
+        $orderPackLine = OrderPackLine::findOrFail($id);
+        $orderPackLine->savedin1c = true;
+        $orderPackLine->save();
+
+        return $orderPackLine;
     }
 
     public function updateErrorLine1c(Request $request, $id)
