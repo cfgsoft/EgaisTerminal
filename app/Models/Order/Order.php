@@ -77,7 +77,7 @@ class Order extends Model
         }
 
 
-        if (strlen($barcode) == 26 and strlen($barcode) == 18) {
+        if (strlen($barcode) == 26 or strlen($barcode) == 18) {
             $exciseStampPallet = ExciseStampPallet::where('barcode', '=', $barcode)->first();
             if ($exciseStampPallet == null) {
                 $result = $this->addPackExciseStamp($barcode);
