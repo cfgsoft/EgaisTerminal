@@ -2,16 +2,37 @@
 
 @section('content')
     <h5>Считайте штрихкод</h5>
-    <h6><a href="{{ route('m.invoice') }}" >0-Выход</a></h6>
+    <h6>
+        <a href="{{ route('m.invoice') }}" >0-Выход</a>
+    </h6>
 
     <form action="{{ action('m\InvoiceController@submiteditbarcode', ['id' => $invoice->id]) }}" id="formInputBarCode" method="post">
         <input id="InputBarCode" name="BarCode" title="Barcode" size="22" />
-        <input type="hidden" id="invoice_id" name="invoice_id" value="{{ $invoice->id }}" />
+        <input type="hidden" id="invoiceId" name="invoiceId" value="{{ $invoice->id }}" />
         <input type="hidden" name="_token" value="{{ csrf_token() }}" >
         <input type="submit" value=".." />
     </form>
 
-    <div> {{ $invoice->number  }} </div>
+    @include('m.errors')
+
+    @if ($palletId != null or $packId != null)
+        <p>1-Отчистить упаковку</p>
+    @endif
+
+    @if ($palletId != null)
+        <p>Паллет № {{$palletId}}</p>
+    @endif
+
+    @if ($packId != null)
+        <p>Упаковка № {{$packId}}</p>
+    @endif
+
+    {{--
+    {{ $palletId or '' }}
+    {{ isset($packId) ? 'Упаковка id ' . $packId : '' }}
+    --}}
+
+    <div>Поступление № {{ $invoice->number  }} </div>
 
     <table class="table">
         <thead>

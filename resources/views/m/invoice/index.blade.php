@@ -14,6 +14,8 @@
 
     {{ isset($barcode) ? $barcode : '0' }}
 
+    @include('m.errors')
+
     @foreach ($invoice as $item)
         <div class="card">
             <a href="{{ route('m.invoice.edit', ['id' => $item->id]) }}" >

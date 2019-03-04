@@ -39,7 +39,21 @@ class InvoiceController extends Controller
         $invoice->invoiceLines;
         $invoice->invoiceLines = $invoice->invoiceLines->sortBy('line_id')->sortByDesc('show_first');
 
-        return view('m/invoice/edit', ['invoice' => $invoice]);
+        $palletId = null;
+        $packId   = null;
+
+        if ($request->session()->has('invoice')) {
+            $currentInvoice = $request->session()->get('invoice');
+
+            if ($currentInvoice['invoiceId'] == $id) {
+                $palletId =  $currentInvoice['palletId'];
+                $packId   = $currentInvoice['packId'];
+            } else{
+                $request->session()->forget('invoice');
+            }
+        }
+
+        return view('m/invoice/edit', ['invoice' => $invoice, 'palletId' => $palletId, 'packId' => $packId]);
     }
 
     public function submitbarcode(Request $request)
@@ -57,41 +71,75 @@ class InvoiceController extends Controller
 
         if (strlen($barcode) > 8 and strlen($barcode) < 13) {
             $barcode = str_replace("*", "", $barcode);
-            $invoice = Invoice::where('barcode', '=', $barcode)->first();
-
-            if ($invoice != null) {
-                return redirect()->action('m\InvoiceController@edit', ['id' => $invoice->id]);
-            }
         }
 
-        $barcode = 'Не найдено поступление №' . $barcode;
-
-        return redirect()->action('m\InvoiceController@index', ['barcode' => $barcode]);
+        $invoice = Invoice::where('barcode', '=', $barcode)->first();
+        if ($invoice != null) {
+            return redirect()->action('m\InvoiceController@edit', ['id' => $invoice->id]);
+        } else {
+            return redirect()->back()->withErrors(['BarCode' => 'Не найдено поступление № ' . $barcode]);
+        }
     }
 
     public function submiteditbarcode(Request $request)
     {
-        $barcode  = $request->input('BarCode', '');
-        $invoice_id = $request->input('invoice_id', '');
+        $barcode   = $request->input('BarCode', '');
+        $invoiceId = $request->input('invoiceId', '');
 
         if ($barcode == '0') {
             return redirect()->action('m\InvoiceController@index');
+        } elseif ($barcode == '1'){
+            $request->session()->forget('invoice');
+
+            return redirect()->action('m\InvoiceController@edit', ['id' => $invoiceId]);
         }
 
-        if ($barcode != '')
-        {
-            $invoice = Invoice::find($invoice_id);
-            $result = $invoice->addBarCode($barcode);
+        $this->validate($request,
+            ['BarCode'	=>
+                ['required',
+                    'min:9',
+                    'max:150',
+                ]
+            ]
+            ,
+            ['BarCode.required' => 'Заполните ШК',
+             'BarCode.min'      => 'ШК минимум 9 символов',
+             'BarCode.max'      => 'ШК максимум 150 символов'
+            ]
+        );
 
-            $errorBarCode = $result['error'];
-            $errorMessage = $result['errorMessage'];
+        $palletId = null;
+        $packId   = null;
 
-            if ($errorBarCode) {
-                return redirect()->action('m\InvoiceController@edit', ['id' => $invoice_id, 'errorMessage' => $errorMessage]);
+        if ($request->session()->has('invoice')) {
+            $currentInvoice = $request->session()->get('invoice');
+            if ($currentInvoice['invoiceId'] == $invoiceId) {
+                $palletId =  $currentInvoice['palletId'];
+                $packId   = $currentInvoice['packId'];
+            } else{
+                $request->session()->forget('invoice');
             }
         }
 
-        return redirect()->action('m\InvoiceController@edit', ['id' => $invoice_id]);
+        $invoice = Invoice::find($invoiceId);
+        $result = $invoice->addBarCode($barcode, $palletId, $packId);
 
+        $errorBarCode = $result['error'];
+        $errorMessage = $result['errorMessage'];
+        $palletId     = $result['palletId'];
+        $packId       = $result['packId'];;
+
+        if ($errorBarCode) {
+            return redirect()->back()->withErrors(['errorMessage' => $errorMessage]);
+        }
+
+        $invoiceSession = ['invoiceId' => $invoiceId,
+                           'packId'    => $packId,
+                           'palletId'  => $palletId];
+
+        $request->session()->put('invoice', $invoiceSession);
+
+        return redirect()->action('m\InvoiceController@edit', ['id' => $invoiceId]);
     }
+
 }

@@ -60,36 +60,40 @@ class InvoiceTableSeeder extends Seeder
                     '1' => [
                         'line_id' => '1',
                         'line_identifier' => '1',
-                        'mark_code' => 'sgsagsdfhwert2345sgsryw34525'
+                        'mark_code' => '401100261679680118001D5CCFC794963898C1B13E41231CKY42T7UDIJJY2AWLHS7HPGINLMY7PQPDNJALVS42WNCHYRCO257SPCSCF4ASM37BZNTLIASYRVGFUTCXDXDJPML5MMVLEEHZWPWJVI',
+                        'pack_number' => '02000000029510118000087245'
                     ],
                     '2' => [
                         'line_id' => '2',
                         'line_identifier' => '2',
-                        'mark_code' => 'asgwrt234gasgsg2345235'
+                        'mark_code' => '501100261679680118001D5CCFC794963898C1B13E41231CKY42T7UDIJJY2AWLHS7HPGINLMY7PQPDNJALVS42WNCHYRCO257SPCSCF4ASM37BZNTLIASYRVGFUTCXDXDJPML5MMVLEEHZWPWJVI',
+                        'pack_number' => '02000000029510118000087245'
                     ]
                 ],
                 'packlines' => [
                     '1' => [
                         'line_id' => '1',
                         'line_identifier' => '1',
-                        'mark_code' => '22222222'
+                        'pack_number' => '02000000029510118000087245',
+                        'pallet_number' => '03000000029510118000087245'
                     ],
                     '2' => [
                         'line_id' => '2',
                         'line_identifier' => '2',
-                        'mark_code' => '444444444'
+                        'pack_number' => '01000000054710219024019879',
+                        'pallet_number' => '05000000029510118000087245'
                     ]
                 ],
                 'palletlines' => [
                     '1' => [
                         'line_id' => '1',
                         'line_identifier' => '1',
-                        'mark_code' => '555555555'
+                        'pallet_number' => '03000000029510118000087245'
                     ],
                     '2' => [
                         'line_id' => '2',
                         'line_identifier' => '2',
-                        'mark_code' => '66666666'
+                        'pallet_number' => '05000000029510118000087245'
                     ]
                 ],
             ],
@@ -123,36 +127,40 @@ class InvoiceTableSeeder extends Seeder
                     '1' => [
                         'line_id' => '1',
                         'line_identifier' => '1',
-                        'mark_code' => 'sgsagsdfhwert2345sgsryw34525'
+                        'mark_code' => 'sgsagsdfhwert2345sgsryw34525',
+                        'pack_number' => null
                     ],
                     '2' => [
                         'line_id' => '2',
                         'line_identifier' => '2',
-                        'mark_code' => 'asgwrt234gasgsg2345235'
+                        'mark_code' => 'asgwrt234gasgsg2345235',
+                        'pack_number' => null
                     ]
                 ],
                 'packlines' => [
                     '1' => [
                         'line_id' => '1',
                         'line_identifier' => '1',
-                        'mark_code' => '22222222'
+                        'pack_number' => '22222222',
+                        'pallet_number' => null
                     ],
                     '2' => [
                         'line_id' => '2',
                         'line_identifier' => '2',
-                        'mark_code' => '444444444'
+                        'pack_number' => '444444444',
+                        'pallet_number' => null
                     ]
                 ],
                 'palletlines' => [
                     '1' => [
                         'line_id' => '1',
                         'line_identifier' => '1',
-                        'mark_code' => '555555555'
+                        'pallet_number' => '555555555'
                     ],
                     '2' => [
                         'line_id' => '2',
                         'line_identifier' => '2',
-                        'mark_code' => '66666666'
+                        'pallet_number' => '66666666'
                     ]
                 ],
             ],
@@ -187,6 +195,7 @@ class InvoiceTableSeeder extends Seeder
                 $invoiceMarkLine->line_id         = $l["line_id"];
                 $invoiceMarkLine->line_identifier = $l["line_identifier"];
                 $invoiceMarkLine->mark_code       = $l["mark_code"];
+                $invoiceMarkLine->pack_number     = $l["pack_number"];
                 $invoiceMarkLine->save();
             }
 
@@ -195,7 +204,8 @@ class InvoiceTableSeeder extends Seeder
                 $invoicePackLine->invoice_id      = $invoice->id;
                 $invoicePackLine->line_id         = $l["line_id"];
                 $invoicePackLine->line_identifier = $l["line_identifier"];
-                $invoicePackLine->mark_code       = $l["mark_code"];
+                $invoicePackLine->pack_number     = $l["pack_number"];
+                $invoicePackLine->pallet_number   = $l["pallet_number"];
                 $invoicePackLine->save();
             }
 
@@ -204,7 +214,7 @@ class InvoiceTableSeeder extends Seeder
                 $invoicePalletLine->invoice_id      = $invoice->id;
                 $invoicePalletLine->line_id         = $l["line_id"];
                 $invoicePalletLine->line_identifier = $l["line_identifier"];
-                $invoicePalletLine->mark_code       = $l["mark_code"];
+                $invoicePalletLine->pallet_number   = $l["pallet_number"];
                 $invoicePalletLine->save();
             }
 

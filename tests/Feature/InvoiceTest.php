@@ -63,24 +63,28 @@ class InvoiceTest extends TestCase
                 '1' => [
                     'line_id' => '1',
                     'line_identifier' => '1',
-                    'mark_code' => 'sgsagsdfhwert2345sgsryw34525'
+                    'mark_code' => '401100261679680118001D5CCFC794963898C1B13E41231CKY42T7UDIJJY2AWLHS7HPGINLMY7PQPDNJALVS42WNCHYRCO257SPCSCF4ASM37BZNTLIASYRVGFUTCXDXDJPML5MMVLEEHZWPWJVI',
+                    'pack_number' => '02000000029510118000087245'
                 ],
                 '2' => [
                     'line_id' => '2',
                     'line_identifier' => '2',
-                    'mark_code' => 'asgwrt234gasgsg2345235'
+                    'mark_code' => '501100261679680118001D5CCFC794963898C1B13E41231CKY42T7UDIJJY2AWLHS7HPGINLMY7PQPDNJALVS42WNCHYRCO257SPCSCF4ASM37BZNTLIASYRVGFUTCXDXDJPML5MMVLEEHZWPWJVI',
+                    'pack_number' => '02000000029510118000087245'
                 ]
             ],
             'packlines' => [
                 '1' => [
                     'line_id' => '1',
                     'line_identifier' => '1',
-                    'mark_code' => '22222222'
+                    'pack_number' => '02000000029510118000087245',
+                    'pallet_number' => '03000000029510118000087245'
                 ],
                 '2' => [
                     'line_id' => '2',
                     'line_identifier' => '2',
-                    'mark_code' => '444444444'
+                    'pack_number' => '01000000054710219024019879',
+                    'pallet_number' => '05000000029510118000087245'
                 ]
             ]
         ];
@@ -141,12 +145,12 @@ class InvoiceTest extends TestCase
                 '1' => [
                     'line_id' => '1',
                     'line_identifier' => '1',
-                    'mark_code' => '22222222'
+                    'pack_number' => '22222222'
                 ],
                 '2' => [
                     'line_id' => '2',
                     'line_identifier' => '2',
-                    'mark_code' => '444444444'
+                    'pack_number' => '444444444'
                 ]
             ]
         ];
@@ -185,12 +189,14 @@ class InvoiceTest extends TestCase
                 '1' => [
                     'line_id' => '1',
                     'line_identifier' => '1',
-                    'mark_code' => '1sgsagsdfhwert2345sgsryw34525'
+                    'mark_code' => '1sgsagsdfhwert2345sgsryw34525',
+                    'pack_number' => '02000000029510118000087245'
                 ],
                 '2' => [
                     'line_id' => '2',
                     'line_identifier' => '2',
-                    'mark_code' => '1asgwrt234gasgsg2345235'
+                    'mark_code' => '1asgwrt234gasgsg2345235',
+                    'pack_number' => '02000000029510118000087245'
                 ]
             ]
         ];

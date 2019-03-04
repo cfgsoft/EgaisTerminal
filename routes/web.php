@@ -26,6 +26,7 @@ Route::group(
         Route::get('', 'm\HomeController@index')->name('m.home.index');
         //Route::get('/index', 'm\HomeController@index')->name('m.home.index');
         Route::get('/about', 'm\HomeController@about')->name('m.home.about');
+        Route::get('/about', 'm\HomeController@about')->name('m.home.about');
         Route::get('/ajax', 'm\HomeController@ajax')->name('m.home.ajax');
         Route::get('/ajaxresult', 'm\HomeController@ajaxresult')->name('m.home.ajaxresult');
         Route::post('/ajaxpostresult', 'm\HomeController@ajaxpostresult')->name('m.home.ajaxpostresult');
@@ -75,6 +76,7 @@ Route::get('/home', 'HomeController@index')->name('home');
 Route::get('/about', 'HomeController@about')->name('about');
 Route::get('/contact', 'HomeController@contact')->name('contact');
 Route::get('/test', 'HomeController@test')->name('test');
+Route::get('/integration1c', 'HomeController@integration1c')->name('integration1c');
 
 
 Route::get('/admin', 'SpaController@index')->name('admin');

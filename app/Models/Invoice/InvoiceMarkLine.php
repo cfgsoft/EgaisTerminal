@@ -8,7 +8,7 @@ class InvoiceMarkLine extends Model
 {
     protected $table = 'doc_invoice_mark_line';
 
-    protected $fillable = ['line_id', 'line_identifier', 'mark_code'];
+    protected $fillable = ['line_id', 'line_identifier', 'mark_code', 'pack_number'];
 
     public function invoice(){
         return $this->belongsTo("App\Models\Invoice\Invoice");

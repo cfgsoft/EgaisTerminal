@@ -44,6 +44,12 @@ class HomeController extends Controller
 		
     }
 
+    public function integration1c(Request $request)
+    {
+
+        return view('integration1c');
+    }
+
     public function test()
     {
         $order = Order::find('10');

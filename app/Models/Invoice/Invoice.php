@@ -131,13 +131,61 @@ class Invoice extends Model
         return $line;
     }
 
-    public function addBarCode($barcode)
+
+    private function findMarkLine($barcode, $packNumber = null)
     {
-        if (strlen($barcode) == 26) {
-            $result = $this->addPackStamp($barcode);
-        } else {
-            $result = $this->addExciseStamp($barcode);
+        $filter = [['invoice_id', '=', $this->id],
+                   ['mark_code',  '=', $barcode]];
+
+        if ($packNumber != null)
+        {
+            $filter[] = ['pack_number', '=', $packNumber];
         }
+
+        $markLine = InvoiceMarkLine::where($filter)->first();
+
+        return $markLine;
+    }
+
+    private function findPackLine($packNumber, $palletNumber = null)
+    {
+        $filter = [['invoice_id',  '=', $this->id],
+                   ['pack_number', '=', $packNumber]];
+
+        if ($palletNumber != null)
+        {
+            $filter[] = ['pallet_number', '=', $palletNumber];
+        }
+
+        $packLine = InvoicePackLine::where($filter)->first();
+
+        return $packLine;
+    }
+
+    private function findPalletLine($palletNumber)
+    {
+        $palletLine = InvoicePalletLine::where( [['invoice_id', '=', $this->id],['pallet_number', '=', $palletNumber]] )->first();
+
+        return $palletLine;
+    }
+
+
+    public function addBarCode($barcode, $palletId, $packId)
+    {
+        if (strlen($barcode) == 26 or strlen($barcode) == 18) {
+            $palletLine = $this->findPalletLine($barcode);
+
+            if ($palletLine != null)
+            {
+                $result = $this->addPalletStamp($palletLine);
+            } else {
+                $result = $this->addPackStamp($barcode, $palletId);
+            }
+
+            return $result;
+        }
+
+        $result = $this->addExciseStamp($barcode, $palletId, $packId);
 
         return $result;
     }
@@ -146,17 +194,19 @@ class Invoice extends Model
     {
         $invoiceErrorLine = new InvoiceErrorLine;
         $invoiceErrorLine->invoice_id = $this->id;
-        $invoiceErrorLine->mark_code = $barcode;
-        $invoiceErrorLine->message = $errorMessage;
+        $invoiceErrorLine->mark_code  = $barcode;
+        $invoiceErrorLine->message    = $errorMessage;
         $invoiceErrorLine->save();
 
         return $invoiceErrorLine;
     }
 
-    private function addExciseStamp($barcode)
+    private function addExciseStamp($barcode, $palletId = null, $packId = null)
     {
-        $errorBarCode = false;
-        $errorMessage = "";
+        $result = ['error' => false,
+                   'errorMessage' => '',
+                   'packId' => $packId,
+                   'palletId' => $palletId];
 
         //СКАНИРОВАНИЕ АКЦИЗНОЙ МАРКИ
         //101100261679680118001D5CCFC794963898C1B13E41231CKY42T7UDIJJY2AWLHS7HPGINLMY7PQPDNJALVS42WNCHYRCO257SPCSCF4ASM37BZNTLIASYRVGFUTCXDXDJPML5MMVLEEHZWPWJVI
@@ -165,16 +215,90 @@ class Invoice extends Model
             $errorMessage = "Не опознан ШК " . $barcode;
 
             $this->addErrorLine($barcode, $errorMessage);
-            return ['error' => true, 'errorMessage' => $errorMessage ];
+
+            $result['error']        = true;
+            $result['errorMessage'] = $errorMessage;
+
+            return $result;
         }
 
+
+        if ($packId != null) {
+            $packLine = InvoicePackLine::find($packId);
+            $packNumber = $packLine->pack_number;
+
+            $markLine = $this->findMarkLine($barcode, $packNumber);
+        } else {
+            $markLine = $this->findMarkLine($barcode);
+        }
+
+        if ($markLine == null)
+        {
+            $errorMessage = "Не найдена марка в накладной " . $barcode;
+
+            $this->addErrorLine($barcode, $errorMessage);
+
+            $result['error']        = true;
+            $result['errorMessage'] = $errorMessage;
+
+            return $result;
+        }
+
+        //Обнуление showFirst  у заказа
+        $this->invoiceLines->each(function ($item, $key) {
+            if ($item->show_first) {
+                $item->show_first = false;
+                $item->save();
+            }
+        });
+
+        DB::beginTransaction();
+        try{
+            /*
+            $invoiceReadLine = new InvoiceReadLine;
+            $invoiceReadLine->invoice_id      = $this->id;
+            $invoiceReadLine->line_id         = $invoiceMarkLine->line_id;
+            $invoiceReadLine->line_identifier = $invoiceMarkLine->line_identifier;
+            $invoiceReadLine->mark_code       = $barcode;
+            $invoiceReadLine->savedin1c       = false;
+            $invoiceReadLine->save();
+            */
+
+            $invoiceLine = InvoiceLine::where( [['invoice_id', '=', $this->id],['line_identifier', '=', $markLine->line_identifier]] )->first();
+            if ($invoiceLine != null and $invoiceLine->quantity_mark == 0)
+            {
+                //$invoiceLine->quantity_mark = $invoiceLine->quantity_mark + 1;
+                $invoiceLine->increment('quantity_mark');
+                $invoiceLine->show_first = true;
+                $invoiceLine->save();
+            }
+
+            DB::commit();
+
+        } catch(\Exception $exception){
+
+            $result['error']        = true;
+            $result['errorMessage'] = "Ошибка при записи " . $barcode;
+
+            DB::rollback();
+        }
+
+
+
+
+
+        /*
         $invoiceMarkLine = InvoiceMarkLine::where( [['invoice_id', '=', $this->id],['mark_code', '=', $barcode]] )->first();
         if ($invoiceMarkLine == null)
         {
             $errorMessage = "Не найдена марка в накладной " . $barcode;
 
             $this->addErrorLine($barcode, $errorMessage);
-            return ['error' => true, 'errorMessage' => $errorMessage ];
+
+            $result['error']        = true;
+            $result['errorMessage'] = $errorMessage;
+
+            return $result;
         }
 
         //1. Ищем штрих код в уже набранных товарах, если находим ошибка.
@@ -184,7 +308,11 @@ class Invoice extends Model
             $errorMessage = "Товар уже сканировался " . $barcode;
 
             $this->addErrorLine($barcode, $errorMessage);
-            return ['error' => true, 'errorMessage' => $errorMessage ];
+
+            $result['error']        = true;
+            $result['errorMessage'] = $errorMessage;
+
+            return $result;
         }
 
         //Обнуление showFirst  у заказа
@@ -227,88 +355,58 @@ class Invoice extends Model
         if ($errorBarCode && strlen($barcode) > 0) {
             $this->addErrorLine($barcode, $errorMessage);
 
-            return ['error' => $errorBarCode, 'errorMessage' => $errorMessage ];
+            $result['error']        = $errorBarCode;
+            $result['errorMessage'] = $errorMessage;
+
+            return $result;
         }
 
-        return ['error' => false, 'errorMessage' => ''];
+        */
+
+        return $result;
     }
 
-    private function addPackStamp($barcode)
+    private function addPackStamp($packNumber, $palletId = null)
     {
-        $errorBarCode = false;
-        $errorMessage = "";
+        $result = ['error' => false,
+                   'errorMessage' => '',
+                   'packId' => null,
+                   'palletId' => $palletId];
 
-        //СКАНИРОВАНИЕ АКЦИЗНОЙ МАРКИ
-        //101100261679680118001D5CCFC794963898C1B13E41231CKY42T7UDIJJY2AWLHS7HPGINLMY7PQPDNJALVS42WNCHYRCO257SPCSCF4ASM37BZNTLIASYRVGFUTCXDXDJPML5MMVLEEHZWPWJVI
-        if (strlen($barcode) != 26)
+        if ($palletId != null) {
+            $palletLine = InvoicePalletLine::find($palletId);
+            $palletNumber = $palletLine->pallet_number;
+
+            $packLine = $this->findPackLine($packNumber, $palletNumber);
+        } else {
+            $packLine = $this->findPackLine($packNumber);
+        }
+
+        if ($packLine == null)
         {
-            $errorMessage = "Не опознан ШК " . $barcode;
+            $errorMessage = "Не найден ШК упаковки " . $packNumber;
 
-            $this->addErrorLine($barcode, $errorMessage);
-            return ['error' => true, 'errorMessage' => $errorMessage ];
+            $this->addErrorLine($packNumber, $errorMessage);
+
+            $result['error']        = true;
+            $result['errorMessage'] = $errorMessage;
+
+            return $result;
         }
 
-        $invoicePackLine = InvoicePackLine::where( [['invoice_id', '=', $this->id],['mark_code', '=', $barcode]] )->first();
-        if ($invoicePackLine == null)
-        {
-            $errorMessage = "Не найден ШК упаковки в накладной " . $barcode;
+        $result['packId'] = $packLine->id;
 
-            $this->addErrorLine($barcode, $errorMessage);
-            return ['error' => true, 'errorMessage' => $errorMessage ];
-        }
-
-        //1. Ищем штрих код в уже набранных товарах, если находим ошибка.
-        $invoiceReadLine = InvoiceReadLine::where( [['invoice_id', '=', $this->id],['mark_code', '=', $barcode]] )->first();
-        if ($invoiceReadLine != null)
-        {
-            $errorMessage = "Упаковка уже сканировалась " . $barcode;
-
-            $this->addErrorLine($barcode, $errorMessage);
-            return ['error' => true, 'errorMessage' => $errorMessage ];
-        }
-
-        //Обнуление showFirst  у заказа
-        $this->invoiceLines->each(function ($item, $key) {
-            if ($item->show_first) {
-                $item->show_first = false;
-                $item->save();
-            }
-        });
-
-        DB::beginTransaction();
-
-        try{
-            $invoiceReadLine = new InvoiceReadLine;
-            $invoiceReadLine->invoice_id      = $this->id;
-            $invoiceReadLine->line_id         = $invoicePackLine->line_id;
-            $invoiceReadLine->line_identifier = $invoicePackLine->line_identifier;
-            $invoiceReadLine->mark_code       = $barcode;
-            $invoiceReadLine->savedin1c       = false;
-            $invoiceReadLine->save();
-
-            $invoiceLine = InvoiceLine::where( [['invoice_id', '=', $this->id],['line_identifier', '=', $invoicePackLine->line_identifier]] )->first();
-            if ($invoiceLine != null)
-            {
-                $invoiceLine->increment('quantity_mark');
-                $invoiceLine->show_first = true;
-                $invoiceLine->save();
-            }
-
-            DB::commit();
-
-        } catch(\Exception $exception){
-            $errorBarCode = true;
-            $errorMessage = "Ошибка при записи " . $barcode;
-
-            DB::rollback();
-        }
-
-        if ($errorBarCode && strlen($barcode) > 0) {
-            $this->addErrorLine($barcode, $errorMessage);
-
-            return ['error' => $errorBarCode, 'errorMessage' => $errorMessage ];
-        }
-
-        return ['error' => false, 'errorMessage' => ''];
+        return $result;
     }
+
+    private function addPalletStamp($PalletLine)
+    {
+        $result = ['error' => false,
+                   'errorMessage' => '',
+                   'packId' => null,
+                   'palletId' => $PalletLine->id];
+
+        return $result;
+    }
+
 }

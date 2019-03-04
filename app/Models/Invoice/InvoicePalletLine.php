@@ -8,7 +8,7 @@ class InvoicePalletLine extends Model
 {
     protected $table = 'doc_invoice_pallet_line';
 
-    protected $fillable = ['line_id', 'line_identifier', 'mark_code'];
+    protected $fillable = ['line_id', 'line_identifier', 'pallet_number'];
 
     public function invoice(){
         return $this->belongsTo("App\Models\Invoice\Invoice");
