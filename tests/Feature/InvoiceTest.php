@@ -13,7 +13,8 @@ use App\User;
 
 class InvoiceTest extends TestCase
 {
-    const DOC_ID = 'YTD2B2BLqXhCAEdltKSio2lhsfPWB95I9LQa';
+    const DOC_ID_ADD = 'YTD2B2BLqXhCAEdltKSio2lhsfPWB95I9LQa';
+    const DOC_ID_UPD = '11YTD2B2BLqXhCAEdltKSio2lhsfPWB95I9L';
 
     private $token;
     private $headers;
@@ -38,25 +39,29 @@ class InvoiceTest extends TestCase
             'number' => $number,
             'barcode' => $barcode,
             'doc_type' => '3',
-            'doc_id' => InvoiceTest::DOC_ID,
+            'doc_id' => InvoiceTest::DOC_ID_ADD,
             'lines' => [
                 '1' => [
                     'line_id' => '1',
                     'line_identifier' => '1',
-                    'product_descr' => 'товар',
-                    'product_code' => '111111',
-                    'f1reg_id' => '1111',
-                    'f2reg_id' => '22222',
-                    'quantity' => '10'
+                    'product_descr' => 'Настойка горькая ПЕРЦОВОЧКА С МЕДОМ',
+                    'product_code' => '0378114000001323864',
+                    'f1reg_id' => 'FA-000000039597226',
+                    'f2reg_id' => 'FB-000001309598237',
+                    'quantity' => '10',
+                    'quantity_pack' => '2',
+                    'quantity_pallet' => '1'
                 ],
                 '2' => [
                     'line_id' => '2',
                     'line_identifier' => '2',
-                    'product_descr' => 'товар',
-                    'product_code' => '111111',
-                    'f1reg_id' => '1111',
-                    'f2reg_id' => '22222',
-                    'quantity' => '5'
+                    'product_descr' => 'Настойка горькая ПЕРЦОВОЧКА',
+                    'product_code' => '0123130000002476973',
+                    'f1reg_id' => 'FA-000000039565813',
+                    'f2reg_id' => 'FB-000001309598228',
+                    'quantity' => '5',
+                    'quantity_pack' => '2',
+                    'quantity_pallet' => '1'
                 ]
             ],
             'marklines' => [
@@ -184,7 +189,7 @@ class InvoiceTest extends TestCase
             'number' => $number,
             'barcode' => $barcode,
             'doc_type' => '3',
-            'doc_id' => InvoiceTest::DOC_ID,
+            'doc_id' => InvoiceTest::DOC_ID_ADD,
             'marklines' => [
                 '1' => [
                     'line_id' => '1',
@@ -215,6 +220,7 @@ class InvoiceTest extends TestCase
         return $payload;
     }
 
+
     public function testApiInvoiceStatus()
     {
         $response = $this->get('/api/v1/invoices', $this->headers);
@@ -240,7 +246,7 @@ class InvoiceTest extends TestCase
     {
         $payload = $this->newInvoice();
 
-        $invoice = Invoice::where('doc_id', '11YTD2B2BLqXhCAEdltKSio2lhsfPWB95I9L')->first();
+        $invoice = Invoice::where('doc_id', InvoiceTest::DOC_ID_UPD)->first();
 
         $payload['doc_id'] = $invoice->doc_id;
         $payload['number'] = $invoice->number;
@@ -258,7 +264,7 @@ class InvoiceTest extends TestCase
     {
         $payload = $this->newInvoiceMark();
 
-        $invoice = Invoice::where('doc_id', '11YTD2B2BLqXhCAEdltKSio2lhsfPWB95I9L')->first();
+        $invoice = Invoice::where('doc_id', InvoiceTest::DOC_ID_UPD)->first();
 
         $number  = $invoice->number;
         $barcode = $invoice->barcode;
@@ -273,7 +279,7 @@ class InvoiceTest extends TestCase
         $response = $this->get('/api/v1/invoices', $this->headers);
         $response->assertStatus(200)
             ->assertJsonFragment(['current_page' => 1])
-            ->assertJsonFragment(['doc_id' => InvoiceTest::DOC_ID]);
+            ->assertJsonFragment(['doc_id' => InvoiceTest::DOC_ID_ADD]);
 
     }
 }

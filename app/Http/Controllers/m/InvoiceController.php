@@ -55,6 +55,24 @@ class InvoiceController extends Controller
             }
         }
 
+        $show = $request->input('show', '');
+
+        if ($show == 'pallet')
+        {
+            $invoice->invoiceLines = $invoice->invoiceLines->filter(function ($item)
+            {
+                return $item['quantity_pallet'] != $item['quantity_pallet_mark'];
+            });
+
+        }
+        if ($show == 'box')
+        {
+            $invoice->invoiceLines = $invoice->invoiceLines->filter(function ($item)
+            {
+                return $item['quantity_pack'] != $item['quantity_pack_mark'];
+            });
+        }
+
         /*
         foreach ($invoice->invoiceLines as $item)
         {
@@ -113,6 +131,14 @@ class InvoiceController extends Controller
         } elseif ($barcode == '1'){
             $request->session()->forget('invoice');
 
+            return redirect()->action('m\InvoiceController@edit', ['id' => $invoiceId]);
+        } elseif ($barcode == '2'){
+
+            return redirect()->action('m\InvoiceController@edit', ['id' => $invoiceId, 'show' => 'pallet']);
+        } elseif ($barcode == '3'){
+            return redirect()->action('m\InvoiceController@edit', ['id' => $invoiceId, 'show' => 'box']);
+
+        } elseif ($barcode == '4'){
             return redirect()->action('m\InvoiceController@edit', ['id' => $invoiceId]);
         }
 

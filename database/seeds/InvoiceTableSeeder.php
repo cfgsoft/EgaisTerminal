@@ -40,20 +40,24 @@ class InvoiceTableSeeder extends Seeder
                     '1' => [
                         'line_id' => '1',
                         'line_identifier' => '1',
-                        'product_descr' => 'товар',
-                        'product_code' => '111111',
-                        'f1reg_id' => '1111',
-                        'f2reg_id' => '22222',
-                        'quantity' => '10'
+                        'product_descr' => 'Настойка горькая ПЕРЦОВОЧКА С МЕДОМ',
+                        'product_code' => '0378114000001323864',
+                        'f1reg_id' => 'FA-000000039597226',
+                        'f2reg_id' => 'FB-000001309598237',
+                        'quantity' => '10',
+                        'quantity_pack' => '2',
+                        'quantity_pallet' => '1'
                     ],
                     '2' => [
                         'line_id' => '2',
                         'line_identifier' => '2',
-                        'product_descr' => 'товар',
-                        'product_code' => '111111',
-                        'f1reg_id' => '1111',
-                        'f2reg_id' => '22222',
-                        'quantity' => '5'
+                        'product_descr' => 'Настойка горькая ПЕРЦОВОЧКА',
+                        'product_code' => '0123130000002476973',
+                        'f1reg_id' => 'FA-000000039565813',
+                        'f2reg_id' => 'FB-000001309598228',
+                        'quantity' => '5',
+                        'quantity_pack' => '1',
+                        'quantity_pallet' => '1'
                     ]
                 ],
                 'marklines' => [
@@ -111,7 +115,9 @@ class InvoiceTableSeeder extends Seeder
                         'product_code' => '111111',
                         'f1reg_id' => '1111',
                         'f2reg_id' => '22222',
-                        'quantity' => '10'
+                        'quantity' => '10',
+                        'quantity_pack' => '2',
+                        'quantity_pallet' => '1'
                     ],
                     '2' => [
                         'line_id' => '2',
@@ -120,7 +126,9 @@ class InvoiceTableSeeder extends Seeder
                         'product_code' => '111111',
                         'f1reg_id' => '1111',
                         'f2reg_id' => '22222',
-                        'quantity' => '5'
+                        'quantity' => '5',
+                        'quantity_pack' => '1',
+                        'quantity_pallet' => '1'
                     ]
                 ],
                 'marklines' => [
@@ -220,6 +228,8 @@ class InvoiceTableSeeder extends Seeder
                 $invoiceLine->f1reg_id   = $l["f1reg_id"];
                 $invoiceLine->f2reg_id   = $l["f2reg_id"];
                 $invoiceLine->quantity   = $l["quantity"];
+                $invoiceLine->quantity_pack   = $l["quantity_pack"];
+                $invoiceLine->quantity_pallet = $l["quantity_pallet"];
                 $invoiceLine->save();
             }
 

@@ -4,6 +4,9 @@
     <h5>Считайте штрихкод</h5>
     <h6>
         <a href="{{ route('m.invoice') }}" >0-Выход</a>
+        <a href="{{ route('m.invoice.edit', ['id' => $invoice->id, 'show' => 'pallet']) }}" >2-Паллет</a>
+        <a href="{{ route('m.invoice.edit', ['id' => $invoice->id, 'show' => 'box']) }}" >3-Ящик</a>
+        <a href="{{ route('m.invoice.edit', ['id' => $invoice->id]) }}" >4-Бутылка</a>
     </h6>
 
     <form action="{{ action('m\InvoiceController@submiteditbarcode', ['id' => $invoice->id]) }}" id="formInputBarCode" method="post">

@@ -19,20 +19,12 @@
 
     <table class="table">
         <thead>
-        <tr>
-            <th>
-                №
-            </th>
-            <th>
-                Наименование
-            </th>
-            <th>
-                Зак
-            </th>
-            <th>
-                Наб
-            </th>
-        </tr>
+            <tr>
+                <th>№</th>
+                <th>Наименование</th>
+                <th>Зак</th>
+                <th>Наб</th>
+            </tr>
         </thead>
         <tbody>
 
