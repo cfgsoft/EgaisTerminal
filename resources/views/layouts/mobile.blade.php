@@ -25,13 +25,13 @@
     </div>
 
     <script type="text/javascript">
-        window.onload = setFocus;
+        //window.onload = setFocus;
 
-        var el = document.getElementById('InputBarCode');
-        if (el !== null)
-        {
-            el.onpaste = setPasteInputBarCode;
-        }
+        //var el = document.getElementById('InputBarCode');
+        //if (el !== null)
+        //{
+        //    el.onpaste = setPasteInputBarCode;
+        //}
         @yield('scripts')
     </script>
 </body>

@@ -15,64 +15,62 @@
 
     @include('m.errors')
 
+    <h1>Поступление № {{ $invoice->number  }} </h1>
+
     @if ($palletId != null or $packId != null)
-        <p>1-Отчистить упаковку</p>
-    @endif
-
-    @if ($palletId != null)
-        <p>Паллет № {{$palletId}}</p>
-    @endif
-
-    @if ($packId != null)
-        <p>Упаковка № {{$packId}}</p>
+        <div class="invoicepack">1-Отчистить упаковку
+            @if ($palletId != null)
+                <p>Паллет № {{$palletId}}</p>
+            @endif
+            @if ($packId != null)
+                <p><b>Упаковка № {{$packId}}</b></p>
+            @endif
+        </div>
     @endif
 
     {{--
     {{ $palletId or '' }}
     {{ isset($packId) ? 'Упаковка id ' . $packId : '' }}
+
+
+    @foreach ($invoice->invoiceLines as $item)
+        <div class="invoiceline">
+            <div>{{$item->line_id}}. {{$item->product_descr}}</div>
+            <h6>{{$item->f2reg_id}}</h6>
+            <div> {{$item->quantity_pallet}} {{$item->quantity_pallet_mark}} | {{$item->quantity_pack}} {{$item->quantity_pack_mark}} | {{$item->quantity}} {{$item->quantity_mark}} </div>
+        </div>
+    @endforeach
     --}}
 
-    <div>Поступление № {{ $invoice->number  }} </div>
-
-    <table class="table">
+    <table class="table" rules="rows">
         <thead>
         <tr>
-            <th>
-                №
-            </th>
-            <th>
-                Наименование
-            </th>
-            <th>
-                Зак
-            </th>
-            <th>
-                Наб
-            </th>
+            <th>№</th>
+            <th>Наименование</th>
+            <th>Зак</th>
+            <th>Наб</th>
         </tr>
         </thead>
-        <tbody>
 
+        <tbody>
         @foreach ($invoice->invoiceLines as $item)
-            @if ($item->quantity != $item->quantity_mark)
-                <tr>
-                    <td>
-                        {{$item->line_id}}
-                    </td>
-                    <td class="tddescr">
-                        {{$item->product_descr}}
-                        <h6>
-                            {{$item->f2reg_id}}
-                        </h6>
-                    </td>
-                    <td>
-                        {{$item->quantity}}
-                    </td>
-                    <td>
-                        {{$item->quantity_mark}}
-                    </td>
-                </tr>
-            @endif
+            <tr>
+                <td rowspan="3">{{$item->line_id}}</td>
+                <td rowspan="3" class="tddescr">
+                    {{$item->product_descr}}
+                    <h6 class="regidf2">{{$item->f2reg_id}}</h6>
+                </td>
+                <td>{{$item->quantity_pallet}}</td>
+                <td>{{$item->quantity_pallet_mark}}</td>
+            </tr>
+            <tr>
+                <td>{{$item->quantity_pack}}</td>
+                <td>{{$item->quantity_pack_mark}}</td>
+            </tr>
+            <tr>
+                <td>{{$item->quantity}}</td>
+                <td>{{$item->quantity_mark}}</td>
+            </tr>
         @endforeach
 
         </tbody>

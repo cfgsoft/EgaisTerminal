@@ -38,6 +38,8 @@ class InvoiceController extends Controller
         $invoice = Invoice::find($id);
         $invoice->invoiceLines;
         $invoice->invoiceLines = $invoice->invoiceLines->sortBy('line_id')->sortByDesc('show_first');
+        $invoice->invoicePackLines;
+        $invoice->invoicePalletLines;
 
         $palletId = null;
         $packId   = null;
@@ -52,6 +54,26 @@ class InvoiceController extends Controller
                 $request->session()->forget('invoice');
             }
         }
+
+        /*
+        foreach ($invoice->invoiceLines as $item)
+        {
+            $palletLines = $invoice->invoicePalletLines->filter(function ($itemPallet) use ($item) {
+                return $itemPallet['line_identifier'] == $item['line_identifier'];
+            });
+
+            $item['invoicePalletLines'] = $palletLines;
+
+            foreach ($item['invoicePalletLines'] as $itemPallet)
+            {
+                $packLines = $invoice->invoicePackLines->filter(function ($itemPack) use ($itemPallet) {
+                    return $itemPack['pallet_number'] == $itemPallet['pallet_number'];
+                });
+
+                $itemPallet['invoicePackLines'] = $packLines;
+            }
+        }
+        */
 
         return view('m/invoice/edit', ['invoice' => $invoice, 'palletId' => $palletId, 'packId' => $packId]);
     }

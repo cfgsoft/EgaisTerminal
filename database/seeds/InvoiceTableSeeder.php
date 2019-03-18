@@ -166,6 +166,40 @@ class InvoiceTableSeeder extends Seeder
             ],
         ];
 
+        /*
+        [
+            'date' => $date,
+            'number' => 'S0000107520',
+            'barcode' => 'DS0000107520',
+            'incoming_number' => 'ЛРнК-023196',
+            'incoming_date' => $date,
+            'sum' => 977351.16,
+            'doc_type' => '3',
+            'doc_id' => '82385a70-3115-11e9-96a5-80c16e6f141f',
+            'lines' => [
+                '1' => [
+                    'line_id' => '1',
+                    'line_identifier' => '1',
+                    'product_descr' => 'Настойка горькая ПЕРЦОВОЧКА С МЕДОМ',
+                    'product_code' => '0378114000001323864',
+                    'f1reg_id' => 'FA-000000042379795',
+                    'f2reg_id' => 'FB-000002131644408',
+                    'quantity' => '1140'
+                ],
+                '2' => [
+                    'line_id' => '2',
+                    'line_identifier' => '2',
+                    'product_descr' => 'Настойка горькая ПЕРЦОВОЧКА',
+                    'product_code' => '0378114000001323862',
+                    'f1reg_id' => 'FA-000000042192772',
+                    'f2reg_id' => 'FB-000002131644403',
+                    'quantity' => '1080'
+                ],
+            ]
+
+        ]
+        */
+
         foreach($invoices as $i)
         {
             $invoice = new Invoice;

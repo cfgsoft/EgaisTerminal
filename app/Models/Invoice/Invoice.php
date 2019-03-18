@@ -25,6 +25,10 @@ class Invoice extends Model
         return $this->hasMany("App\Models\Invoice\InvoicePackLine");
     }
 
+    public function invoicePalletLines(){
+        return $this->hasMany("App\Models\Invoice\InvoicePalletLine");
+    }
+
     public function invoiceReadLines(){
         return $this->hasMany("App\Models\Invoice\InvoiceReadLine");
     }
@@ -170,6 +174,7 @@ class Invoice extends Model
     }
 
 
+
     public function addBarCode($barcode, $palletId, $packId)
     {
         if (strlen($barcode) == 26 or strlen($barcode) == 18) {
@@ -223,6 +228,7 @@ class Invoice extends Model
         }
 
 
+        $packLine = null;
         if ($packId != null) {
             $packLine = InvoicePackLine::find($packId);
             $packNumber = $packLine->pack_number;
@@ -257,19 +263,90 @@ class Invoice extends Model
             /*
             $invoiceReadLine = new InvoiceReadLine;
             $invoiceReadLine->invoice_id      = $this->id;
-            $invoiceReadLine->line_id         = $invoiceMarkLine->line_id;
-            $invoiceReadLine->line_identifier = $invoiceMarkLine->line_identifier;
+            $invoiceReadLine->line_id         = $markLine->line_id;
+            $invoiceReadLine->line_identifier = $markLine->line_identifier;
             $invoiceReadLine->mark_code       = $barcode;
             $invoiceReadLine->savedin1c       = false;
             $invoiceReadLine->save();
             */
 
-            $invoiceLine = InvoiceLine::where( [['invoice_id', '=', $this->id],['line_identifier', '=', $markLine->line_identifier]] )->first();
-            if ($invoiceLine != null and $invoiceLine->quantity_mark == 0)
+            /*
+            if (!$markLine->read)
             {
-                //$invoiceLine->quantity_mark = $invoiceLine->quantity_mark + 1;
-                $invoiceLine->increment('quantity_mark');
+                $markLine->read = true;
+                $markLine->save();
+            };
+
+            if ($packId != null and !$packLine->read)
+            {
+                $packLine->read = true;
+                $packLine->save();
+            };
+
+            if ($palletId != null)
+            {
+                $palletLineFirst = InvoicePalletLine::find($palletId);
+                $palletLine = InvoicePalletLine::where( [['invoice_id', '=', $this->id],
+                                                         ['line_identifier', '=', $markLine->line_identifier],
+                                                         ['pallet_number', '=', $palletLineFirst->pallet_number]])->first();
+
+                if (!$palletLine->read)
+                {
+                    $palletLine->read = true;
+                    $palletLine->save();
+                }
+            }
+            */
+
+            $invoiceLine = InvoiceLine::where( [['invoice_id', '=', $this->id],['line_identifier', '=', $markLine->line_identifier]] )->first();
+            if ($invoiceLine != null)
+            {
+                if (!$markLine->read)
+                {
+                    $markLine->read = true;
+                    $markLine->save();
+
+                    $invoiceLine->increment('quantity_mark');
+                };
+
+                if ($packId != null and !$packLine->read)
+                {
+                    $packLine->read = true;
+                    $packLine->save();
+
+                    $invoiceLine->increment('quantity_pack_mark');
+                };
+
+                if ($palletId != null)
+                {
+                    $palletLineFirst = InvoicePalletLine::find($palletId);
+                    $palletLine = InvoicePalletLine::where( [['invoice_id', '=', $this->id],
+                        ['line_identifier', '=', $markLine->line_identifier],
+                        ['pallet_number', '=', $palletLineFirst->pallet_number]])->first();
+
+                    if (!$palletLine->read)
+                    {
+                        $palletLine->read = true;
+                        $palletLine->save();
+
+                        $invoiceLine->increment('quantity_pallet_mark');
+                    }
+                }
+
+
+                //$invoiceLine->increment('quantity_mark');
                 $invoiceLine->show_first = true;
+
+                /*
+                if ($packId != null and $invoiceLine->quantity_pack_mark == 0){
+                    $invoiceLine->increment('quantity_pack_mark');
+                }
+
+                if ($palletId != null and $invoiceLine->quantity_pallet_mark == 0){
+                    $invoiceLine->increment('quantity_pallet_mark');
+                }
+                */
+
                 $invoiceLine->save();
             }
 
@@ -282,86 +359,6 @@ class Invoice extends Model
 
             DB::rollback();
         }
-
-
-
-
-
-        /*
-        $invoiceMarkLine = InvoiceMarkLine::where( [['invoice_id', '=', $this->id],['mark_code', '=', $barcode]] )->first();
-        if ($invoiceMarkLine == null)
-        {
-            $errorMessage = "Не найдена марка в накладной " . $barcode;
-
-            $this->addErrorLine($barcode, $errorMessage);
-
-            $result['error']        = true;
-            $result['errorMessage'] = $errorMessage;
-
-            return $result;
-        }
-
-        //1. Ищем штрих код в уже набранных товарах, если находим ошибка.
-        $invoiceReadLine = InvoiceReadLine::where( [['invoice_id', '=', $this->id],['mark_code', '=', $barcode]] )->first();
-        if ($invoiceReadLine != null)
-        {
-            $errorMessage = "Товар уже сканировался " . $barcode;
-
-            $this->addErrorLine($barcode, $errorMessage);
-
-            $result['error']        = true;
-            $result['errorMessage'] = $errorMessage;
-
-            return $result;
-        }
-
-        //Обнуление showFirst  у заказа
-        $this->invoiceLines->each(function ($item, $key) {
-            if ($item->show_first) {
-                $item->show_first = false;
-                $item->save();
-            }
-        });
-
-        DB::beginTransaction();
-
-        try{
-            $invoiceReadLine = new InvoiceReadLine;
-            $invoiceReadLine->invoice_id      = $this->id;
-            $invoiceReadLine->line_id         = $invoiceMarkLine->line_id;
-            $invoiceReadLine->line_identifier = $invoiceMarkLine->line_identifier;
-            $invoiceReadLine->mark_code       = $barcode;
-            $invoiceReadLine->savedin1c       = false;
-            $invoiceReadLine->save();
-
-            $invoiceLine = InvoiceLine::where( [['invoice_id', '=', $this->id],['line_identifier', '=', $invoiceMarkLine->line_identifier]] )->first();
-            if ($invoiceLine != null)
-            {
-                //$invoiceLine->quantity_mark = $invoiceLine->quantity_mark + 1;
-                $invoiceLine->increment('quantity_mark');
-                $invoiceLine->show_first = true;
-                $invoiceLine->save();
-            }
-
-            DB::commit();
-
-        } catch(\Exception $exception){
-            $errorBarCode = true;
-            $errorMessage = "Ошибка при записи " . $barcode;
-
-            DB::rollback();
-        }
-
-        if ($errorBarCode && strlen($barcode) > 0) {
-            $this->addErrorLine($barcode, $errorMessage);
-
-            $result['error']        = $errorBarCode;
-            $result['errorMessage'] = $errorMessage;
-
-            return $result;
-        }
-
-        */
 
         return $result;
     }
