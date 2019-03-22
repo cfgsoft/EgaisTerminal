@@ -80,8 +80,8 @@ class OrderTest extends TestCase
     {
         $payload = $this->newOrder();
 
-        $order = Order::where('DocId', OrderTest::DOC_ID_UPD)->first();
-        $payload['doc_id'] = $order->DocId;
+        $order = Order::where('doc_id', OrderTest::DOC_ID_UPD)->first();
+        $payload['doc_id'] = $order->doc_id;
         $payload['number'] = $order->number;
         $payload['barcode'] = $order->barcode;
 
@@ -98,7 +98,7 @@ class OrderTest extends TestCase
         $response = $this->get('/api/v1/orders', $this->headers);
         $response->assertStatus(200)
             ->assertJsonFragment(['current_page' => 1])
-            ->assertJsonFragment(['DocId' => OrderTest::DOC_ID_UPD]);
+            ->assertJsonFragment(['doc_id' => OrderTest::DOC_ID_UPD]);
 
     }
 
@@ -146,7 +146,7 @@ class OrderTest extends TestCase
     public function testOrderEdit()
     {
         $value = 'C13111434';
-        $order = Order::where('DocId', OrderTest::DOC_ID_UPD)->first();
+        $order = Order::where('doc_id', OrderTest::DOC_ID_UPD)->first();
 
         $response = $this->post('/m/order', ['BarCode' => $value]);
         $response->assertStatus(302);
@@ -159,7 +159,7 @@ class OrderTest extends TestCase
 
     public function testOrderEditSubmitBarcodeValidate()
     {
-        $order = Order::where('DocId', OrderTest::DOC_ID_UPD)->first();
+        $order = Order::where('doc_id', OrderTest::DOC_ID_UPD)->first();
 
         $testUrl = '/m/order/edit/' . $order->id;
 
@@ -212,7 +212,7 @@ class OrderTest extends TestCase
 
     public function testOrderEditSubmitBarcodeDoubleClick()
     {
-        $order = Order::where('DocId', OrderTest::DOC_ID_UPD)->first();
+        $order = Order::where('doc_id', OrderTest::DOC_ID_UPD)->first();
 
         $testUrl = '/m/order/edit/' . $order->id;
 
@@ -244,7 +244,7 @@ class OrderTest extends TestCase
     {
         //С13_111434
 
-        $order = Order::where('DocId', OrderTest::DOC_ID_UPD)->first();
+        $order = Order::where('doc_id', OrderTest::DOC_ID_UPD)->first();
 
         $testUrl = '/m/order/edit/' . $order->id;
 
@@ -280,7 +280,7 @@ class OrderTest extends TestCase
 
     public function testOrderEditSubmitBarcodeBoxDoubleClick()
     {
-        $order = Order::where('DocId', OrderTest::DOC_ID_UPD)->first();
+        $order = Order::where('doc_id', OrderTest::DOC_ID_UPD)->first();
 
         $testUrl = '/m/order/edit/' . $order->id;
 
@@ -310,7 +310,7 @@ class OrderTest extends TestCase
 
     public function testOrderEditSubmitBarcodePalletDoubleClick()
     {
-        $order = Order::where('DocId', OrderTest::DOC_ID_UPD)->first();
+        $order = Order::where('doc_id', OrderTest::DOC_ID_UPD)->first();
 
         $testUrl = '/m/order/edit/' . $order->id;
 
@@ -339,7 +339,7 @@ class OrderTest extends TestCase
 
     public function testOrderEditSubmitBarcodePalletBoxExistClick()
     {
-        $order = Order::where('DocId', OrderTest::DOC_ID_UPD)->first();
+        $order = Order::where('doc_id', OrderTest::DOC_ID_UPD)->first();
 
         $testUrl = '/m/order/edit/' . $order->id;
 

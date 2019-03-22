@@ -14,42 +14,45 @@
 
     @include('m.errors')
 
-    <h5>Документы набора</h5>
+    <!-- <h5>Документы набора</h5> -->
 
-    <!--
     <table class="table">
         <thead>
-        <tr>
-            <th>
-                Номер
-            </th>
-            <th></th>
-        </tr>
+            <tr>
+                <th>Заявка</th>
+                <th>Зак</th>
+                <th>Наб</th>
+            </tr>
         </thead>
         <tbody>
         @foreach ($order as $item)
-            <tr>
-                <td>
-                    {{$item->number}}
-                </td>
-                <td>
-                    <a href="{{ route('m.order.edit', ['id' => $item->id]) }}" >Собрать</a>
-                </td>
-            </tr>
+                <tr>
+                    <td class="tddescr tdbuttom">
+                        <a href="{{ route('m.order.edit', ['id' => $item->id]) }}" >
+                            {{$item->date}} № {{$item->number}}
+                        </a>
+                    </td>
+                    <td class="tdbuttom">
+                        {{$item->quantity}}
+                    </td>
+                    <td class="tdbuttom">
+                        {{$item->quantity_mark}}
+                    </td>
+                </tr>
         @endforeach
 
         </tbody>
     </table>
-    -->
 
-
+    {{--
     @foreach ($order as $item)
     <div class="card">
         <a href="{{ route('m.order.edit', ['id' => $item->id]) }}" >
-            <div>{{$item->date}} № {{$item->number}}</div>
+            <div>{{$item->date}} № {{$item->number}} <span>{{$item->quantity}}</span> <span>{{$item->quantity_mark}}</span> </div>
         </a>
     </div>
     @endforeach
+    --}}
 
     {{ $order->links("pagination.m-simple") }}
 

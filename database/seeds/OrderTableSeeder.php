@@ -16,12 +16,12 @@ class OrderTableSeeder extends Seeder
      */
     public function run()
     {
-        DB::table('order_error_lines')->delete();
-        DB::table('order_pallet_line')->delete();;
-        DB::table('order_pack_lines')->delete();
-        DB::table('order_mark_lines')->delete();
-        DB::table('order_lines')->delete();
-        DB::table('orders')->delete();
+        DB::table('doc_order_error_line')->delete();
+        DB::table('doc_order_pallet_line')->delete();;
+        DB::table('doc_order_pack_line')->delete();
+        DB::table('doc_order_mark_line')->delete();
+        DB::table('doc_order_line')->delete();
+        DB::table('doc_order')->delete();
 
         $date = Carbon::create('2018', '11', '24');
         $dateOld = Carbon::create('2018', '10', '24');
@@ -41,7 +41,7 @@ class OrderTableSeeder extends Seeder
                         'product_code' => '0037150000001399460',
                         'f2reg_id' => 'FB-000001309598237',
                         'quantity' => '15',
-                        'quantitymarks' => '0',
+                        'quantity_mark' => '0',
                     ],
                     '2' => [
                         'line_id' => '2',
@@ -49,7 +49,7 @@ class OrderTableSeeder extends Seeder
                         'product_code' => '0123130000002476973',
                         'f2reg_id' => 'FB-000001309598228',
                         'quantity' => '12',
-                        'quantitymarks' => '0',
+                        'quantity_mark' => '0',
                     ]
                 ],
                 'marklines' => []
@@ -67,7 +67,7 @@ class OrderTableSeeder extends Seeder
                         'product_code' => '0037150000001399460',
                         'f2reg_id' => 'FB-000001309598237',
                         'quantity' => '5',
-                        'quantitymarks' => '2',
+                        'quantity_mark' => '2',
                     ],
                     '2' => [
                         'line_id' => '2',
@@ -75,7 +75,7 @@ class OrderTableSeeder extends Seeder
                         'product_code' => '0123130000002476973',
                         'f2reg_id' => 'FB-000001309598228',
                         'quantity' => '2',
-                        'quantitymarks' => '0',
+                        'quantity_mark' => '0',
                     ]
                 ],
                 'marklines' => [
@@ -106,35 +106,35 @@ class OrderTableSeeder extends Seeder
             $order->number   = $i["number"];
             $order->barcode  = $i["barcode"];
             $order->status   = 0;
-            $order->Quantity       = 0;
-            $order->QuantityMarks  = 0;
-            $order->DocType = $i["doc_type"];
-            $order->DocId   = $i["doc_id"];
+            $order->quantity       = 0;
+            $order->Quantity_mark  = 0;
+            $order->doc_type = $i["doc_type"];
+            $order->doc_id   = $i["doc_id"];
             $order->save();
 
             foreach($i["lines"] as $l) {
                 $orderLine = new OrderLine;
                 $orderLine->order_id      = $order->id;
-                $orderLine->orderlineid    = $l["line_id"];
-                $orderLine->productdescr   = $l["product_descr"];
-                $orderLine->productcode    = $l["product_code"];
-                $orderLine->quantity       = $l["quantity"];
-                $orderLine->quantitymarks  = $l["quantitymarks"];
-                $orderLine->f2regid        = $l["f2reg_id"];
-                $orderLine->showfirst   = 0;
+                $orderLine->line_id       = $l["line_id"];
+                $orderLine->product_descr = $l["product_descr"];
+                $orderLine->product_code  = $l["product_code"];
+                $orderLine->quantity      = $l["quantity"];
+                $orderLine->quantity_mark = $l["quantity_mark"];
+                $orderLine->f2reg_id      = $l["f2reg_id"];
+                $orderLine->show_first    = 0;
                 $orderLine->save();
             }
 
             foreach($i["marklines"] as $l) {
                 $orderLine = new OrderMarkLine;
                 $orderLine->order_id      = $order->id;
-                $orderLine->orderlineid   = $l["line_id"];
-                $orderLine->productcode   = $l["product_code"];
+                $orderLine->line_id       = $l["line_id"];
+                $orderLine->product_code  = $l["product_code"];
                 $orderLine->markcode      = $l["markcode"];
                 $orderLine->quantity      = $l["quantity"];
-                $orderLine->f2regid       = $l["f2reg_id"];
+                $orderLine->f2reg_id      = $l["f2reg_id"];
                 $orderLine->savedin1c     = 0;
-                $orderLine->boxnumber     = '000000000000000000000';
+                $orderLine->pack_number   = '000000000000000000000';
                 $orderLine->created_at    = $l["created_at"];
                 $orderLine->updated_at    = $i["date"];
                 $orderLine->save();

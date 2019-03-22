@@ -20,10 +20,10 @@ $factory->define(App\Models\Order\Order::class, function (Faker $faker) {
         'number' => str_random(10),
         'barcode' => str_random(10),
         'status' => '0',
-        'Quantity' => '0',
-        'QuantityMarks' => '0',
-        'DocType' => '1',
-        'DocId' => str_random(36)
+        'quantity' => '0',
+        'quantity_mark' => '0',
+        'doc_type' => '1',
+        'doc_id' => str_random(36)
     ];
 });
 

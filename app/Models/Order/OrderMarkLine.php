@@ -6,7 +6,9 @@ use Illuminate\Database\Eloquent\Model;
 
 class OrderMarkLine extends Model
 {
-    protected $fillable = ['orderlineid', 'productcode', 'f2regid', 'markcode', 'boxnumber',
+    protected $table = 'doc_order_mark_line';
+
+    protected $fillable = ['line_id', 'product_code', 'f2reg_id', 'markcode', 'pack_number',
                            'quantity', 'savedin1c', 'order_id'];
 
     public function order(){

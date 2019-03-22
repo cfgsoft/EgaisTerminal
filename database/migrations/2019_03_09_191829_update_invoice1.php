@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class UpdateInvoice extends Migration
+class UpdateInvoice1 extends Migration
 {
     /**
      * Run the migrations.
@@ -13,9 +13,9 @@ class UpdateInvoice extends Migration
      */
     public function up()
     {
-        Schema::table('doc_invoice_pallet_line', function (Blueprint $table) {
-            $table->dropUnique('doc_invoice_pallet_line_mark_code_invoice_id_unique');
-        });
+        //Schema::table('doc_invoice_pallet_line', function (Blueprint $table) {
+        //    $table->dropUnique('doc_invoice_pallet_line_mark_code_invoice_id_unique');
+        //});
 
     }
 

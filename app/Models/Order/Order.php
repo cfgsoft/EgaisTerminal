@@ -13,18 +13,20 @@ use App\Models\ExciseStamp\ExciseStampPallet;
 
 class Order extends Model
 {
+    protected $table = 'doc_order';
+
     protected $fillable = ['date', 'number', 'barcode', 'status',
         'Quantity', 'QuantityMarks', 'DocType', 'DocId'];
 
-    public function orderlines(){
+    public function orderLines(){
         return $this->hasMany("App\Models\Order\OrderLine");
     }
 
-    public function ordermarklines(){
+    public function orderMarkLines(){
         return $this->hasMany("App\Models\Order\OrderMarkLine");
     }
 
-    public function orderpacklines(){
+    public function orderPackLines(){
         return $this->hasMany("App\Models\Order\OrderPackLine");
     }
 
@@ -32,7 +34,7 @@ class Order extends Model
         return $this->hasMany("App\Models\Order\OrderPalletLine");
     }
 
-    public function ordererrorlines(){
+    public function orderErrorLines(){
         return $this->hasMany("App\Models\Order\OrderErrorLine");
     }
 
@@ -41,8 +43,8 @@ class Order extends Model
     {
         $order = new static;
         $order->fill($fields);
-        $order->DocType = $fields['doc_type'];
-        $order->DocId   = $fields['doc_id'];
+        $order->doc_type = $fields['doc_type'];
+        $order->doc_id   = $fields['doc_id'];
 
         return $order;
     }
@@ -50,17 +52,28 @@ class Order extends Model
     public function edit($fields)
     {
         $this->fill($fields);
-        $this->DocType = $fields['doc_type'];
-        $this->DocId   = $fields['doc_id'];
+        $this->doc_type = $fields['doc_type'];
+        $this->doc_id   = $fields['doc_id'];
 
         return $this;
     }
+
+    public function addLines($fields)
+    {
+        $line = new OrderLine();
+        $line->fill($fields);
+        $line->order_id = $this->id;
+        $line->save();
+
+        return $line;
+    }
+
 
     public function findLineF2RegId($f2reg_id)
     {
         if($f2reg_id == null) { return; }
 
-        $orderLine = OrderLine::where([ ['order_id','=',$this->id], ['f2regid','=',$f2reg_id] ])->first();
+        $orderLine = OrderLine::where([ ['order_id','=',$this->id], ['f2reg_id','=',$f2reg_id] ])->first();
 
         return $orderLine;
     }
@@ -135,7 +148,7 @@ class Order extends Model
         {
             $errorMessage = "Товар уже сканировался " . $barcode;
 
-            $this->addErrorLine($barcode, $orderMarkLine->productcode, $orderMarkLine->f2regid, $errorMessage);
+            $this->addErrorLine($barcode, $orderMarkLine->product_code, $orderMarkLine->f2reg_id, $errorMessage);
             return ['error' => true, 'errorMessage' => $errorMessage ];
         }
 
@@ -145,21 +158,21 @@ class Order extends Model
 
         $orderMarkLine = OrderMarkLine::where([['markcode',   '=', $barcode],
                                                ['quantity',   '=', '1'],
-                                               ["f2regid",    "=", $exciseStamp->f2regid]
+                                               ["f2reg_id",   "=", $exciseStamp->f2regid]
         ])->first();
         if ($orderMarkLine != null)
         {
             $errorMessage = "Товар уже сканировался " . $barcode;
 
-            $this->addErrorLine($barcode, $orderMarkLine->productcode, $orderMarkLine->f2regid, $errorMessage);
+            $this->addErrorLine($barcode, $orderMarkLine->product_code, $orderMarkLine->f2reg_id, $errorMessage);
             return ['error' => true, 'errorMessage' => $errorMessage ];
         }
 
 
         //4. Ищем строку в заказе которая соответствует этой марке
         $orderLine = OrderLine::where([["order_id",   "=", $this->id],
-                                       ["productcode","=", $exciseStamp->productcode],
-                                       ["f2regid",    "=", $exciseStamp->f2regid]
+                                       ["product_code","=", $exciseStamp->productcode],
+                                       ["f2reg_id",    "=", $exciseStamp->f2regid]
         ])->first();
         if ($orderLine == null)
         {
@@ -170,7 +183,7 @@ class Order extends Model
         }
 
         //6. Количество отсканированных марок превышено
-        if ($orderLine->quantity <= $orderLine->quantitymarks ) {
+        if ($orderLine->quantity <= $orderLine->quantity_mark ) {
             $errorMessage = "Превышено количество в наборе " . $barcode;
 
             $this->addErrorLine($barcode, $exciseStamp->productcode, $exciseStamp->f2regid, $errorMessage);
@@ -179,8 +192,8 @@ class Order extends Model
 
         //7. Обнуление showFirst  у заказа
         $this->orderlines->each(function ($item, $key) {
-            if ($item->showfirst) {
-                $item->showfirst = false;
+            if ($item->show_first) {
+                $item->show_first = false;
                 $item->save();
             }
         });
@@ -189,19 +202,22 @@ class Order extends Model
 
         try{
             $orderMarkLine = new OrderMarkLine;
-            $orderMarkLine->order_id    = $this->id;
-            $orderMarkLine->orderlineid = $orderLine->orderlineid;
-            $orderMarkLine->productcode = $exciseStamp->productcode;
-            $orderMarkLine->f2regid     = $exciseStamp->f2regid;
-            $orderMarkLine->markcode    = $barcode;
-            $orderMarkLine->boxnumber   = "000000000000000000000";
-            $orderMarkLine->quantity    = 1;
-            $orderMarkLine->savedin1c   = false;
+            $orderMarkLine->order_id     = $this->id;
+            $orderMarkLine->line_id      = $orderLine->line_id;
+            $orderMarkLine->product_code = $exciseStamp->productcode;
+            $orderMarkLine->f2reg_id     = $exciseStamp->f2regid;
+            $orderMarkLine->markcode     = $barcode;
+            $orderMarkLine->pack_number  = "000000000000000000000";
+            $orderMarkLine->quantity     = 1;
+            $orderMarkLine->savedin1c    = false;
             $orderMarkLine->save();
 
-            $orderLine->quantitymarks = $orderLine->quantitymarks + 1;
-            $orderLine->showfirst = true;
+            $orderLine->quantity_mark = $orderLine->quantity_mark + 1;
+            $orderLine->show_first = true;
             $orderLine->save();
+
+            $this->increment('quantity_mark');
+            $this->save();
 
             DB::commit();
 
@@ -250,11 +266,11 @@ class Order extends Model
         //$orderPackLine = OrderPackLine::where([['markcode', '=', $barcode],
         //                                       ["created_at", ">", $created_at]
 
-        $orderPackLine = OrderPackLine::where('markcode', '=', $barcode)->first();
+        $orderPackLine = OrderPackLine::where('pack_number', '=', $barcode)->first();
         if ($orderPackLine != null) {
             $errorMessage = "Ящик уже сканировался " . $barcode;
 
-            $this->addErrorLine($barcode, $orderPackLine->productcode, $orderPackLine->f2regid, $errorMessage);
+            $this->addErrorLine($barcode, $orderPackLine->product_code, $orderPackLine->f2reg_id, $errorMessage);
             return ['error' => true, 'errorMessage' => $errorMessage ];
         }
 
@@ -262,8 +278,8 @@ class Order extends Model
         DB::beginTransaction();
 
         $order = Order::find($this->id);
-        $order->orderlines;
-        $order->ordermarklines;
+        $order->orderLines;
+        $order->orderMarkLines;
 
         $lines = $exciseStampBox->excisestampboxlines;
         foreach ($lines as $line){
@@ -276,21 +292,21 @@ class Order extends Model
 
             $orderMarkLine = OrderMarkLine::where([['markcode', '=', $line->markcode],
                                                    ['quantity', '=', '1'],
-                                                   ["f2regid",  "=", $exciseStamp->f2regid]
+                                                   ["f2reg_id", "=", $exciseStamp->f2regid]
             ])->first();
             if ($orderMarkLine != null) {
                 $errorBarCode = true;
                 $errorMessage = "Товар уже сканировался " . $line->markcode;
 
-                $this->addErrorLine($barcode, $orderMarkLine->productcode, $orderMarkLine->f2regid, $errorMessage);
+                $this->addErrorLine($barcode, $orderMarkLine->product_code, $orderMarkLine->f2reg_id, $errorMessage);
 
                 break;
             }
 
             //2. Ищем товар в строке заказов
             $orderLine = null;
-            foreach ($order->orderlines as $item){
-                if ($item->productcode == $exciseStamp->productcode and $item->f2regid == $exciseStamp->f2regid){
+            foreach ($order->orderLines as $item){
+                if ($item->f2reg_id == $exciseStamp->f2regid){
                     $orderLine = $item;
                     break;
                 }
@@ -306,7 +322,7 @@ class Order extends Model
                 break;
             }
 
-            if ($orderLine->quantity <= $orderLine->quantitymarks ) {
+            if ($orderLine->quantity <= $orderLine->quantity_mark ) {
                 $errorBarCode = true;
                 $errorMessage = "Сканирование ящика. Превышено количество в наборе " . $line->markcode;
 
@@ -316,32 +332,35 @@ class Order extends Model
             }
 
             $orderMarkLine = new OrderMarkLine;
-            $orderMarkLine->order_id    = $this->id;
-            $orderMarkLine->orderlineid = $orderLine->orderlineid;
-            $orderMarkLine->productcode = $exciseStamp->productcode;
-            $orderMarkLine->f2regid     = $exciseStamp->f2regid;
-            $orderMarkLine->markcode    = $line->markcode;
-            $orderMarkLine->boxnumber   = $barcode;
-            $orderMarkLine->quantity    = 1;
-            $orderMarkLine->savedin1c   = false;
+            $orderMarkLine->order_id     = $this->id;
+            $orderMarkLine->line_id      = $orderLine->line_id;
+            $orderMarkLine->product_code = $exciseStamp->productcode;
+            $orderMarkLine->f2reg_id     = $exciseStamp->f2regid;
+            $orderMarkLine->markcode     = $line->markcode;
+            $orderMarkLine->pack_number  = $barcode;
+            $orderMarkLine->quantity     = 1;
+            $orderMarkLine->savedin1c    = false;
             $orderMarkLine->save();
 
-            $orderLine->quantitymarks = $orderLine->quantitymarks + 1;
-            $orderLine->showfirst = true;
+            $orderLine->quantity_mark = $orderLine->quantity_mark + 1;
+            $orderLine->show_first = true;
             $orderLine->save();
+
+            $this->increment('quantity_mark');
+            $this->save();
         }
 
         //Запись ящика
         if (!$errorBarCode)
         {
             $orderPackLine = new OrderPackLine;
-            $orderPackLine->order_id    = $this->id;
-            $orderPackLine->orderlineid = 1;
-            $orderPackLine->productcode = $exciseStampBox->productcode;
-            $orderPackLine->f2regid     = $exciseStampBox->f2regid;
-            $orderPackLine->markcode    = $barcode;
-            $orderPackLine->quantity    = 1;
-            $orderPackLine->savedin1c   = false;
+            $orderPackLine->order_id     = $this->id;
+            $orderPackLine->line_id      = 1;
+            $orderPackLine->product_code = $exciseStampBox->productcode;
+            $orderPackLine->f2reg_id     = $exciseStampBox->f2regid;
+            $orderPackLine->pack_number  = $barcode;
+            $orderPackLine->quantity     = 1;
+            $orderPackLine->savedin1c    = false;
             $orderPackLine->save();
 
             DB::commit();
@@ -367,7 +386,7 @@ class Order extends Model
 
     private function addExciseStamp_New($orderLine, $exciseStamp, $exciseStampBox)
     {
-        if ($orderLine->quantity <= $orderLine->quantitymarks ) {
+        if ($orderLine->quantity <= $orderLine->quantity_mark ) {
             $errorMessage = "Сканирование паллета. Превышено количество в наборе " . $exciseStamp->id;
 
             $this->addErrorLine($exciseStamp->id, $exciseStamp->productcode, $exciseStamp->f2regid, $errorMessage);
@@ -376,19 +395,22 @@ class Order extends Model
 
         try{
             $orderMarkLine = new OrderMarkLine;
-            $orderMarkLine->order_id    = $this->id;
-            $orderMarkLine->orderlineid = $orderLine->orderlineid;
-            $orderMarkLine->productcode = $exciseStamp->productcode;
-            $orderMarkLine->f2regid     = $exciseStamp->f2regid;
+            $orderMarkLine->order_id     = $this->id;
+            $orderMarkLine->line_id      = $orderLine->line_id;
+            $orderMarkLine->product_code = $exciseStamp->productcode;
+            $orderMarkLine->f2reg_id     = $exciseStamp->f2regid;
             $orderMarkLine->markcode    = $exciseStamp->id;
-            $orderMarkLine->boxnumber   = $exciseStampBox->barcode;
+            $orderMarkLine->pack_number = $exciseStampBox->barcode;
             $orderMarkLine->quantity    = 1;
             $orderMarkLine->savedin1c   = false;
             $orderMarkLine->save();
 
-            $orderLine->increment('quantitymarks');  //$orderLine->quantitymarks = $orderLine->quantitymarks + 1;
-            $orderLine->showfirst = true;
+            $orderLine->increment('quantity_mark');  //$orderLine->quantitymarks = $orderLine->quantitymarks + 1;
+            $orderLine->show_first = true;
             $orderLine->save();
+
+            $this->increment('quantity_mark');
+            $this->save();
 
         } catch(\Exception $exception){
             $errorMessage = "Ошибка при записи марки " . $exciseStamp->id;
@@ -416,14 +438,14 @@ class Order extends Model
 
         //try{
             $orderPackLine = new OrderPackLine;
-            $orderPackLine->order_id      = $this->id;
-            $orderPackLine->orderlineid   = 1;
-            $orderPackLine->productcode   = $exciseStampBox->productcode;
-            $orderPackLine->f2regid       = $exciseStampBox->f2regid;
-            $orderPackLine->markcode      = $exciseStampBox->barcode;
-            $orderPackLine->pallet_number = $pallet_number;
-            $orderPackLine->quantity      = 1;
-            $orderPackLine->savedin1c     = false;
+            $orderPackLine->order_id       = $this->id;
+            $orderPackLine->line_id        = 1;
+            $orderPackLine->product_code   = $exciseStampBox->productcode;
+            $orderPackLine->f2reg_id       = $exciseStampBox->f2regid;
+            $orderPackLine->pack_number    = $exciseStampBox->barcode;
+            $orderPackLine->pallet_number  = $pallet_number;
+            $orderPackLine->quantity       = 1;
+            $orderPackLine->savedin1c      = false;
             $orderPackLine->save();
         //}
         //catch(\Exception $exception){
@@ -444,13 +466,13 @@ class Order extends Model
         {
             $exciseStampBox = ExciseStampBox::find($line->box_id);
 
-            $orderPackLine = OrderPackLine::where('markcode', '=',  $exciseStampBox->barcode)->first();
+            $orderPackLine = OrderPackLine::where('pack_number', '=',  $exciseStampBox->barcode)->first();
             if ($orderPackLine != null) {
                 $errorMessage = "Ящик в паллете уже сканировался " . $exciseStampBox->barcode;
 
                 DB::rollBack();
 
-                $this->addErrorLine($exciseStampBox->barcode, $orderPackLine->productcode, $orderPackLine->f2regid, $errorMessage);
+                $this->addErrorLine($exciseStampBox->barcode, $orderPackLine->product_code, $orderPackLine->f2reg_id, $errorMessage);
                 return ['error' => true, 'errorMessage' => $errorMessage ];
             }
 
@@ -507,11 +529,89 @@ class Order extends Model
     {
         if($f2regid == null) { return; }
 
-        OrderPackLine::where([ ['order_id','=',$this->id], ['f2regid','=',$f2regid] ])->delete();
-        $deletedRows = OrderMarkLine::where([ ['order_id','=',$this->id], ['f2regid','=',$f2regid] ])->delete();
+        OrderPackLine::where([ ['order_id','=',$this->id], ['f2reg_id','=',$f2regid] ])->delete();
+        $deletedRows = OrderMarkLine::where([ ['order_id','=',$this->id], ['f2reg_id','=',$f2regid] ])->delete();
 
         return $deletedRows;
     }
+
+
+    public function removeBarCode($barcode)
+    {
+        //СКАНИРОВАНИЕ АКЦИЗНОЙ МАРКИ, ЯЩИКА, ПАЛЛЕТА
+        if (strlen($barcode) != 150 and strlen($barcode) != 68 and strlen($barcode) != 26 and strlen($barcode) != 18)
+        {
+            $errorMessage = "Не опознан ШК " . $barcode;
+
+            $this->addErrorLine($barcode, '', '', $errorMessage);
+            return ['error' => true, 'errorMessage' => $errorMessage ];
+        }
+
+
+        if (strlen($barcode) == 26 or strlen($barcode) == 18) {
+            $errorMessage = "Удаление упаковок не реализовано " . $barcode;
+
+            $this->addErrorLine($barcode, '', '', $errorMessage);
+            return ['error' => true, 'errorMessage' => $errorMessage ];
+
+            //$exciseStampPallet = ExciseStampPallet::where('barcode', '=', $barcode)->first();
+            //if ($exciseStampPallet == null) {
+            //    $result = $this->addPackExciseStamp($barcode);
+            //} else {
+            //    $result = $this->addPalletExciseStamp($exciseStampPallet);
+            //}
+        } else {
+            $result = $this->removeExciseStamp($barcode);
+        }
+
+        return $result;
+    }
+
+    private function removeExciseStamp($barcode)
+    {
+        //1. Ищем штрих код в уже набранных товарах в заказе, если находим ошибка.
+        $orderMarkLine = OrderMarkLine::where( [['order_id', '=', $this->id],['markcode', '=', $barcode]] )->first();
+        if ($orderMarkLine == null) {
+            $errorMessage = "Марка не найдена в заказе " . $barcode;
+
+            $this->addErrorLine($barcode, '', '', $errorMessage);
+            return ['error' => true, 'errorMessage' => $errorMessage ];
+        }
+
+        /*
+
+        DB::beginTransaction();
+
+        try{
+            $orderMarkLine = new OrderMarkLine;
+            $orderMarkLine->order_id    = $this->id;
+            $orderMarkLine->orderlineid = $orderLine->orderlineid;
+            $orderMarkLine->productcode = $exciseStamp->productcode;
+            $orderMarkLine->f2regid     = $exciseStamp->f2regid;
+            $orderMarkLine->markcode    = $barcode;
+            $orderMarkLine->boxnumber   = "000000000000000000000";
+            $orderMarkLine->quantity    = 1;
+            $orderMarkLine->savedin1c   = false;
+            $orderMarkLine->save();
+
+            $orderLine->quantitymarks = $orderLine->quantitymarks + 1;
+            $orderLine->showfirst = true;
+            $orderLine->save();
+
+            DB::commit();
+
+        } catch(\Exception $exception){
+            $errorBarCode = true;
+            $errorMessage = "Ошибка при записи " . $barcode;
+
+            DB::rollback();
+        }
+
+        */
+
+        return ['error' => false, 'errorMessage' => ''];
+    }
+
 
     private function getCollectionExciseStamp($exciseStampPallet)
     {

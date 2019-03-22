@@ -34,7 +34,7 @@ class OrderController extends Controller
         //return response()->json($order);
 
 
-        $order = Order::with('orderlines', 'ordererrorlines')
+        $order = Order::with('orderLines', 'orderErrorLines')
             ->orderBy('number', 'desc')
             ->paginate(50);
 
@@ -81,7 +81,7 @@ class OrderController extends Controller
         $newOrder = $request->all();
 
         //$order = Order::where('number', $newOrder['number'])->first();
-        $order = Order::where('DocId', $newOrder['doc_id'])->first();
+        $order = Order::where('doc_id', $newOrder['doc_id'])->first();
         if ($order == null) {
             $order = Order::add($newOrder);
             $order->save();
@@ -105,23 +105,25 @@ class OrderController extends Controller
         //Обнуляем количество, загружаем повторно
         OrderLine::where('order_id', '=', $order->id)->update(['quantity' => 0]);
 
-        $oldOrderLines = $order->orderlines;
+        $oldOrderLines = $order->orderLines;
+
+        $quantity_sum = 0;
 
         //Добавляем новые записи, изменяем существующее количество
         $orderlines = $newOrder['lines'];
         foreach ($orderlines as $line){
-            $oldOrderLine = $oldOrderLines->firstWhere('f2regid', $line['f2reg_id']);
+            $oldOrderLine = $oldOrderLines->firstWhere('f2reg_id', $line['f2reg_id']);
 
-            if (!isset($oldOrderLine)) {
+            if ($oldOrderLine == null) {
                 //add
                 $newOrderLine = new OrderLine();
-                $newOrderLine->orderlineid   = $line['line_id'];
-                $newOrderLine->productdescr  = $line['product_descr'];
-                $newOrderLine->productcode   = $line['product_code'];
-                $newOrderLine->f2regid       = $line['f2reg_id'];
-                $newOrderLine->quantity      = $line['quantity'];
-                $newOrderLine->order_id      = $order->id;
-                $newOrderLine->showfirst     = 0;
+                $newOrderLine->line_id        = $line['line_id'];
+                $newOrderLine->product_descr  = $line['product_descr'];
+                $newOrderLine->product_code   = $line['product_code'];
+                $newOrderLine->f2reg_id       = $line['f2reg_id'];
+                $newOrderLine->quantity       = $line['quantity'];
+                $newOrderLine->order_id       = $order->id;
+                $newOrderLine->show_first     = 0;
                 $newOrderLine->Save();
             } else {
                 //update
@@ -130,6 +132,14 @@ class OrderController extends Controller
                     $oldOrderLine->Save();
                 }
             }
+
+            $quantity_sum = $quantity_sum + $line['quantity'];
+        }
+
+        if ($order->quantity != $quantity_sum)
+        {
+            $order->quantity = $quantity_sum;
+            $order->save();
         }
 
         return $order;
@@ -145,9 +155,9 @@ class OrderController extends Controller
     {
         //$order = Order::with('orderlines', 'ordermarklines', 'orderpacklines', 'ordererrorlines')
         $order = Order::find($id);
-        $order->ordermarklines;
-        $order->orderpacklines;
-        $order->ordererrorlines;
+        $order->orderMarkLines;
+        $order->orderPackLines;
+        $order->orderErrorLines;
 
         return response()->json($order);
     }
@@ -233,13 +243,13 @@ class OrderController extends Controller
     {
         $order = Order::findOrFail($id);
 
-        if ($request->has('f2regid')) {
-            $f2regid = $request->get('f2regid');
+        if ($request->has('f2reg_id')) {
+            $f2RegId = $request->get('f2reg_id');
 
-            $order->removeLineF2RegId($f2regid);
+            $order->removeLineF2RegId($f2RegId);
         }
 
-        $order->ordermarklines;
+        $order->orderMarkLines;
 
         return $order;
     }

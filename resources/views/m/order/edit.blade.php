@@ -11,7 +11,9 @@
         <input type="submit" value=".." />
     </form>
 
+    {{--
     {{ isset($errorMessage) ? $errorMessage : '' }}
+    --}}
 
     @include('m.errors')
 
@@ -28,25 +30,30 @@
         </thead>
         <tbody>
 
-        @foreach ($order->orderlines as $item)
-            @if ($item->quantity != $item->quantitymarks)
+        @foreach ($order->orderLines as $item)
+            @if ($item->quantity != $item->quantity_mark)
+                <!--
                 <tr>
-                    <td>
-                        {{$item->orderlineid}}
-                    </td>
+                    <td>{{$item->line_id}}</td>
                     <td class="tddescr">
-                        {{$item->productdescr}}
-                        <h6>
-                            {{$item->f2regid}}
-                        </h6>
+                        {{$item->product_descr}}
+                        <h6>{{$item->f2reg_id}}</h6>
                     </td>
-                    <td>
-                        {{$item->quantity}}
-                    </td>
-                    <td>
-                        {{$item->quantitymarks}}
-                    </td>
+                    <td>{{$item->quantity}}</td>
+                    <td>{{$item->quantity_mark}}</td>
                 </tr>
+                -->
+
+                <tr>
+                    <td>{{$item->line_id}}</td>
+                    <td class="tddescr" colspan="3">{{$item->product_descr}}</td>
+                </tr>
+                <tr>
+                    <td class="tdbuttom regidf2" colspan="2">{{$item->f2reg_id}}</td>
+                    <td class="tdbuttom">{{$item->quantity}}</td>
+                    <td class="tdbuttom">{{$item->quantity_mark}}</td>
+                </tr>
+
             @endif
         @endforeach
 
