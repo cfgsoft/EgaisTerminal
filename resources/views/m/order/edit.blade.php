@@ -16,8 +16,8 @@
     --}}
 
     @include('m.errors')
-
-    <div> {{ $order->number  }} </div>
+    
+    <h1>Отгрузка № {{ $order->number  }} </h1>
 
     <table class="table">
         <thead>

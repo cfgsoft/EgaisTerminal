@@ -58,8 +58,8 @@ class OrderController extends Controller
         {
             return redirect()->action('m\OrderController@index');
         }
-        $order->orderlines;
-        $order->orderlines = $order->orderLines->sortBy('line_id')->sortByDesc('show_first');
+        $order->orderLines;
+        $order->orderLines = $order->orderLines->sortBy('line_id')->sortByDesc('show_first');
 
 
 
