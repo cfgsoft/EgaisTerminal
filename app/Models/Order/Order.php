@@ -16,7 +16,7 @@ class Order extends Model
     protected $table = 'doc_order';
 
     protected $fillable = ['date', 'number', 'barcode', 'status',
-        'Quantity', 'QuantityMarks', 'DocType', 'DocId'];
+        'quantity', 'quantity_mark', 'doc_type', 'doc_id'];
 
     public function orderLines(){
         return $this->hasMany("App\Models\Order\OrderLine");
@@ -43,8 +43,8 @@ class Order extends Model
     {
         $order = new static;
         $order->fill($fields);
-        $order->doc_type = $fields['doc_type'];
-        $order->doc_id   = $fields['doc_id'];
+        $order->doc_type      = $fields['doc_type'];
+        $order->doc_id        = $fields['doc_id'];
 
         return $order;
     }
