@@ -1,7 +1,7 @@
 @extends('layouts.mobile')
 
 @section('content')
-    <div>Возврат от покупателя</div>
+    <h5>Возврат от покупателя</h5>
     <h6><a href="{{ route('m.home.index') }}" >0-Выход</a></h6>
 
     <form action="{{ action('m\ReturnedInvoiceController@submitbarcode') }}" id="formInputBarCode" method="post">

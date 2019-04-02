@@ -112,6 +112,7 @@ class Order extends Model
         $orderErrorLine->message      = $errorMessage;
         $orderErrorLine->product_code = $product_code;
         $orderErrorLine->f2reg_id     = $f2reg_id;
+        $orderErrorLine->savedin1c    = 0;
         $orderErrorLine->save();
 
         return $orderErrorLine;
@@ -529,6 +530,7 @@ class Order extends Model
     {
         if($f2regid == null) { return; }
 
+        OrderPalletLine::where([ ['order_id','=',$this->id], ['f2reg_id','=',$f2regid] ])->delete();
         OrderPackLine::where([ ['order_id','=',$this->id], ['f2reg_id','=',$f2regid] ])->delete();
         $deletedRows = OrderMarkLine::where([ ['order_id','=',$this->id], ['f2reg_id','=',$f2regid] ])->delete();
 

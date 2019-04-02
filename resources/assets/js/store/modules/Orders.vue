@@ -34,7 +34,7 @@ export default {
     loadItems(store, params) {
         return new Promise((resolve, reject) => {
             window.axios
-                .get('/api/v1/orders', {params: {page: params.page}} )
+                .get('/api/v1/orders', {params: {page: params.page}, withCredentials: true} )
                 .then((response) => {
                     store.commit('setItems', response.data.data);
                     resolve(response);

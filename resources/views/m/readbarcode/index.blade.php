@@ -1,8 +1,8 @@
 @extends('layouts.mobile')
 
 @section('content')
+    <h1>Отсканируйте штрих код</h1>
     <h6><a href="{{ route('m.home.index') }}" >0-Выход</a></h6>
-    <p>Отсканируйте штрих код</p>
 
     <form action="{{ action('m\ReadBarCodeController@submitbarcode') }}" id="formInputBarCode" method="post">
         <input id="InputBarCode" name="BarCode" title="Barcode" size="22" />

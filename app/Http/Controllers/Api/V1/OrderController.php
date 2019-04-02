@@ -80,6 +80,7 @@ class OrderController extends Controller
     {
         $newOrder = $request->all();
 
+        //$category = Category::updateOrCreate([ "code" => $newCategory["code"] ]);
         //$order = Order::where('number', $newOrder['number'])->first();
         $order = Order::where('doc_id', $newOrder['doc_id'])->first();
         if ($order == null) {

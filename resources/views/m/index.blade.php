@@ -1,7 +1,7 @@
 @extends('layouts.mobile')
 
 @section('content')
-    <div>Выберите действие:</div>
+    <h1>Выберите действие</h1>
 
     <form action="{{ action('m\HomeController@submitbarcode') }}" id="formInputBarCode" method="post">
         <input id="InputBarCode" name="BarCode" title="Barcode" size="22" />

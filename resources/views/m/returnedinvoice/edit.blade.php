@@ -1,7 +1,7 @@
 @extends('layouts.mobile')
 
 @section('content')
-    <h5>Считайте штрихкод</h5>
+    <h1>Возврат № {{ $returnedInvoice->number  }}</h1>
     <h6><a href="{{ route('m.returnedinvoice') }}" >0-Выход</a></h6>
 
     <form action="{{ action('m\ReturnedInvoiceController@submiteditbarcode', ['id' => $returnedInvoice->id]) }}" id="formInputBarCode" method="post">
@@ -13,23 +13,13 @@
 
     @include('m.errors')
 
-    <div> {{ $returnedInvoice->number  }} </div>
-
-    <table class="table">
+    <table>
         <thead>
         <tr>
-            <th>
-                №
-            </th>
-            <th>
-                Наименование
-            </th>
-            <th>
-                Зак
-            </th>
-            <th>
-                Наб
-            </th>
+            <th>№</th>
+            <th>Наименование</th>
+            <th>Зак</th>
+            <th>Наб</th>
         </tr>
         </thead>
         <tbody>
@@ -37,22 +27,15 @@
         @foreach ($returnedInvoice->returnedInvoiceLines as $item)
             @if ($item->quantity != $item->quantity_mark)
                 <tr>
-                    <td>
-                        {{$item->lineid}}
-                    </td>
-                    <td class="tddescr">
-                        {{$item->productdescr}}
-                        <h6>
-                            {{$item->f2regid}}
-                        </h6>
-                    </td>
-                    <td>
-                        {{$item->quantity}}
-                    </td>
-                    <td>
-                        {{$item->quantity_mark}}
-                    </td>
+                    <td>{{$item->lineid}}</td>
+                    <td class="tddescr" colspan="3">{{$item->productdescr}}</td>
                 </tr>
+                <tr>
+                    <td class="bb regidf2" colspan="2">{{$item->f2regid}}</td>
+                    <td class="bb">{{$item->quantity}}</td>
+                    <td class="bb">{{$item->quantity_mark}}</td>
+                </tr>
+
             @endif
         @endforeach
 

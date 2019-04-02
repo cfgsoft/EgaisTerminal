@@ -1,7 +1,7 @@
 @extends('layouts.mobile')
 
 @section('content')
-    <h5>Считайте штрихкод</h5>
+    <h1>Отгрузка № {{ $order->number  }} </h1>
     <h6><a href="{{ route('m.order') }}" >0-Выход</a></h6>
 
     <form action="{{ action('m\OrderController@submiteditbarcode', ['id' => $order->id]) }}" id="formInputBarCode" method="post">
@@ -16,8 +16,6 @@
     --}}
 
     @include('m.errors')
-    
-    <h1>Отгрузка № {{ $order->number  }} </h1>
 
     <table class="table">
         <thead>
@@ -32,26 +30,14 @@
 
         @foreach ($order->orderLines as $item)
             @if ($item->quantity != $item->quantity_mark)
-                <!--
-                <tr>
-                    <td>{{$item->line_id}}</td>
-                    <td class="tddescr">
-                        {{$item->product_descr}}
-                        <h6>{{$item->f2reg_id}}</h6>
-                    </td>
-                    <td>{{$item->quantity}}</td>
-                    <td>{{$item->quantity_mark}}</td>
-                </tr>
-                -->
-
                 <tr>
                     <td>{{$item->line_id}}</td>
                     <td class="tddescr" colspan="3">{{$item->product_descr}}</td>
                 </tr>
                 <tr>
-                    <td class="tdbuttom regidf2" colspan="2">{{$item->f2reg_id}}</td>
-                    <td class="tdbuttom">{{$item->quantity}}</td>
-                    <td class="tdbuttom">{{$item->quantity_mark}}</td>
+                    <td class="bb regidf2" colspan="2">{{$item->f2reg_id}}</td>
+                    <td class="bb">{{$item->quantity}}</td>
+                    <td class="bb">{{$item->quantity_mark}}</td>
                 </tr>
 
             @endif

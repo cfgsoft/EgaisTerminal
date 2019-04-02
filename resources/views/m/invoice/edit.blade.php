@@ -1,7 +1,7 @@
 @extends('layouts.mobile')
 
 @section('content')
-    <h5>Считайте штрихкод</h5>
+    <h1>Поступление №{{ $invoice->number  }}</h1>
     <h6>
         <a href="{{ route('m.invoice') }}" >0-Выход</a>
         <a href="{{ route('m.invoice.edit', ['id' => $invoice->id, 'show' => 'pallet']) }}" >2-Паллет</a>
@@ -17,8 +17,6 @@
     </form>
 
     @include('m.errors')
-
-    <h1>Поступление № {{ $invoice->number  }} </h1>
 
     @if ($palletId != null or $packId != null)
         <div class="invoicepack">1-Отчистить упаковку
@@ -45,7 +43,7 @@
     @endforeach
     --}}
 
-    <table class="table" rules="rows">
+    <table class="table">
         <thead>
         <tr>
             <th>№</th>
@@ -58,8 +56,8 @@
         <tbody>
         @foreach ($invoice->invoiceLines as $item)
             <tr>
-                <td rowspan="3">{{$item->line_id}}</td>
-                <td rowspan="3" class="tddescr">
+                <td rowspan="3" class="bb">{{$item->line_id}}</td>
+                <td rowspan="3" class="tddescr bb">
                     {{$item->product_descr}}
                     <h6 class="regidf2">{{$item->f2reg_id}}</h6>
                 </td>
@@ -71,8 +69,8 @@
                 <td>{{$item->quantity_pack_mark}}</td>
             </tr>
             <tr>
-                <td>{{$item->quantity}}</td>
-                <td>{{$item->quantity_mark}}</td>
+                <td class="bb">{{$item->quantity}}</td>
+                <td class="bb">{{$item->quantity_mark}}</td>
             </tr>
         @endforeach
 

@@ -77,7 +77,8 @@ Route::get('/about', 'HomeController@about')->name('about');
 Route::get('/contact', 'HomeController@contact')->name('contact');
 Route::get('/test', 'HomeController@test')->name('test');
 Route::get('/integration1c', 'HomeController@integration1c')->name('integration1c');
+Route::get('/categories',   'api\v1\CategoryController@indexAll')->middleware('auth')->name('categories');
 
 
-Route::get('/admin', 'SpaController@index')->name('admin');
+Route::get('/admin', 'SpaController@index')->middleware('auth')->name('admin');
 //Route::get('/admin/{any}', 'SpaController@index')->where('any', '.*');

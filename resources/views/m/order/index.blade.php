@@ -16,7 +16,7 @@
 
     <!-- <h5>Документы набора</h5> -->
 
-    <table class="table">
+    <table>
         <thead>
             <tr>
                 <th>Заявка</th>
@@ -27,15 +27,15 @@
         <tbody>
         @foreach ($order as $item)
                 <tr>
-                    <td class="tddescr tdbuttom">
+                    <td class="tddescr bb">
                         <a href="{{ route('m.order.edit', ['id' => $item->id]) }}" >
                             {{$item->date}} № {{$item->number}}
                         </a>
                     </td>
-                    <td class="tdbuttom">
+                    <td class="bb">
                         {{$item->quantity}}
                     </td>
-                    <td class="tdbuttom">
+                    <td class="bb">
                         {{$item->quantity_mark}}
                     </td>
                 </tr>

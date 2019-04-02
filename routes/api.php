@@ -28,19 +28,13 @@ Route::group(['prefix' => 'auth'],
 
 
 Route::group(
-    ['middleware' => 'auth:api',
+    ['middleware' => 'auth:api',  //auth:api
      'prefix' => '/v1',
      'namespace' => 'Api\V1',
      'as' => 'api.',
     ],
     function ()
     {
-        //Route::post('/login','AuthController@postLogin');
-        //Route::post('/register','AuthController@postRegister');
-        //Route::middleware('APIToken')->group(function () {
-        //    Route::post('/logout','AuthController@postLogout');
-        //});
-
         Route::get('orders/indexMarkLine',  'OrderController@indexMarkLine');
         Route::get('orders/indexErrorLine', 'OrderController@indexErrorLine');
         Route::put('orders/updateMarkLine/{id}', 'OrderController@updateMarkLine');
@@ -58,6 +52,8 @@ Route::group(
         Route::get('invoices/indexReadLine',  'InvoiceController@indexReadLine');
         Route::put('invoices/updateReadLine/{id}', 'InvoiceController@updateReadLine');
 
+        Route::get('categories/indexAll',   'CategoryController@indexAll');
+
         Route::resource('categories',       'CategoryController',   ['except' => ['create', 'edit']]);
         Route::resource('products',         'ProductController',    ['except' => ['create', 'edit']]);
         Route::resource('orders',           'OrderController',      ['except' => ['create', 'edit']]);
@@ -68,3 +64,5 @@ Route::group(
         Route::resource('invoices',         'InvoiceController',    ['except' => ['create', 'edit']]);
     }
 );
+
+Route::get('categories/indexAll',   'Api\V1\CategoryController@indexAll'); //->middleware('auth');

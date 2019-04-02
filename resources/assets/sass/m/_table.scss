@@ -1,28 +1,37 @@
+table{
+  border-collapse: collapse; /* Отображать двойные линии как одинарные */
 
-thead {
-  background-color: silver;
-  font-size: small;
-  font-style: normal;
-}
+  th,
+  td {
+    border-color: silver;
+  }
 
-tbody {
-  font-size: medium;
-  text-align: center;
-}
+  thead {
+    background-color: silver;
+    font-size: small;
+    font-style: normal;
+  }
 
-.tddescr {
-  font-size: small;
-  text-align: left;
-}
+  tbody {
+    font-size: medium;
+    text-align: center;
+  }
 
-.regidf2 {
-  margin: 0px;
-  font-size: x-small;
-  font-style: normal;
-  font-weight: bold;
-  text-align: left;
-}
+  .tddescr {
+    font-size: small;
+    text-align: left;
+  }
 
-.tdbuttom{
-  border-bottom: 1px solid;
+  .regidf2 {
+    margin: 0px;
+    font-size: x-small;
+    font-style: normal;
+    font-weight: bold;
+    text-align: left;
+  }
+
+  .bb{
+    border-bottom: 1px solid black;
+  }
+
 }

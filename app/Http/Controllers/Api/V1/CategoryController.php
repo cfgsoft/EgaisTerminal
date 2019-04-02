@@ -11,8 +11,7 @@ class CategoryController extends Controller
     public function __construct()
     {
         //$this->middleware('auth');
-        //$this->middleware('APIToken');
-        $this->middleware('auth:api');
+        //$this->middleware('auth:api');
     }
 
     /**
@@ -56,6 +55,17 @@ class CategoryController extends Controller
         //return $category;    
     }
 
+    public function indexAll()
+    {
+        //$request->user()->authorizeRoles('AdminApi');
+
+        header('Access-Control-Allow-Origin: *');
+
+        $category = Category::all();
+
+        return $category;
+    }
+
     /**
      * Show the form for creating a new resource.
      *
@@ -83,6 +93,9 @@ class CategoryController extends Controller
             }
         }
 
+        $category = Category::updateOrCreate([ "code" => $newCategory["code"] ]);
+
+        /*
         $category = Category::where("code", $newCategory["code"])->first();
         if ($category == null) {
             $category = Category::create($newCategory);
@@ -92,6 +105,7 @@ class CategoryController extends Controller
 
             $category->update($newCategory);
         }
+        */
 
         return $category;
     }
