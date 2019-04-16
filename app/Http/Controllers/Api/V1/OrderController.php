@@ -51,8 +51,7 @@ class OrderController extends Controller
 
     public function indexMarkLine()
     {
-        $order = OrderMarkLine::where('savedin1c', '=', false)->orderBy('order_id')
-            ->take(100)->get();
+        $order = OrderMarkLine::where('savedin1c', '=', false)->orderBy('order_id')->get();
 
         //$order = Order::has('ordermarklines','>',0, function($query) {
         //    $query->where('savedin1c', '=', 1);
