@@ -526,15 +526,23 @@ class Order extends Model
         //dd($collectionExciseStamp);
     }
 
+
     public function removeLineF2RegId($f2regid)
     {
         if($f2regid == null) { return; }
 
         OrderPalletLine::where([ ['order_id','=',$this->id], ['f2reg_id','=',$f2regid] ])->delete();
         OrderPackLine::where([ ['order_id','=',$this->id], ['f2reg_id','=',$f2regid] ])->delete();
-        $deletedRows = OrderMarkLine::where([ ['order_id','=',$this->id], ['f2reg_id','=',$f2regid] ])->delete();
 
-        return $deletedRows;
+
+        $updatedRows = OrderMarkLine::where([ ['order_id','=',$this->id], ['f2reg_id','=',$f2regid] ])
+            ->update(['quantity' => 0, 'savedin1c'=> 0]);
+
+        return $updatedRows;
+
+        //$deletedRows = OrderMarkLine::where([ ['order_id','=',$this->id], ['f2reg_id','=',$f2regid] ])->delete();
+
+        //return $deletedRows;
     }
 
 
