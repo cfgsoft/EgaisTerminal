@@ -7,8 +7,8 @@ use Illuminate\Support\Facades\DB;
 
 use Carbon\Carbon;
 
-use App\ExciseStamp;
-use App\ExciseStampBox;
+use App\Models\ExciseStamp\ExciseStamp;
+use App\Models\ExciseStamp\ExciseStampBox;
 use App\Models\ExciseStamp\ExciseStampPallet;
 
 class Order extends Model

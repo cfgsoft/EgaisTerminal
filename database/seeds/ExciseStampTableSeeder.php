@@ -2,8 +2,8 @@
 
 use Illuminate\Database\Seeder;
 
-use App\ExciseStampBox;
-use App\ExciseStampBoxLine;
+use App\Models\ExciseStamp\ExciseStampBox;
+use App\Models\ExciseStamp\ExciseStampBoxLine;
 use App\Models\ExciseStamp\ExciseStampPallet;
 use App\Models\ExciseStamp\ExciseStampPalletLine;
 

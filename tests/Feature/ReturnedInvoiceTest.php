@@ -186,7 +186,7 @@ class ReturnedInvoiceTest extends TestCase
 
         $this->followRedirects($response)
             ->assertStatus(200)
-            ->assertSee('Считайте штрихкод');
+            ->assertSee('Возврат № ' . $returnedInvoice->number);
     }
 
     /*
@@ -220,7 +220,7 @@ class ReturnedInvoiceTest extends TestCase
 
         $this->followRedirects($response)
             ->assertStatus(200)
-            ->assertSee('Считайте штрихкод');
+            ->assertSee('Возврат № ' . $returnedInvoice->number);
 
 
         $response = $this->post($testUrl, ['BarCode' => $value, 'returned_invoice_id' => $returnedInvoice->id]);
@@ -233,7 +233,7 @@ class ReturnedInvoiceTest extends TestCase
 
         $this->followRedirects($response)
             ->assertStatus(200)
-            ->assertSee('Считайте штрихкод');
+            ->assertSee('Возврат № ' . $returnedInvoice->number);
 
     }
 }

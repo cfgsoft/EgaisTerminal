@@ -4,8 +4,8 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
-use App\ExciseStamp;
-use App\ExciseStampBox;
+use App\Models\ExciseStamp\ExciseStamp;
+use App\Models\ExciseStamp\ExciseStampBox;
 
 class ReadBarCode extends Model
 {

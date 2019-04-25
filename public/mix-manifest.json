@@ -1,7 +1,7 @@
 {
     "/js/app.js": "/js/app.js",
+    "/js/appjq.js": "/js/appjq.js",
     "/css/app.css": "/css/app.css",
     "/css/m/appmobile.css": "/css/m/appmobile.css",
-    "/js/appjq.js": "/js/appjq.js",
     "/js/m/appmobile.js": "/js/m/appmobile.js"
 }

@@ -75,6 +75,10 @@ https://www.youtube.com/watch?v=uIXScyhCtPc
 https://www.digitalocean.com/community/tutorials/node-js-ubuntu-18-04-ru
 //авто запуск сайта на node (npm i pm2 -g)
 https://habr.com/sandbox/96765/
+//Загрузка почты
+https://github.com/ladybirdweb/momo-email-listener
+//Ограничение достпа к сайте по IP адресам  (настройка прав)
+https://hackware.ru/?p=5413
 
 
 0. php artisan key:generate (генерация нового ключа)

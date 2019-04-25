@@ -154,7 +154,7 @@ class OrderTest extends TestCase
 
         $this->followRedirects($response)
             ->assertStatus(200)
-            ->assertSee('Считайте штрихкод');
+            ->assertSee('Отгрузка № ' . $order->number);
     }
 
     public function testOrderEditSubmitBarcodeValidate()
@@ -175,7 +175,7 @@ class OrderTest extends TestCase
 
         $this->followRedirects($response)
             ->assertStatus(200)
-            ->assertSee('Считайте штрихкод');
+            ->assertSee('Отгрузка № ' . $order->number);
 
 
         $value = '11';
@@ -190,7 +190,7 @@ class OrderTest extends TestCase
 
         $this->followRedirects($response)
             ->assertStatus(200)
-            ->assertSee('Считайте штрихкод');
+            ->assertSee('Отгрузка № ' . $order->number);
 
         //Ошибочный ШК которого нет в БД
 
@@ -206,7 +206,7 @@ class OrderTest extends TestCase
 
         $this->followRedirects($response)
             ->assertStatus(200)
-            ->assertSee('Считайте штрихкод');
+            ->assertSee('Отгрузка № ' . $order->number);
 
     }
 
@@ -224,7 +224,7 @@ class OrderTest extends TestCase
 
         $this->followRedirects($response)
             ->assertStatus(200)
-            ->assertSee('Считайте штрихкод');
+            ->assertSee('Отгрузка № ' . $order->number);
 
 
         $response = $this->post($testUrl, ['BarCode' => $value, 'order_id' => $order->id]);
@@ -237,7 +237,7 @@ class OrderTest extends TestCase
 
         $this->followRedirects($response)
             ->assertStatus(200)
-            ->assertSee('Считайте штрихкод');
+            ->assertSee('Отгрузка № ' . $order->number);
     }
 
     public function testOrderEditSubmitBarcodeExist()
@@ -261,7 +261,7 @@ class OrderTest extends TestCase
 
         $this->followRedirects($response)
             ->assertStatus(200)
-            ->assertSee('Считайте штрихкод');
+            ->assertSee('Отгрузка № ' . $order->number);
 
 
 
@@ -273,7 +273,7 @@ class OrderTest extends TestCase
 
         $this->followRedirects($response)
             ->assertStatus(200)
-            ->assertSee('Считайте штрихкод');
+            ->assertSee('Отгрузка № ' . $order->number);
 
     }
 
@@ -292,7 +292,7 @@ class OrderTest extends TestCase
 
         $this->followRedirects($response)
             ->assertStatus(200)
-            ->assertSee('Считайте штрихкод');
+            ->assertSee('Отгрузка № ' . $order->number);
 
 
         $response = $this->post($testUrl, ['BarCode' => $value, 'order_id' => $order->id]);
@@ -305,7 +305,7 @@ class OrderTest extends TestCase
 
         $this->followRedirects($response)
             ->assertStatus(200)
-            ->assertSee('Считайте штрихкод');
+            ->assertSee('Отгрузка № ' . $order->number);
     }
 
     public function testOrderEditSubmitBarcodePalletDoubleClick()
@@ -322,7 +322,7 @@ class OrderTest extends TestCase
 
         $this->followRedirects($response)
             ->assertStatus(200)
-            ->assertSee('Считайте штрихкод');
+            ->assertSee('Отгрузка № ' . $order->number);
 
         $response = $this->post($testUrl, ['BarCode' => $value, 'order_id' => $order->id]);
         $response->assertStatus(302);
@@ -334,7 +334,7 @@ class OrderTest extends TestCase
 
         $this->followRedirects($response)
             ->assertStatus(200)
-            ->assertSee('Считайте штрихкод');
+            ->assertSee('Отгрузка № ' . $order->number);
     }
 
     public function testOrderEditSubmitBarcodePalletBoxExistClick()

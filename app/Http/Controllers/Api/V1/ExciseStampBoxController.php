@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers\api\v1;
 
-use App\ExciseStampBox;
-use App\ExciseStampBoxLine;
+use App\Models\ExciseStamp\ExciseStampBox;
+use App\Models\ExciseStamp\ExciseStampBoxLine;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\DB;

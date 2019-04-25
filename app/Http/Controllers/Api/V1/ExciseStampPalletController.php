@@ -4,7 +4,7 @@ namespace App\Http\Controllers\api\v1;
 
 use App\Models\ExciseStamp\ExciseStampPallet;
 use App\Models\ExciseStamp\ExciseStampPalletLine;
-use App\ExciseStampBox;
+use App\Models\ExciseStamp\ExciseStampBox;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\DB;

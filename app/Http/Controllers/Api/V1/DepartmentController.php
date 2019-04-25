@@ -2,24 +2,24 @@
 
 namespace App\Http\Controllers\api\v1;
 
-use App\Models\ExciseStamp\ExciseStamp;
+use App\Department;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
-class ExciseStampController extends Controller
+class DepartmentController extends Controller
 {
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(Request $request)
+    public function index()
     {
         header('Access-Control-Allow-Origin: *');
 
-        $exciseStamp = ExciseStamp::orderBy("id");
+        $department = Department::orderBy("descr");
 
-        return $exciseStamp->paginate(20);
+        return $department->paginate(20);
     }
 
     /**
@@ -27,10 +27,9 @@ class ExciseStampController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create(Request $request)
+    public function create()
     {
         //
-        return 'OK';
     }
 
     /**
@@ -41,37 +40,36 @@ class ExciseStampController extends Controller
      */
     public function store(Request $request)
     {
-        $newExciseStamp = $request->all();
+        $newDepartment = $request->all();
 
-        $exciseStamp = ExciseStamp::find($newExciseStamp["id"]);
-
-        if ($exciseStamp == null) {
-            $exciseStamp = ExciseStamp::create($newExciseStamp);
+        $department = Department::where("code", $newDepartment["code"])->first();
+        if ($department == null) {
+            $department = Department::create($newDepartment);
         } else {
-            $exciseStamp->update($newExciseStamp);
+            $department->update($newDepartment);
         }
 
-        return $exciseStamp;
+        return $department;
     }
 
     /**
      * Display the specified resource.
      *
-     * @param  \App\ExciseStamp  $exciseStamp
+     * @param  \App\Department  $department
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(Department $department)
     {
-        return ExciseStamp::findOrFail($id);
+        return $department;
     }
 
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\ExciseStamp  $exciseStamp
+     * @param  \App\Department  $department
      * @return \Illuminate\Http\Response
      */
-    public function edit(ExciseStamp $exciseStamp)
+    public function edit(Department $department)
     {
         //
     }
@@ -80,27 +78,25 @@ class ExciseStampController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\ExciseStamp  $exciseStamp
+     * @param  \App\Department  $department
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, Department $department)
     {
-        $exciseStamp = ExciseStamp::findOrFail($id);
-        $exciseStamp->update($request->all());
+        $department->update($request->all());
 
-        return $exciseStamp;
+        return $department;
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\ExciseStamp  $exciseStamp
+     * @param  \App\Department  $department
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Department $department)
     {
-        $exciseStamp = ExciseStamp::findOrFail($id);
-        $exciseStamp->delete();
+        $department->delete();
         return 'OK';
     }
 }

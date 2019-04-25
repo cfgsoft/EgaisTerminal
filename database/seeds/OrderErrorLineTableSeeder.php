@@ -3,7 +3,7 @@
 use Illuminate\Database\Seeder;
 
 use App\Models\Order\OrderErrorLine;
-use App\ExciseStamp;
+use App\Models\ExciseStamp\ExciseStamp;
 
 class OrderErrorLineTableSeeder extends Seeder
 {

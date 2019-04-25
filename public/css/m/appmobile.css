@@ -1,1 +1,162 @@
-table{border-collapse:collapse}table td,table th{border-color:silver}table thead{background-color:silver;font-size:small;font-style:normal}table tbody{font-size:medium;text-align:center}table .tddescr{font-size:small;text-align:left}table .regidf2{margin:0;font-size:x-small;font-style:normal;font-weight:700;text-align:left}table .bb{border-bottom:1px solid #000}body{max-width:240px;max-height:320px}body,h1{margin:0}h1{font-size:small;font-style:normal}h1 a{font-size:xx-small}h5,h6{margin:0;font-style:normal}h6{font-size:xx-small}p{margin:0}ul.mainmenu{margin:10px;padding:0}ul.mainmenu li{background-color:#a9a9a9;margin-top:3px;list-style-type:none}ul.mainmenu li a{text-decoration:none;text-align:center;color:#fff;font-size:small;font-weight:700;display:block;padding-top:10px;height:25px}ul.pagination{margin:8px 10%;padding:0}ul.pagination li{display:inline;list-style-type:none}ul.pagination li a{text-decoration:none;padding:6px;border:1px solid #ddd}.card{font-size:small;margin:2px;border:1px solid silver}.card a{text-decoration:none}.invoicepack{background-color:#cce5ff;font-weight:700}.invoiceline{font-size:small;font-style:normal}ul.alert{margin:2px;padding:2px;background-color:#ffa07a}ul.alert li{list-style-type:none}.container{margin:5px;border:1px solid}.barcode{font-size:small;margin:0}#formInputBarCode{margin:2px}
+@charset "UTF-8";
+
+table {
+  border-collapse: collapse;
+  /* Отображать двойные линии как одинарные */
+}
+
+table th,
+table td {
+  border-color: silver;
+}
+
+table thead {
+  background-color: silver;
+  font-size: small;
+  font-style: normal;
+}
+
+table tbody {
+  font-size: medium;
+  text-align: center;
+}
+
+table .tddescr {
+  font-size: small;
+  text-align: left;
+}
+
+table .regidf2 {
+  margin: 0px;
+  font-size: x-small;
+  font-style: normal;
+  font-weight: bold;
+  text-align: left;
+}
+
+table .bb {
+  border-bottom: 1px solid black;
+}
+
+body {
+  max-width: 240px;
+  /* Максимальная ширина страницы в пикселах */
+  max-height: 320px;
+  /* Максимальная высота страницы в пикселах */
+  margin: 0px;
+}
+
+h1 {
+  margin: 0px;
+  font-size: small;
+  font-style: normal;
+}
+
+h1 a {
+  font-size: xx-small;
+}
+
+h5 {
+  margin: 0px;
+  font-style: normal;
+}
+
+h6 {
+  margin: 0px;
+  font-size: xx-small;
+  font-style: normal;
+}
+
+p {
+  margin: 0px;
+}
+
+ul.mainmenu {
+  margin: 10px;
+  padding: 0px;
+}
+
+ul.mainmenu li {
+  background-color: darkgray;
+  margin-top: 3px;
+  list-style-type: none;
+}
+
+ul.mainmenu li a {
+  text-decoration: none;
+  text-align: center;
+  color: white;
+  font-size: small;
+  font-weight: bold;
+  display: block;
+  padding-top: 10px;
+  height: 25px;
+}
+
+ul.pagination {
+  margin: 8px 10%;
+  padding: 0;
+}
+
+ul.pagination li {
+  display: inline;
+  list-style-type: none;
+}
+
+ul.pagination li a {
+  text-decoration: none;
+  padding: 6px 6px;
+  border: 1px solid #ddd;
+}
+
+.card {
+  font-size: small;
+  margin: 2px;
+  border: 1px solid silver;
+}
+
+.card a {
+  text-decoration: none;
+}
+
+.invoicepack {
+  background-color: #cce5ff;
+  font-weight: bold;
+}
+
+.invoiceline {
+  font-size: small;
+  font-style: normal;
+}
+
+ul.alert {
+  margin: 2px;
+  padding: 2px;
+  background-color: LightSalmon;
+}
+
+ul.alert li {
+  list-style-type: none;
+}
+
+/*
+.mainmenu li {
+  list-style-type: none;
+  font-size: small;
+}*/
+
+.container {
+  margin: 5px;
+  border: 1px solid;
+}
+
+.barcode {
+  font-size: small;
+  margin: 0px;
+}
+
+#formInputBarCode {
+  /* background-color: $background-color-form-input-bar-code; */
+  margin: 2px;
+}
+

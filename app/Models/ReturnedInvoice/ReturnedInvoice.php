@@ -5,8 +5,8 @@ namespace App\Models\ReturnedInvoice;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 
-use App\ExciseStamp;
-use App\ExciseStampBox;
+use App\Models\ExciseStamp\ExciseStamp;
+use App\Models\ExciseStamp\ExciseStampBox;
 use App\Models\ReturnedInvoice\ReturnedInvoicePackLine;
 
 class ReturnedInvoice extends Model
