@@ -16,18 +16,18 @@ class CreateInventoriesTable extends Migration
         Schema::create('ref_departments', function (Blueprint $table) {
             $table->increments('id');
             $table->string('descr');
-            $table->string('short_name',40);
+            $table->string('name_short',40);
             $table->string('code',10)->unique();
             $table->string('version')->nullable();
             $table->boolean('mark')->default(false);
             $table->boolean('lic')->default(false);
-            $table->string('city',40);
-            $table->string('street',40);
-            $table->string('house',20);
+            $table->string('city',40)->nullable();
+            $table->string('street',40)->nullable();
+            $table->string('house',20)->nullable();
             $table->timestamps();
 
             $table->index(['descr', 'id']);
-            $table->index(['short_name', 'id']);
+            $table->index(['name_short', 'id']);
         });
 
         Schema::table('excise_stamps', function (Blueprint $table) {
