@@ -19,13 +19,14 @@ class DatabaseSeeder extends Seeder
         if ($appDebug) {
             $this->call(ExciseStampTableSeeder::class);
             $this->call(ReadBarCodeTableSeeder::class);
-            $this->call(DepartmentTableSeeder::class);
             //$this->call(CategoryTableSeeder::class);
 
             $this->call(OrderTableSeeder::class);
             $this->call(InvoiceTableSeeder::class);
             $this->call(ReturnedInvoiceTableSeeder::class);
+
             $this->call(InventorySeeder::class);
+            $this->call(DepartmentTableSeeder::class); //Depends on inventory
 
             factory(App\Models\Order\Order::class,3)->create();
             //factory(App\Models\Order\OrderErrorLine::class,100)->create();

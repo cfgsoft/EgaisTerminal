@@ -43,7 +43,8 @@ class ExciseStampController extends Controller
     {
         $newExciseStamp = $request->all();
 
-        $exciseStamp = ExciseStamp::find($newExciseStamp["id"]);
+        //$exciseStamp = ExciseStamp::find($newExciseStamp["id"]);
+        $exciseStamp = ExciseStamp::where([ ["barcode","=",$newExciseStamp["barcode"]],["department_id","=",$newExciseStamp["department_id"]] ])->first();
 
         if ($exciseStamp == null) {
             $exciseStamp = ExciseStamp::create($newExciseStamp);

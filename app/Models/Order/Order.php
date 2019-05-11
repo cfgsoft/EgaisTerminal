@@ -78,7 +78,7 @@ class Order extends Model
         return $orderLine;
     }
 
-    public function addBarCode($barcode)
+    public function addBarCode($barcode, $department_id = 1)
     {
         //СКАНИРОВАНИЕ АКЦИЗНОЙ МАРКИ, ЯЩИКА, ПАЛЛЕТА
         if (strlen($barcode) != 150 and strlen($barcode) != 68 and strlen($barcode) != 26 and strlen($barcode) != 18)
@@ -91,7 +91,7 @@ class Order extends Model
 
 
         if (strlen($barcode) == 26 or strlen($barcode) == 18) {
-            $exciseStampPallet = ExciseStampPallet::where('barcode', '=', $barcode)->first();
+            $exciseStampPallet = ExciseStampPallet::where([['barcode', '=', $barcode], ['department_id','=',$department_id] ])->first();
             if ($exciseStampPallet == null) {
                 $result = $this->addPackExciseStamp($barcode);
             } else {
@@ -118,7 +118,7 @@ class Order extends Model
         return $orderErrorLine;
     }
 
-    private function addExciseStamp($barcode)
+    private function addExciseStamp($barcode, $department_id = 1)
     {
         $errorBarCode = false;
         $errorMessage = "";
@@ -134,7 +134,8 @@ class Order extends Model
         }
 
         //1. Ищем марку в классификаторе акцизных марок
-        $exciseStamp = ExciseStamp::find($barcode);
+        //$exciseStamp = ExciseStamp::find($barcode);
+        $exciseStamp = ExciseStamp::where([ ['barcode','=',$barcode],['department_id','=',$department_id] ])->first();
         if ($exciseStamp == null)
         {
             $errorMessage = "Не найдена марка в БД " . $barcode;
@@ -159,7 +160,7 @@ class Order extends Model
 
         $orderMarkLine = OrderMarkLine::where([['markcode',   '=', $barcode],
                                                ['quantity',   '=', '1'],
-                                               ["f2reg_id",   "=", $exciseStamp->f2regid]
+                                               ['f2reg_id',   '=', $exciseStamp->f2regid]
         ])->first();
         if ($orderMarkLine != null)
         {
@@ -171,9 +172,9 @@ class Order extends Model
 
 
         //4. Ищем строку в заказе которая соответствует этой марке
-        $orderLine = OrderLine::where([["order_id",   "=", $this->id],
-                                       ["product_code","=", $exciseStamp->productcode],
-                                       ["f2reg_id",    "=", $exciseStamp->f2regid]
+        $orderLine = OrderLine::where([['order_id',    '=', $this->id],
+                                       ['product_code','=', $exciseStamp->productcode],
+                                       ['f2reg_id',    '=', $exciseStamp->f2regid]
         ])->first();
         if ($orderLine == null)
         {
@@ -208,7 +209,7 @@ class Order extends Model
             $orderMarkLine->product_code = $exciseStamp->productcode;
             $orderMarkLine->f2reg_id     = $exciseStamp->f2regid;
             $orderMarkLine->markcode     = $barcode;
-            $orderMarkLine->pack_number  = "000000000000000000000";
+            //$orderMarkLine->pack_number  = "000000000000000000000";
             $orderMarkLine->quantity     = 1;
             $orderMarkLine->savedin1c    = false;
             $orderMarkLine->save();
@@ -239,7 +240,7 @@ class Order extends Model
         return ['error' => false, 'errorMessage' => ''];
     }
 
-    private function addPackExciseStamp($barcode)
+    private function addPackExciseStamp($barcode, $department_id = 1)
     {
         $errorBarCode = false;
         $errorMessage = "";
@@ -253,7 +254,8 @@ class Order extends Model
         }
 
         //1.
-        $exciseStampBox = ExciseStampBox::where('barcode', '=', $barcode)->first();
+        //$exciseStampBox = ExciseStampBox::where('barcode', '=', $barcode)->first();
+        $exciseStampBox = ExciseStampBox::where([['barcode','=',$barcode],['department_id','=',$department_id]])->first();
         if ($exciseStampBox == null) {
             $errorMessage = "Не опознан ШК ящика " . $barcode;
 
@@ -284,7 +286,8 @@ class Order extends Model
 
         $lines = $exciseStampBox->excisestampboxlines;
         foreach ($lines as $line){
-            $exciseStamp = ExciseStamp::find($line->markcode);
+            //$exciseStamp = ExciseStamp::find($line->markcode);
+            $exciseStamp = ExciseStamp::where([ ['barcode','=',$line->markcode],['department_id','=',$department_id] ])->first();
 
             //1. Ищем штрих код в уже набранных товарах, если находим ошибка.
             // ошибки из-за пересортицы
@@ -293,7 +296,7 @@ class Order extends Model
 
             $orderMarkLine = OrderMarkLine::where([['markcode', '=', $line->markcode],
                                                    ['quantity', '=', '1'],
-                                                   ["f2reg_id", "=", $exciseStamp->f2regid]
+                                                   ['f2reg_id', '=', $exciseStamp->f2regid]
             ])->first();
             if ($orderMarkLine != null) {
                 $errorBarCode = true;
@@ -423,12 +426,14 @@ class Order extends Model
         return ['error' => false, 'errorMessage' => ''];
     }
 
-    private function addPackStamp_New($orderLine, $exciseStampBox, $pallet_number)
+    private function addPackStamp_New($orderLine, $exciseStampBox, $pallet_number, $department_id = 1)
     {
         $linesBox = $exciseStampBox->excisestampboxlines;
         foreach ($linesBox as $line)
         {
-            $exciseStamp = ExciseStamp::find($line->markcode);
+            //$exciseStamp = ExciseStamp::find($line->markcode);
+            $exciseStamp = ExciseStamp::where([ ['barcode','=',$line->markcode],['department_id','=',$department_id] ])->first();
+
             $result = $this->addExciseStamp_New($orderLine, $exciseStamp, $exciseStampBox);
 
             if ($result['error'])

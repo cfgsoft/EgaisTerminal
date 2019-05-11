@@ -45,7 +45,10 @@ class ExciseStampPalletController extends Controller
     {
         $newExciseStampPallet = $request->all();
 
-        $exciseStampPallet = ExciseStampPallet::where('barcode', $newExciseStampPallet['barcode'])->first();
+        $exciseStampPallet = ExciseStampPallet::where([
+            ['barcode','=', $newExciseStampPallet['barcode']],
+            ['department_id','=', $newExciseStampPallet['department_id']]
+        ])->first();
         if ($exciseStampPallet == null) {
             $exciseStampPallet = ExciseStampPallet::create($newExciseStampPallet);
         } else {

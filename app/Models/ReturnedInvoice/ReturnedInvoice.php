@@ -76,7 +76,7 @@ class ReturnedInvoice extends Model
         return $returnedInvoiceErrorLine;
     }
 
-    private function addExciseStamp($barcode)
+    private function addExciseStamp($barcode, $department_id = 1)
     {
         $errorBarCode = false;
         $errorMessage = "";
@@ -91,7 +91,8 @@ class ReturnedInvoice extends Model
             return ['error' => true, 'errorMessage' => $errorMessage ];
         }
 
-        $exciseStamp = ExciseStamp::find($barcode);
+        //$exciseStamp = ExciseStamp::find($barcode);
+        $exciseStamp = ExciseStamp::where([ ["barcode","=",$barcode],["department_id","=",$department_id] ])->first();
         if ($exciseStamp == null)
         {
             $errorMessage = "Не найдена марка в БД " . $barcode;
@@ -100,20 +101,7 @@ class ReturnedInvoice extends Model
             return ['error' => true, 'errorMessage' => $errorMessage ];
         }
 
-        //1. Ищем штрих код в уже набранных товарах, если находим ошибка.
-        //$returnedInvoiceMarkLine = ReturnedInvoiceMarkLine::where([['markcode', '=', $barcode],['quantity', '=', '1']])->first();
-        //if ($returnedInvoiceMarkLine != null)
-        //{
-        //    $errorMessage = "Товар уже сканировался " . $barcode;
-        //
-        //    $this->addErrorLine($barcode, $errorMessage);
-        //    return ['error' => true, 'errorMessage' => $errorMessage ];
-        //}
-
         //2. Ищем товар в строке заказов
-        //Временно ищем без привязки в разделуБ
-        //["f2regid",             "=", $exciseStamp->f2regid]
-        //["productcode",         "=", $exciseStamp->productcode]
         $returnedInvoiceLine = ReturnedInvoiceLine::where([
             ["returned_invoice_id", "=", $this->id],
             ["f2regid",             "=", $exciseStamp->f2regid]
@@ -180,7 +168,7 @@ class ReturnedInvoice extends Model
         return ['error' => false, 'errorMessage' => ''];
     }
 
-    private function addPackExciseStamp($barcode)
+    private function addPackExciseStamp($barcode, $department_id = 1)
     {
         //СКАНИРОВАНИЕ ЯЩИКА
         if (strlen($barcode) != 26) {
@@ -191,7 +179,7 @@ class ReturnedInvoice extends Model
         }
 
         //1.
-        $exciseStampBox = ExciseStampBox::where('barcode', '=', $barcode)->first();
+        $exciseStampBox = ExciseStampBox::where([ ['barcode', '=', $barcode],['department_id', '=', $department_id] ] )->first();
         if ($exciseStampBox == null) {
             $errorMessage = "Не опознан ШК ящика " . $barcode;
 
@@ -201,8 +189,8 @@ class ReturnedInvoice extends Model
 
         //2.
         $returnedInvoicePackLine = ReturnedInvoicePackLine::where([
-            ["returned_invoice_id", "=", $this->id],
-            ["markcode",            "=", $barcode]
+            ['returned_invoice_id', '=', $this->id],
+            ['markcode',            '=', $barcode]
         ])->first();
 
         if ($returnedInvoicePackLine != null)
@@ -226,7 +214,8 @@ class ReturnedInvoice extends Model
         $linesBox = $exciseStampBox->excisestampboxlines;
         foreach ($linesBox as $line)
         {
-            $exciseStamp = ExciseStamp::find($line->markcode);
+            //$exciseStamp = ExciseStamp::find($line->markcode);
+            $exciseStamp = ExciseStamp::where([ ['barcode','=',$line->markcode],['department_id','=',$department_id] ])->first();
             if ($exciseStamp == null)
             {
                 $errorMessage = "Не найдена марка в БД " . $barcode;
@@ -238,8 +227,8 @@ class ReturnedInvoice extends Model
             }
 
             $returnedInvoiceLine = ReturnedInvoiceLine::where([
-                ["returned_invoice_id", "=", $this->id],
-                ["f2regid",             "=", $exciseStamp->f2regid]
+                ['returned_invoice_id', '=', $this->id],
+                ['f2regid',             '=', $exciseStamp->f2regid]
             ])->first();
 
             if ($returnedInvoiceLine == null)

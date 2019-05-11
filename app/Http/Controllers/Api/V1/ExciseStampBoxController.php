@@ -46,7 +46,11 @@ class ExciseStampBoxController extends Controller
     {
         $newExciseStampBox = $request->all();
 
-        $exciseStampBox = ExciseStampBox::where('barcode', $newExciseStampBox['barcode'])->first();
+        $exciseStampBox = ExciseStampBox::where([
+            ['barcode',      '=', $newExciseStampBox['barcode']],
+            ['department_id','=', $newExciseStampBox['department_id']]
+        ])->first();
+
         if ($exciseStampBox == null) {
             $exciseStampBox = ExciseStampBox::create($newExciseStampBox);
         } else {
