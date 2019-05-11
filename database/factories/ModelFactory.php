@@ -57,3 +57,11 @@ $factory->define(App\Models\Invoice\Invoice::class, function (Faker $faker) {
         'doc_id' => str_random(36)
     ];
 });
+
+$factory->define(App\Models\Inventory\Inventory::class, function (Faker $faker) {
+    return [
+        'date' => Carbon::create('2019', '05', '10'),
+        'number' => str_random(11),
+        'department_id' => 1
+    ];
+});

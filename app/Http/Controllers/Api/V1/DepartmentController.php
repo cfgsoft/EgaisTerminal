@@ -13,13 +13,19 @@ class DepartmentController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
         header('Access-Control-Allow-Origin: *');
 
         $department = Department::orderBy("descr");
 
-        return $department->paginate(20);
+        if ($request->has('lic')) {
+            $department = $department->where('lic', $request->get('lic'));
+        }
+
+        $perPage = (integer)$request->get('per_page', 20);
+
+        return $department->paginate($perPage);
     }
 
     /**

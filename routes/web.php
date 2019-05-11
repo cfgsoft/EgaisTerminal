@@ -54,6 +54,13 @@ Route::group(
         Route::post('/invoice', 'm\InvoiceController@submitbarcode')->name('m.invoice.submitbarcode');
         Route::get('/invoice/edit/{id}',  'm\InvoiceController@edit')->name('m.invoice.edit');
         Route::post('/invoice/edit/{id}', 'm\InvoiceController@submiteditbarcode')->name('m.invoice.submiteditbarcode');
+
+        Route::get('/inventory',  'm\InventoryController@index')->name('m.inventory');
+        Route::post('/inventory', 'm\InventoryController@submitbarcode')->name('m.inventory.submitbarcode');
+        Route::get('/inventory/create',  'm\InventoryController@create')->name('m.inventory.create');
+        Route::post('/inventory/store',  'm\InventoryController@store')->name('m.inventory.store');
+        Route::get('/inventory/edit/{id}',  'm\InventoryController@edit')->name('m.inventory.edit');
+        Route::post('/inventory/edit/{id}', 'm\InventoryController@submiteditbarcode')->name('m.inventory.submiteditbarcode');
     }
 );
 
