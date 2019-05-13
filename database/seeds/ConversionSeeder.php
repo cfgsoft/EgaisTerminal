@@ -13,6 +13,7 @@ class ConversionSeeder extends Seeder
      */
     public function run()
     {
+        /*
         DB::table('excise_stamp')->delete();
 
         ExciseStamp::chunk(2000, function ($exciseStamps) {
@@ -32,5 +33,6 @@ class ConversionSeeder extends Seeder
 
             }
         });
+        */
     }
 }

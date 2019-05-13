@@ -7,10 +7,12 @@
         <input type="hidden" name="_token" value="{{ csrf_token() }}" >
 
         Номер:<br>
-        <input id="InputBarCode1" name="BarCode1" title="Barcode1" value={{$number}} /><br>
+        <input id="InputBarCode1" name="number" title="Number" value={{$number}} /><br>
         Дата:<br>
-        <input id="InputDate" type="date" name="Date" title="Date" value={{$date}} />
+        <input id="InputDate" type="date" name="date" title="Date" value={{$date}} />
         {{--<input type="hidden" id="inventory_id" name="order_id" value="{{ $inventory->id }}" /> --}}
+        <br>
+        <br>
         <input type="submit" value="Записать" />
     </form>
 

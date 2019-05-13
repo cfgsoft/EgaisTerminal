@@ -3,9 +3,10 @@
 namespace App\Http\Controllers\m;
 
 use Carbon\Carbon;
-use App\Models\Inventory\Inventory;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+
+use App\Models\Inventory\Inventory;
 
 class InventoryController extends Controller
 {
@@ -16,7 +17,7 @@ class InventoryController extends Controller
      */
     public function index(Request $request)
     {
-        $inventory = Inventory::orderBy("number", 'desc')->simplePaginate(4);
+        $inventory = Inventory::orderBy("id", 'desc')->simplePaginate(4);
 
         $barcode = $request->input('barcode', '');
 
@@ -33,11 +34,15 @@ class InventoryController extends Controller
 
     public function store(Request $request)
     {
-        //$this->validate($request, [
-        //    'title'	=>	'required' //РѕР±СЏР·Р°С‚РµР»СЊРЅРѕ
-        //]);
+        //dd($request);
+
+        $this->validate($request, [
+            'date'	 =>	'required',
+            'number' =>	'required'
+        ]);
 
         Inventory::add($request->all());
+
         return redirect()->route('m.inventory');
     }
 
@@ -54,8 +59,8 @@ class InventoryController extends Controller
         {
             return redirect()->action('m\InventoryController@index');
         }
-        //$returnedInvoice->returnedInvoicelines;
-        //$returnedInvoice->returnedInvoicelines = $returnedInvoice->returnedInvoicelines->sortBy('lineid')->sortByDesc('show_first');
+        $inventory->inventoryLines;
+        $inventory->inventoryLines = $inventory->inventoryLines->sortBy('id')->sortByDesc('show_first');
 
         $errorMessage = '';
         if ($request->has('errorMessage')) {
@@ -72,7 +77,7 @@ class InventoryController extends Controller
         if ($barcode == '0') {
             return redirect()->action('m\HomeController@index');
         } else if ($barcode == '1') {
-            return redirect()->action('m\HomeController@create');
+            return redirect()->action('m\InventoryController@create');
         }
 
         $this->validate($request,
@@ -126,22 +131,16 @@ class InventoryController extends Controller
             ]
         );
 
-        /*
-
-        $order = Order::find($order_id);
-        $result = $order->addBarCode($barcode);
+        $inventory = Inventory::find($inventory_id);
+        $result = $inventory->addBarCode($barcode);
 
         $errorBarCode = $result['error'];
         $errorMessage = $result['errorMessage'];
 
         if ($errorBarCode) {
-            //return redirect()->action('m\OrderController@edit', ['id' => $order_id, 'errorMessage' => $errorMessage ]);
             return redirect()->back()->withErrors(['errorMessage' => $errorMessage]);
         }
 
-        return redirect()->action('m\OrderController@edit', ['id' => $order_id]);
-
-        */
+        return redirect()->action('m\InventoryController@edit', ['id' => $inventory_id]);
     }
-
 }

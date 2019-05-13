@@ -6,7 +6,7 @@
 
     <form action="{{ action('m\InventoryController@submiteditbarcode', ['id' => $inventory->id]) }}" id="formInputBarCode" method="post">
         <input id="InputBarCode" name="BarCode" title="Barcode" size="22" />
-        <input type="hidden" id="inventory_id" name="order_id" value="{{ $inventory->id }}" />
+        <input type="hidden" id="inventory_id" name="inventory_id" value="{{ $inventory->id }}" />
         <input type="hidden" name="_token" value="{{ csrf_token() }}" >
         <input type="submit" value=".." />
     </form>
@@ -18,28 +18,25 @@
             <tr>
                 <th>№</th>
                 <th>Наименование</th>
-                <th>Зак</th>
-                <th>Наб</th>
+                <th>Штуки</th>
+                <th>Упак</th>
+                <th>Пл</th>
             </tr>
         </thead>
         <tbody>
 
-        {{--
-        @foreach ($order->orderLines as $item)
-            @if ($item->quantity != $item->quantity_mark)
-                <tr>
-                    <td>{{$item->line_id}}</td>
-                    <td class="tddescr" colspan="3">{{$item->product_descr}}</td>
-                </tr>
-                <tr>
-                    <td class="bb regidf2" colspan="2">{{$item->f2reg_id}}</td>
-                    <td class="bb">{{$item->quantity}}</td>
-                    <td class="bb">{{$item->quantity_mark}}</td>
-                </tr>
-
-            @endif
+        @foreach ($inventory->inventoryLines as $item)
+            <tr>
+                <td>{{$item->line_id}}</td>
+                <td class="tddescr" colspan="3">{{$item->product_descr}}</td>
+            </tr>
+            <tr>
+                <td class="bb regidf2" colspan="2">{{$item->f2reg_id}}</td>
+                <td class="bb">{{$item->quantity}}</td>
+                <td class="bb">{{$item->quantity_pack}}</td>
+                <td class="bb">{{$item->quantity_pallet}}</td>
+            </tr>
         @endforeach
-        --}}
 
     </tbody>
 </table>
