@@ -13,6 +13,17 @@
 
     @include('m.errors')
 
+    @isset($f2reg_id)
+        <div>{{$f2reg_id}}</div>
+        </br>
+    @endisset
+
+    @isset($order_id)
+        <ul class="alert">
+            <li>Марка найдена в заказе №{{$order_id}}</li>
+        </ul>
+    @endisset
+
     <table class="table">
         <thead>
             <tr>

@@ -22,19 +22,19 @@ class Inventory extends Model
         return $this->hasMany("App\Models\Inventory\InventoryLine");
     }
 
-    public function invoiceMarkLines(){
+    public function inventoryMarkLines(){
         return $this->hasMany("App\Models\Inventory\InventoryMarkLine");
     }
 
-    public function invoicePackLines(){
+    public function inventoryPackLines(){
         return $this->hasMany("App\Models\Inventory\InventoryPackLine");
     }
 
-    public function invoicePalletLines(){
+    public function inventoryPalletLines(){
         return $this->hasMany("App\Models\Inventory\InventoryPalletLine");
     }
 
-    public function invoiceErrorLines(){
+    public function inventoryErrorLines(){
         return $this->hasMany("App\Models\Inventory\InventoryErrorLine");
     }
 
@@ -106,10 +106,12 @@ class Inventory extends Model
         $inventoryMarkLine = InventoryMarkLine::where( [['inventory_id', '=', $this->id],['mark_code', '=', $barcode]] )->first();
         if ($inventoryMarkLine != null)
         {
-            $errorMessage = "Товар уже сканировался " . $barcode;
+            //$errorMessage = "Товар уже сканировался " . $barcode;
 
-            $this->addErrorLine($barcode, $errorMessage);
-            return ['error' => true, 'errorMessage' => $errorMessage ];
+            //$this->addErrorLine($barcode, $errorMessage);
+            //return ['error' => true, 'errorMessage' => $errorMessage ];
+
+            return ['error' => false, 'errorMessage' => ''];
         }
 
         //3. Ищем товар в строке

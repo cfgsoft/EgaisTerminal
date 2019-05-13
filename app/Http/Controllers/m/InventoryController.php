@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
 use App\Models\Inventory\Inventory;
+use App\Models\Inventory\InventoryMarkLine;
 
 class InventoryController extends Controller
 {
@@ -62,12 +63,22 @@ class InventoryController extends Controller
         $inventory->inventoryLines;
         $inventory->inventoryLines = $inventory->inventoryLines->sortBy('id')->sortByDesc('show_first');
 
-        $errorMessage = '';
-        if ($request->has('errorMessage')) {
-            $errorMessage = $request->get('errorMessage');
+        $f2reg_id = null;
+        $order_id = null;
+        if ($request->session()->has('inventory')) {
+            $currentInventory = $request->session()->get('inventory');
+
+            $barcode = $currentInventory['barcode'];
+
+            $inventoryMarkLine = InventoryMarkLine::where( [['inventory_id', '=', $id],['mark_code', '=', $barcode]] )->first();
+            if ($inventoryMarkLine != null)
+            {
+                $order_id = $inventoryMarkLine->order_id;
+                $f2reg_id = $inventoryMarkLine->f2reg_id;
+            }
         }
 
-        return view('m/inventory/edit', ['inventory' => $inventory, 'errorMessage' => $errorMessage]);
+        return view('m/inventory/edit', ['inventory' => $inventory, 'order_id' => $order_id, 'f2reg_id' => $f2reg_id]);
     }
 
     public function submitbarcode(Request $request)
@@ -140,6 +151,12 @@ class InventoryController extends Controller
         if ($errorBarCode) {
             return redirect()->back()->withErrors(['errorMessage' => $errorMessage]);
         }
+
+        $inventorySession = ['inventoryId' => $inventory_id,
+                             'barcode'     => $barcode];
+
+        //$request->session()->put('inventory', $inventorySession);
+        $request->session()->flash('inventory', $inventorySession);
 
         return redirect()->action('m\InventoryController@edit', ['id' => $inventory_id]);
     }

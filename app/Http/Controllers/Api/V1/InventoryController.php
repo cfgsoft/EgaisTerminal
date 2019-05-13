@@ -15,9 +15,12 @@ class InventoryController extends Controller
      */
     public function index()
     {
-        //GET
-        $inventory = Inventory::orderBy('number', 'desc')
-            ->paginate(50);
+        header('Access-Control-Allow-Origin: *');
+
+        $perPage = (integer)$request->get('per_page', 20);
+
+        $inventory = Inventory::orderBy('id', 'desc')
+            ->paginate($perPage);
 
         return $inventory;
     }
@@ -40,6 +43,11 @@ class InventoryController extends Controller
      */
     public function store(Request $request)
     {
+        $this->validate($request, [
+            'date'	 =>	'required',
+            'number' =>	'required'
+        ]);
+
         $newInventory = $request->all();
 
         $inventory = Inventory::add($newInventory);
