@@ -74,6 +74,7 @@ Route::group(
     function ()
     {
         Route::resource('departments',      'DepartmentController', ['only' => ['index', 'show']]);
+        Route::resource('inventories',      'InventoryController',  ['only' => ['index', 'show', 'store']]);
 
     }
 );

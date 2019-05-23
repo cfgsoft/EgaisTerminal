@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\api\v1;
 
 use App\Models\ExciseStamp\ExciseStamp;
+use App\Department;
+
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
@@ -41,10 +43,38 @@ class ExciseStampController extends Controller
      */
     public function store(Request $request)
     {
+        $this->validate($request, [
+            'barcode'	  =>	'required',
+            'productcode' =>	'required',
+            'f1regid'     =>	'required',
+            'f2regid'     =>	'required',
+            'department_code' => 'required',
+            'department_id'   => 'filled'
+        ]);
+
         $newExciseStamp = $request->all();
 
-        //$exciseStamp = ExciseStamp::find($newExciseStamp["id"]);
-        $exciseStamp = ExciseStamp::where([ ["barcode","=",$newExciseStamp["barcode"]],["department_id","=",$newExciseStamp["department_id"]] ])->first();
+        $department_id =  null;
+        if ($request->has('department_id')) {
+            $department_id = $newExciseStamp["department_id"];
+        } else {
+            $department_code = $newExciseStamp["department_code"];
+            $department = Department::where('code','=',$department_code)->first();
+
+            if ($department != null){
+                $department_id = $department->id;
+                $newExciseStamp['department_id'] = $department_id;
+            }
+        }
+
+        if ($department_id == null) {
+            return response()->json(['message' =>'The given department was invalid.'], 422);
+        }
+
+        $exciseStamp = ExciseStamp::where([
+            ['barcode',      '=',$newExciseStamp['barcode']],
+            ['department_id','=',$newExciseStamp['department_id']]
+        ])->first();
 
         if ($exciseStamp == null) {
             $exciseStamp = ExciseStamp::create($newExciseStamp);

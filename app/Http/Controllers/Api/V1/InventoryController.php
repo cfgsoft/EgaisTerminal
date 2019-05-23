@@ -13,16 +13,19 @@ class InventoryController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
         header('Access-Control-Allow-Origin: *');
 
+        $inventory = Inventory::orderBy('id', 'desc');
+
+        if ($request->has('department_id')) {
+            $inventory = $inventory->where('department_id', $request->get('department_id'));
+        }
+
         $perPage = (integer)$request->get('per_page', 20);
 
-        $inventory = Inventory::orderBy('id', 'desc')
-            ->paginate($perPage);
-
-        return $inventory;
+        return $inventory->paginate($perPage);
     }
 
     /**
@@ -45,7 +48,8 @@ class InventoryController extends Controller
     {
         $this->validate($request, [
             'date'	 =>	'required',
-            'number' =>	'required'
+            'number' =>	'required',
+            'department_id' =>	'required'
         ]);
 
         $newInventory = $request->all();
@@ -63,7 +67,12 @@ class InventoryController extends Controller
      */
     public function show(Inventory $inventory)
     {
+		header('Access-Control-Allow-Origin: *');
+		
         //GET
+        $inventory->inventoryLines;
+        $inventory->inventoryMarkLines;
+
         return $inventory;
     }
 
@@ -86,7 +95,7 @@ class InventoryController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, Inventory $inventory)
-    {
+    {		
         //PUT
         $newInventory = $request->all();
 

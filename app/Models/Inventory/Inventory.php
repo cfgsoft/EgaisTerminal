@@ -18,6 +18,8 @@ class Inventory extends Model
 
     protected $fillable = ['date', 'number', 'department_id'];
 
+    protected $dates = ['created_at', 'updated_at', 'date'];
+
     public function inventoryLines(){
         return $this->hasMany("App\Models\Inventory\InventoryLine");
     }

@@ -66,6 +66,8 @@ class DepartmentController extends Controller
      */
     public function show(Department $department)
     {
+        header('Access-Control-Allow-Origin: *');
+
         return $department;
     }
 

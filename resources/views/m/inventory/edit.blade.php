@@ -1,7 +1,7 @@
 @extends('layouts.mobile')
 
 @section('content')
-    <h1>Инвентаризация № {{ $inventory->number  }} </h1>
+    <h1>Инвент. № {{ $inventory->number  }} </h1>
     <h6><a href="{{ route('m.inventory') }}" >0-Выход</a></h6>
 
     <form action="{{ action('m\InventoryController@submiteditbarcode', ['id' => $inventory->id]) }}" id="formInputBarCode" method="post">
