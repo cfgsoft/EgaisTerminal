@@ -4,6 +4,7 @@ namespace App\Http\Controllers\api\v1;
 
 use App\Models\ExciseStamp\ExciseStamp;
 use App\Department;
+use App\Http\Requests\StoreExciseStamp;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -41,17 +42,8 @@ class ExciseStampController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(StoreExciseStamp $request)
     {
-        $this->validate($request, [
-            'barcode'	  =>	'required',
-            'productcode' =>	'required',
-            'f1regid'     =>	'required',
-            'f2regid'     =>	'required',
-            'department_code' => 'required',
-            'department_id'   => 'filled'
-        ]);
-
         $newExciseStamp = $request->all();
 
         $department_id =  null;
