@@ -63,6 +63,12 @@ class ExciseStampController extends Controller
             return response()->json(['message' =>'The given department was invalid.'], 422);
         }
 
+        $exciseStamp = ExciseStamp::updateOrCreate([
+            'barcode' => $newExciseStamp['barcode'],
+            'department_id' => $newExciseStamp['department_id']
+        ], $newExciseStamp);
+
+        /*
         $exciseStamp = ExciseStamp::where([
             ['barcode',      '=',$newExciseStamp['barcode']],
             ['department_id','=',$newExciseStamp['department_id']]
@@ -73,8 +79,42 @@ class ExciseStampController extends Controller
         } else {
             $exciseStamp->update($newExciseStamp);
         }
+        */
 
         return $exciseStamp;
+    }
+
+    public function storeBatch(Request $request)
+    {
+        $result = [];
+        $newExciseStamps = $request->all();
+
+        foreach($newExciseStamps['items'] as $newExciseStamp) {
+
+            $department_id =  null;
+            if (array_key_exists('department_id', $newExciseStamp)) {
+                $department_id = $newExciseStamp["department_id"];
+            } else {
+                $department_code = $newExciseStamp["department_code"];
+                $department = Department::where('code','=',$department_code)->first();
+
+                if ($department != null){
+                    $department_id = $department->id;
+                    $newExciseStamp['department_id'] = $department_id;
+                }
+            }
+
+            if ($department_id == null) {
+                return response()->json(['message' =>'The given department was invalid.'], 422);
+            }
+
+            $result[] = ExciseStamp::updateOrCreate([
+                'barcode' => $newExciseStamp['barcode'],
+                'department_id' => $newExciseStamp['department_id']
+            ], $newExciseStamp);
+        }
+
+        return $result;
     }
 
     /**

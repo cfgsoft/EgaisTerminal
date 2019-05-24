@@ -8,7 +8,7 @@ class ExciseStamp extends Model
 {
     protected $table = 'excise_stamp';
 
-    protected $fillable = ['productcode','f1regid', 'f2regid', 'department_id', 'barcode'];
+    protected $fillable = ['barcode', 'productcode','f1regid', 'f2regid', 'department_id'];
 
     //public $incrementing = false;
 }

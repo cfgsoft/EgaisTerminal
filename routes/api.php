@@ -55,6 +55,7 @@ Route::group(
         Route::get('categories/indexAll',   'CategoryController@indexAll');
 
         Route::post('productsegais/store-batch',    'ProductEgaisController@storeBatch');
+        Route::post('excisestamps/store-batch',     'ExciseStampController@storeBatch');
 
         Route::resource('categories',       'CategoryController',   ['except' => ['create', 'edit']]);
         Route::resource('products',         'ProductController',    ['except' => ['create', 'edit']]);
