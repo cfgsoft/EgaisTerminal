@@ -133,6 +133,13 @@ class Inventory extends Model
             $order_id = $orderMarkLine->order_id;
         }
 
+        //7. Обнуление showFirst  у заказа
+        $this->inventoryLines->each(function ($item, $key) {
+            if ($item->show_first) {
+                $item->show_first = false;
+                $item->save();
+            }
+        });
 
         DB::beginTransaction();
 
@@ -162,6 +169,13 @@ class Inventory extends Model
                 $inventoryLine->product_code  = $exciseStamp->productcode;
                 $inventoryLine->f2reg_id      = $exciseStamp->f2regid;
                 $inventoryLine->quantity      = 1;
+
+                $this->increment('quantity_mark');
+
+                if ($exciseStamp->ProductEgais != null){
+                    $inventoryLine->product_descr = $exciseStamp->ProductEgais->descr;
+                }
+
             } else {
                 $inventoryLine->increment('quantity');
             }

@@ -59,8 +59,9 @@ Route::group(
 
         Route::resource('categories',       'CategoryController',   ['except' => ['create', 'edit']]);
         Route::resource('products',         'ProductController',    ['except' => ['create', 'edit']]);
-        Route::resource('departments',      'DepartmentController', ['only' => ['store', 'update']]);
-        Route::resource('productsegais',    'ProductEgaisController', ['only' => ['store', 'update']]);
+        Route::resource('departments',      'DepartmentController',      ['only' => ['store', 'update']]);
+        Route::resource('productsegais',    'ProductEgaisController',    ['only' => ['store', 'update']]);
+        Route::resource('transportmodules', 'TransportModuleController', ['only' => ['store', 'update']]);
         Route::resource('orders',           'OrderController',      ['except' => ['create', 'edit']]);
         Route::resource('excisestamps',     'ExciseStampController',        ['except' => ['create', 'edit']]);
         Route::resource('excisestampbox',   'ExciseStampBoxController',     ['except' => ['create', 'edit']]);

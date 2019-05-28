@@ -17,6 +17,7 @@ class DatabaseSeeder extends Seeder
         $this->call(UserTableSeeder::class);
 
         if ($appDebug) {
+            $this->call(ProductEgaisTableSeeder::class);
             $this->call(ExciseStampTableSeeder::class);
             $this->call(ReadBarCodeTableSeeder::class);
             //$this->call(CategoryTableSeeder::class);
@@ -32,7 +33,7 @@ class DatabaseSeeder extends Seeder
             //factory(App\Models\Order\OrderErrorLine::class,100)->create();
             //factory(App\Models\Invoice\Invoice::class,10)->create();
 
-            factory(App\Models\Inventory\Inventory::class,10)->create();
+            factory(App\Models\Inventory\Inventory::class,1)->create();
 
             //$this->call([
             //    UsersTableSeeder::class,

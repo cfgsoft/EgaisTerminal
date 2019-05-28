@@ -21,8 +21,8 @@
         <thead>
         <tr>
             <th>Инвентаризация</th>
-            <th>Зак</th>
-            <th>Наб</th>
+            <th>Штук</th>
+            <th>Упак</th>
         </tr>
         </thead>
         <tbody>
