@@ -75,10 +75,11 @@ https://www.youtube.com/watch?v=uIXScyhCtPc
 https://www.digitalocean.com/community/tutorials/node-js-ubuntu-18-04-ru
 //авто запуск сайта на node (npm i pm2 -g)
 https://habr.com/sandbox/96765/
-//Загрузка почты
+//Загрузка почты //Работа с почтой, для приема писем по декларации (готовый проект)
 https://github.com/ladybirdweb/momo-email-listener
 //Ограничение достпа к сайте по IP адресам  (настройка прав)
 https://hackware.ru/?p=5413
+
 
 
 0. php artisan key:generate (генерация нового ключа)
@@ -97,6 +98,7 @@ https://hackware.ru/?p=5413
 13. php artisan make:controller api/v1/ExciseStampController --resource --model=ExciseStamp
 14. Изменение размера столбцов (composer require doctrine/dbal)
 15. Выполнить в случае есть класс не найден (composer dump-autoload)
+16. Laravel debugbar   (https://github.com/barryvdh/laravel-debugbar)
 
 1. Создание API контроллера (php artisan make:controller api/v1/CategoryController --resource --model=Category)
 2. Добавляем путь к api контроллеру в routes\api.php (Route::group(['prefix' => '/v1',  'namespace' => 'Api\V1', 'as' => 'api.'], function () {

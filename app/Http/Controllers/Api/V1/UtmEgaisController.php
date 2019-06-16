@@ -55,6 +55,11 @@ class UtmEgaisController extends Controller
             $contents = Storage::get('utmegais/TTN3_WayBill_v3-030x5F16C118-196E-430C-88F5-D34849080964.xml');
         } elseif ($id == 6){
             $contents = Storage::get('utmegais/TTN3_WayBill_WayBill_v3-030x1CA06645-442E-4743-9CB1-382FDE867E24.xml');
+        } elseif ($id == 11){
+            $contents = Storage::get('utmegais/WayBill_v3-030x3F712286-A7D9-46E3-A43B-E83A983AE0EB.xml');
+        } elseif ($id == 12){
+            $contents = Storage::get('utmegais/WayBill_v3-030xCCADDFC9-D41D-4FD9-BECB-711F28EFA219.xml');
+
         } else {
             $contents = Storage::get('utmegais/TTN3.xml');
         }
@@ -70,6 +75,11 @@ class UtmEgaisController extends Controller
             $contents = Storage::get('utmegais/TTNInformF2Reg_FORM2REGINFO-030xAD494300-35A2-43F8-8EF7-207DFCC356EB.xml');
         } elseif ($id == 7){
             $contents = Storage::get('utmegais/TTNInformF2Reg_FORM2REGINFO-030x5A7C71DD-5472-40AB-B5F3-69C4B4A95236.xml');
+        } elseif ($id == 13){
+            $contents = Storage::get('utmegais/FORM2REGINFO-030x9FB44E9F-985A-4676-ACA8-B580657EDD7B.xml');
+        } elseif ($id == 14){
+            $contents = Storage::get('utmegais/FORM2REGINFO-030x2FE690C8-7842-4429-97B8-0F81BDCF3EEB.xml');
+
         } else {
             $contents = Storage::get('utmegais/TTNInformF2Reg_FORM2REGINFO-030x898D3DF4-9BBC-45B8-A63A-4961A6865AF7.xml');
         }
@@ -109,5 +119,4 @@ class UtmEgaisController extends Controller
 
         return response($contents)->header('Content-Type', 'text/xml');
     }
-
 }

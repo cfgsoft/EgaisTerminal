@@ -78,6 +78,8 @@ Route::get('/opt/out/ReplyRestBCode/{id?}', 'api\v1\UtmEgaisController@replyRest
 Route::get('/opt/out/TTNHistoryF2Reg/{id?}', 'api\v1\UtmEgaisController@TTNHistoryF2Reg');
 Route::get('/info/certificate/RSA', 'api\v1\UtmEgaisController@rsa');
 
+Route::get('/softwareupdate/{fileName}', 'api\v1\SoftwareUpdateController@GetFile');
+
 
 Route::get('/home', 'HomeController@index')->name('home');
 Route::get('/about', 'HomeController@about')->name('about');
