@@ -4,6 +4,7 @@
 /storage/*.key
 /vendor
 /_readme
+/_readme/*.*
 /.idea
 /.vscode
 /.vagrant

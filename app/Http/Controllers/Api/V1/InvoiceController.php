@@ -5,6 +5,7 @@ namespace App\Http\Controllers\api\v1;
 use App\Models\Invoice\Invoice;
 use App\Models\Invoice\InvoiceLine;
 use App\Models\Invoice\InvoiceMarkLine;
+use App\Department;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -21,6 +22,15 @@ class InvoiceController extends Controller
         //GET
         $invoice = Invoice::with('invoiceLines')
             ->orderBy('number', 'desc')
+            ->paginate(50);
+
+        return $invoice;
+    }
+
+    public function indexLic()
+    {
+        //GET
+        $invoice = Invoice::orderBy('number', 'desc')
             ->paginate(50);
 
         return $invoice;
@@ -44,15 +54,20 @@ class InvoiceController extends Controller
         //POST
         $newInvoice = $request->all();
 
+        $department = null;
+        if ($request->has('department_code')) {
+            $department = Department::where('code', $request->get('department_code'))->first();
+        }
+
         $invoice = Invoice::where('doc_id', $newInvoice['doc_id'])->first();
         if ($invoice == null) {
             $invoice = Invoice::add($newInvoice);
-            $invoice->save();
         } else {
             $invoice->edit($newInvoice);
-            //$invoice->setCategory($request->get('category_id'));
-            $invoice->save();
         }
+        if ($department != null) {$invoice->setDepartment($department->id);}
+        $invoice->save();
+
 
         if (array_key_exists('lines', $newInvoice))
         {

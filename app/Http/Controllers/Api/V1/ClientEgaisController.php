@@ -36,7 +36,23 @@ class ClientEgaisController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $newClient = $request->all();
+
+        $client = ClientEgais::updateOrCreate(['code' => $newClient["code"]], $newClient);
+
+        return $client;
+    }
+
+    public function storeBatch(Request $request)
+    {
+        $result = [];
+        $newClients = $request->all();
+
+        foreach($newClients['items'] as $newClient) {
+            $result[] = ClientEgais::updateOrCreate(['code' => $newClient["code"]], $newClient);
+        }
+
+        return $result;
     }
 
     /**

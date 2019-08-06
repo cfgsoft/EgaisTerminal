@@ -74,6 +74,13 @@ class Invoice extends Model
         $this->save();
     }
 
+    public function setDepartment($id)
+    {
+        if($id == null) {return;}
+        $this->department_id = $id;
+        $this->save();
+    }
+
 
     public function deleteLines()
     {

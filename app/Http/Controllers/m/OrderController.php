@@ -55,8 +55,6 @@ class OrderController extends Controller
         $order->orderLines;
         $order->orderLines = $order->orderLines->sortBy('line_id')->sortByDesc('show_first');
 
-
-
         //$order->orderlines->sortBy('orderlineid');
         //$order->orderlines->sortByDesc('orderlineid');
 
@@ -102,36 +100,12 @@ class OrderController extends Controller
             ]
         );
 
-        if (strlen($barcode) > 8 and strlen($barcode) < 13) {
-            $barcode = str_replace("*", "", $barcode);
-        }
-
         $order = Order::where('barcode', '=', $barcode)->first();
         if ($order != null) {
             return redirect()->action('m\OrderController@edit', ['id' => $order->id]);
         } else {
             return redirect()->back()->withErrors(['BarCode' => 'Не найден заказ № ' . $barcode]);
         }
-
-
-        /*
-        if (strlen($barcode) > 8 and strlen($barcode) < 13) {
-            $barcode = str_replace("*", "", $barcode);
-            //$barcode = str_replace("C", "С", $barcode);
-            //$barcode = substr($barcode, 0, 4) . '_' . substr($barcode, 4);
-            //$order = Order::where('number', '=', $barcode)->first();
-
-            $order = Order::where('barcode', '=', $barcode)->first();
-
-            if ($order != null) {
-                return redirect()->action('m\OrderController@edit', ['id' => $order->id]);
-            }
-        }
-
-        $barcode = 'Не найден заказ №' . $barcode;
-
-        return redirect()->action('m\OrderController@index', ['barcode' => $barcode]);
-        */
     }
 
     public function submiteditbarcode(Request $request)
@@ -159,7 +133,7 @@ class OrderController extends Controller
 
         //Переход на другой заказ
         if (strlen($barcode) > 8 and strlen($barcode) < 13) {
-            $barcode = str_replace("*", "", $barcode);
+            //$barcode = str_replace("*", "", $barcode);
 
             $order = Order::where('barcode', '=', $barcode)->first();
             if ($order != null) {
@@ -176,7 +150,6 @@ class OrderController extends Controller
         $errorMessage = $result['errorMessage'];
 
         if ($errorBarCode) {
-            //return redirect()->action('m\OrderController@edit', ['id' => $order_id, 'errorMessage' => $errorMessage ]);
             return redirect()->back()->withErrors(['errorMessage' => $errorMessage]);
         }
 

@@ -9,6 +9,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Carbon\Carbon;
 
 use App\Models\Invoice\Invoice;
+use App\Department;
 use App\User;
 
 class InvoiceTest extends TestCase
@@ -33,11 +34,13 @@ class InvoiceTest extends TestCase
         $date = Carbon::now();
         $number = str_random(11);
         $barcode = str_random(12);
+        $department_code = 'S00000001';
 
         $payload = [
             'date' => $date,
             'number' => $number,
             'barcode' => $barcode,
+            'department_code' => $department_code,
             'doc_type' => '3',
             'doc_id' => InvoiceTest::DOC_ID_ADD,
             'lines' => [
@@ -107,11 +110,13 @@ class InvoiceTest extends TestCase
         $number = str_random(11);
         $barcode = str_random(12);
         $doc_id = 'STD2B2BLqXhCAEdltKSio2lhsfPWB95I9LQa';
+        $department_code = 'S00000001';
 
         $payload = [
             'date' => $date,
             'number' => $number,
             'barcode' => $barcode,
+            'department_code' => $department_code,
             'doc_type' => '3',
             'doc_id' => $doc_id,
             'lines' => [
@@ -236,10 +241,14 @@ class InvoiceTest extends TestCase
 
         $number = $payload['number'];
         $barcode = $payload['barcode'];
+        $department_code = $payload['department_code'];
+
+        $department = Department::Where('code', '=', $department_code)->first();
+        $department_id = $department->id;
 
         $response = $this->post('/api/v1/invoices', $payload, $this->headers);
         $response->assertStatus(201)
-                 ->assertJsonFragment(['number' => $number, 'barcode' => $barcode]);
+                 ->assertJsonFragment(['number' => $number, 'barcode' => $barcode, 'department_id' => $department_id]);
     }
 
     public function testApiInvoiceAreUpdatedCorrectly()
