@@ -35,11 +35,15 @@ class InvoiceTest extends TestCase
         $number = str_random(11);
         $barcode = str_random(12);
         $department_code = 'S00000001';
+        $shipper_code = '020000442348';
+        $consignee_code = '020000442348';
 
         $payload = [
             'date' => $date,
             'number' => $number,
             'barcode' => $barcode,
+            'shipper_code' => $shipper_code,
+            'consignee_code' => $consignee_code,
             'department_code' => $department_code,
             'doc_type' => '3',
             'doc_id' => InvoiceTest::DOC_ID_ADD,
@@ -48,7 +52,8 @@ class InvoiceTest extends TestCase
                     'line_id' => '1',
                     'line_identifier' => '1',
                     'product_descr' => 'Настойка горькая ПЕРЦОВОЧКА С МЕДОМ',
-                    'product_code' => '0378114000001323864',
+                    'product_code' => '12816',
+                    'product_egais_code' => '0378114000001323864',
                     'f1reg_id' => 'FA-000000039597226',
                     'f2reg_id' => 'FB-000001309598237',
                     'quantity' => '10',
@@ -59,7 +64,8 @@ class InvoiceTest extends TestCase
                     'line_id' => '2',
                     'line_identifier' => '2',
                     'product_descr' => 'Настойка горькая ПЕРЦОВОЧКА',
-                    'product_code' => '0123130000002476973',
+                    'product_code' => '12816',
+                    'product_egais_code' => '0123130000002476973',
                     'f1reg_id' => 'FA-000000039565813',
                     'f2reg_id' => 'FB-000001309598228',
                     'quantity' => '5',

@@ -3,8 +3,8 @@
 namespace App\Http\Controllers\api\v1;
 
 use App\Models\Invoice\Invoice;
-use App\Models\Invoice\InvoiceLine;
 use App\Models\Invoice\InvoiceMarkLine;
+use App\Models\RefEgais\ClientEgais;
 use App\Department;
 
 use Illuminate\Http\Request;
@@ -27,13 +27,27 @@ class InvoiceController extends Controller
         return $invoice;
     }
 
-    public function indexLic()
+    public function indexLic($consignee_code)
     {
-        //GET
-        $invoice = Invoice::orderBy('number', 'desc')
-            ->paginate(50);
+        $consignee = null;
+        if ($consignee_code != null ) {
+            //$department = Department::where('code', $request->get('department_code'))->first();
+        }
 
-        return $invoice;
+        //GET
+        //$invoice = Invoice::orderBy('number', 'desc')
+        //    ->leftJoin('ref_client_egais','doc_invoice.consignee_id', 'ref_client_egais.id')
+        //    ->select('doc_invoice.id', 'doc_invoice.date', 'doc_invoice.incoming_number', 'ref_client_egais.code as consignee_code');
+
+
+        //if ($consignee_code != null ) {
+        //    //$invoice = $invoice->where
+        //}
+
+        $invoice = Invoice::with('shipper', 'consignee', 'invoiceLines.product', 'invoiceMarkLines')
+            ->orderBy("id", 'desc');
+
+        return $invoice->paginate(50);
     }
 
     public function indexReadLine()
@@ -54,18 +68,28 @@ class InvoiceController extends Controller
         //POST
         $newInvoice = $request->all();
 
-        $department = null;
-        if ($request->has('department_code')) {
-            $department = Department::where('code', $request->get('department_code'))->first();
-        }
-
         $invoice = Invoice::where('doc_id', $newInvoice['doc_id'])->first();
         if ($invoice == null) {
             $invoice = Invoice::add($newInvoice);
         } else {
             $invoice->edit($newInvoice);
         }
-        if ($department != null) {$invoice->setDepartment($department->id);}
+
+        /* Необходимо вынести эту логику в модель */
+//        if ($request->has('department_code')) {
+//            $department = Department::where('code', $request->get('department_code'))->first();
+//            if ($department != null) {$invoice->setDepartment($department->id);}
+//        }
+//        if ($request->has('shipper_code')) {
+//            $clientEgais = ClientEgais::where('code', $request->get('shipper_code'))->first();
+//            if ($clientEgais != null) {$invoice->setShipper($clientEgais->id);}
+//        }
+//        if ($request->has('consignee_code')) {
+//            $clientEgais = ClientEgais::where('code', $request->get('consignee_code'))->first();
+//            if ($clientEgais != null) {$invoice->setConsignee($clientEgais->id);}
+//        }
+        /* Необходимо вынести эту логику в модель */
+
         $invoice->save();
 
 

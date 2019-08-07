@@ -26,7 +26,9 @@ class InvoiceController extends Controller
     public function index(Request $request)
     {
         //$invoice = Invoice::orderBy("number", 'desc')->simplePaginate(4);
-        $invoice = Invoice::orderBy("id", 'desc')->simplePaginate(4);
+        $invoice = Invoice::with('consignee', 'invoiceLines.product', 'invoiceMarkLines')
+            ->orderBy("id", 'desc')
+            ->simplePaginate(4);
 
         $barcode = $request->input('barcode', '');
 

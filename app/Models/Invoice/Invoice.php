@@ -2,6 +2,9 @@
 
 namespace App\Models\Invoice;
 
+use App\Models\RefEgais\ClientEgais;
+use App\Department;
+
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 
@@ -12,6 +15,16 @@ class Invoice extends Model
     protected $fillable = ['date', 'number', 'barcode', 'incoming_number', 'incoming_date', 'sum',
         'quantity', 'quantity_pack',
         'doc_type', 'doc_id'];
+
+    //region Reference
+    //
+    public function shipper(){
+        return $this->belongsTo("App\Models\RefEgais\ClientEgais");
+    }
+
+    public function consignee(){
+        return $this->hasOne("App\Models\RefEgais\ClientEgais", "id", "consignee_id");
+    }
 
     public function invoiceLines(){
         return $this->hasMany("App\Models\Invoice\InvoiceLine");
@@ -37,11 +50,13 @@ class Invoice extends Model
         return $this->hasMany("App\Models\Invoice\InvoiceErrorLine");
     }
 
+    //endregion
 
     public static function add($fields)
     {
         $invoice = new static;
         $invoice->fill($fields);
+        $invoice->setReference($fields);
         //$invoice->save();
 
         return $invoice;
@@ -50,6 +65,7 @@ class Invoice extends Model
     public function edit($fields)
     {
         $this->fill($fields);
+        $this->setReference($fields);
         //$this->save();
 
         return $this;
@@ -59,6 +75,8 @@ class Invoice extends Model
     {
         $this->delete();
     }
+
+    //region HeadSetters
 
     public function setShipper($id)
     {
@@ -81,6 +99,25 @@ class Invoice extends Model
         $this->save();
     }
 
+    public function setReference($fields)
+    {
+        if (array_key_exists('department_code', $fields)) {
+            $department = Department::where('code', $fields['department_code'])->first();
+            if ($department != null) {$this->setDepartment($department->id);}
+        }
+
+        if (array_key_exists('shipper_code', $fields)) {
+            $clientEgais = ClientEgais::where('code', $fields['shipper_code'])->first();
+            if ($clientEgais != null) {$this->setShipper($clientEgais->id);}
+        }
+
+        if (array_key_exists('consignee_code', $fields)) {
+            $clientEgais = ClientEgais::where('code', $fields['consignee_code'])->first();
+            if ($clientEgais != null) {$this->setConsignee($clientEgais->id);}
+        }
+    }
+
+    //endregion
 
     public function deleteLines()
     {
@@ -106,6 +143,7 @@ class Invoice extends Model
     {
         $line = new InvoiceLine();
         $line->fill($fields);
+        $line->setReference($fields);
         $line->invoice_id = $this->id;
         $line->save();
 

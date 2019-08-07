@@ -11,6 +11,8 @@ class ProductEgaisTableSeeder extends Seeder
      */
     public function run()
     {
+        DB::table('doc_invoice_line')->delete();
+
         DB::table('ref_product_egais')->delete();
 
         DB::table('ref_product_egais')->insert(['descr' => 'Водка "ФИННОРД (FINNORD)" 40 % 0,1 л (ИнвестПартнер)', 'code' => '0037150000001399460', 'capacity' => '1', 'alc_volume' => '0', 'product_v_code' => '200']);

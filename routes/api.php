@@ -90,7 +90,7 @@ Route::group(
         Route::resource('inventories',      'InventoryController',  ['only' => ['index', 'show', 'store']]);
 
         Route::group(['prefix' => '/invoicesLic'], function () {
-            Route::get('{id}', 'InvoiceController@indexLic');
+            Route::get('{consignee_code}', 'InvoiceController@indexLic');
             //Route::put('MarkLine/{id}', 'ReturnedInvoiceController@updateMarkLine');
         });
     }
