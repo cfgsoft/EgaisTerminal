@@ -25,7 +25,7 @@ Auth::routes();
 */
 Route::group(['prefix' => '/m', 'namespace' => 'm'], function ()
 {
-    Route::get('',                      'HomeController@index')->name('m.home.index');
+    Route::get('',                     'HomeController@index')->name('m.home.index');
     Route::get('about',                'HomeController@about')->name('m.home.about');
     Route::get('ajax',                 'HomeController@ajax')->name('m.home.ajax');
     Route::get('ajaxresult',           'HomeController@ajaxresult')->name('m.home.ajaxresult');

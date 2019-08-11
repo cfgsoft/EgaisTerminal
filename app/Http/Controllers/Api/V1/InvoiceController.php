@@ -5,7 +5,9 @@ namespace App\Http\Controllers\api\v1;
 use App\Models\Invoice\Invoice;
 use App\Models\Invoice\InvoiceMarkLine;
 use App\Models\RefEgais\ClientEgais;
-use App\Department;
+
+use App\Http\Resources\InvoiceResource;
+use App\Http\Resources\InvoiceResourceCollection;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -25,29 +27,6 @@ class InvoiceController extends Controller
             ->paginate(50);
 
         return $invoice;
-    }
-
-    public function indexLic($consignee_code)
-    {
-        $consignee = null;
-        if ($consignee_code != null ) {
-            //$department = Department::where('code', $request->get('department_code'))->first();
-        }
-
-        //GET
-        //$invoice = Invoice::orderBy('number', 'desc')
-        //    ->leftJoin('ref_client_egais','doc_invoice.consignee_id', 'ref_client_egais.id')
-        //    ->select('doc_invoice.id', 'doc_invoice.date', 'doc_invoice.incoming_number', 'ref_client_egais.code as consignee_code');
-
-
-        //if ($consignee_code != null ) {
-        //    //$invoice = $invoice->where
-        //}
-
-        $invoice = Invoice::with('shipper', 'consignee', 'invoiceLines.product', 'invoiceMarkLines')
-            ->orderBy("id", 'desc');
-
-        return $invoice->paginate(50);
     }
 
     public function indexReadLine()
@@ -74,22 +53,6 @@ class InvoiceController extends Controller
         } else {
             $invoice->edit($newInvoice);
         }
-
-        /* Необходимо вынести эту логику в модель */
-//        if ($request->has('department_code')) {
-//            $department = Department::where('code', $request->get('department_code'))->first();
-//            if ($department != null) {$invoice->setDepartment($department->id);}
-//        }
-//        if ($request->has('shipper_code')) {
-//            $clientEgais = ClientEgais::where('code', $request->get('shipper_code'))->first();
-//            if ($clientEgais != null) {$invoice->setShipper($clientEgais->id);}
-//        }
-//        if ($request->has('consignee_code')) {
-//            $clientEgais = ClientEgais::where('code', $request->get('consignee_code'))->first();
-//            if ($clientEgais != null) {$invoice->setConsignee($clientEgais->id);}
-//        }
-        /* Необходимо вынести эту логику в модель */
-
         $invoice->save();
 
 
@@ -195,4 +158,49 @@ class InvoiceController extends Controller
         //DELETE
         //
     }
+
+
+    //region Lic
+
+    public function indexLic(Request $request, $consignee_code)
+    {
+        $clientEgais = ClientEgais::where('code', '=', $consignee_code)->first();
+
+        if ($clientEgais == null) {
+            return abort('404');
+        }
+
+        $invoice = Invoice::with('shipper', 'consignee', 'invoiceLines', 'invoiceLines.product', 'invoiceLines.product_egais', 'invoiceMarkLines')
+            ->where([['consignee_id','=', $clientEgais->id], ['savedin1c','=', 0]])
+            ->orderBy("id", 'desc');
+
+        return new InvoiceResourceCollection( $invoice->paginate(10) );
+    }
+
+    public function showLic(Request $request, $consignee_code, $id)
+    {
+        //GET
+        $invoice = Invoice::findOrFail($id);
+
+        return new InvoiceResource($invoice);
+    }
+
+    public function updateLic(Request $request, $consignee_code, $id)
+    {
+        $clientEgais = ClientEgais::where('code', '=', $consignee_code)->first();
+
+        if ($clientEgais == null) {
+            return abort('404', 'Resource item not found.');
+        }
+
+        $invoice = Invoice::where([['consignee_id','=', $clientEgais->id], ['id','=', $id]])->first();
+
+        if ($invoice == null) {
+            return abort('404', 'Resource item not found.');
+        }
+
+        return $invoice->SavedIn1c();
+    }
+
+    //endregion
 }

@@ -82,21 +82,35 @@ class Invoice extends Model
     {
         if($id == null) {return;}
         $this->shipper_id = $id;
-        $this->save();
+        //$this->save();
+
+        return $this;
     }
 
     public function setConsignee($id)
     {
         if($id == null) {return;}
         $this->consignee_id = $id;
-        $this->save();
+        //$this->save();
+
+        return $this;
     }
 
     public function setDepartment($id)
     {
         if($id == null) {return;}
         $this->department_id = $id;
+        //$this->save();
+
+        return $this;
+    }
+
+    public function SavedIn1c()
+    {
+        $this->savedin1c = true;
         $this->save();
+
+        return $this;
     }
 
     public function setReference($fields)
@@ -115,6 +129,8 @@ class Invoice extends Model
             $clientEgais = ClientEgais::where('code', $fields['consignee_code'])->first();
             if ($clientEgais != null) {$this->setConsignee($clientEgais->id);}
         }
+
+        return $this;
     }
 
     //endregion

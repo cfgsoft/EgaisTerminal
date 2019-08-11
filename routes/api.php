@@ -79,8 +79,14 @@ Route::group(
     }
 );
 
+/*
+|--------------------------------------------------------------------------
+| API Routes LIC
+|--------------------------------------------------------------------------
+ */
+
 Route::group(
-    ['prefix' => '/v1',
+    ['prefix' => '/lic',
      'namespace' => 'Api\V1',
      'as' => 'api.',
     ],
@@ -89,11 +95,13 @@ Route::group(
         Route::resource('departments',      'DepartmentController', ['only' => ['index', 'show']]);
         Route::resource('inventories',      'InventoryController',  ['only' => ['index', 'show', 'store']]);
 
-        Route::group(['prefix' => '/invoicesLic'], function () {
-            Route::get('{consignee_code}', 'InvoiceController@indexLic');
-            //Route::put('MarkLine/{id}', 'ReturnedInvoiceController@updateMarkLine');
+        Route::group(['prefix' => '/{consignee_code}/invoices'], function () {
+            Route::get('', 'InvoiceController@indexLic');
+            Route::get('{id}', 'InvoiceController@showLic');
+            Route::put('{id}', 'InvoiceController@updateLic');
         });
     }
 );
+
 
 Route::get('categories/indexAll',   'Api\V1\CategoryController@indexAll'); //->middleware('auth');

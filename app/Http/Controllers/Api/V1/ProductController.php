@@ -4,6 +4,8 @@ namespace App\Http\Controllers\api\v1;
 
 use App\Product;
 use App\Category;
+use App\Http\Resources\ProductResource;
+
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
@@ -24,10 +26,8 @@ class ProductController extends Controller
             $products = $products->where('category_id', $request->get('category_id'));
         }
 
-        //$products = $products->belongsTo('App\Category');
-
         return response()->json($products->paginate(50));
-								
+
         //$products = Product::all();
         //return response()->json($products);
     }		
@@ -70,7 +70,8 @@ class ProductController extends Controller
      */
     public function show(Product $product)
     {
-        //
+        //ProductResource::withoutWrapping();
+        return new ProductResource($product);
     }
 
     /**

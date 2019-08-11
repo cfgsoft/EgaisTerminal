@@ -22,6 +22,10 @@ class InvoiceLine extends Model
         return $this->belongsTo("App\Product");
     }
 
+    public function product_egais(){
+        return $this->belongsTo("App\Models\RefEgais\ProductEgais");
+    }
+
     public function setProduct($id)
     {
         if($id == null) {return;}
