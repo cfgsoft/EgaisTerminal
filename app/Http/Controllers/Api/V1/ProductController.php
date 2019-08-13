@@ -52,14 +52,30 @@ class ProductController extends Controller
     {
         $newProduct = $request->all();
 
+        Product::updateOrCreate(['code' => $newProduct["code"]], $newProduct);
+
+        /*
         $product = Product::where("code", $newProduct["code"])->first();
         if ($product == null) {
             $product = Product::create($newProduct);
         } else {
             $product->update($newProduct);
         }
+        */
 
         return $product;
+    }
+
+    public function storeBatch(Request $request)
+    {
+        $result = [];
+        $newProducts = $request->all();
+
+        foreach($newProducts['items'] as $newProduct) {
+            $result[] = Product::updateOrCreate(['code' => $newProduct["code"]], $newProduct);
+        }
+
+        return $result;
     }
 
     /**

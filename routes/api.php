@@ -60,6 +60,7 @@ Route::group(
 
         Route::get('categories/indexAll',   'CategoryController@indexAll');
 
+        Route::post('products/store-batch',         'ProductController@storeBatch');
         Route::post('productsegais/store-batch',    'ProductEgaisController@storeBatch');
         Route::post('clientsegais/store-batch',     'ClientEgaisController@storeBatch');
         Route::post('excisestamps/store-batch',     'ExciseStampController@storeBatch');
