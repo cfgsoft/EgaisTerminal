@@ -93,7 +93,7 @@ class CategoryController extends Controller
             }
         }
 
-        $category = Category::updateOrCreate([ "code" => $newCategory["code"] ]);
+        $category = Category::updateOrCreate([ "code" => $newCategory["code"]], $newCategory );
 
         /*
         $category = Category::where("code", $newCategory["code"])->first();
