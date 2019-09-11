@@ -52,7 +52,7 @@ class ProductController extends Controller
     {
         $newProduct = $request->all();
 
-        Product::updateOrCreate(['code' => $newProduct["code"]], $newProduct);
+        $product = Product::updateOrCreate(['code' => $newProduct["code"]], $newProduct);
 
         /*
         $product = Product::where("code", $newProduct["code"])->first();

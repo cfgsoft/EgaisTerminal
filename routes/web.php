@@ -31,8 +31,10 @@ Route::group(['prefix' => '/m', 'namespace' => 'm'], function ()
     Route::get('ajaxresult',           'HomeController@ajaxresult')->name('m.home.ajaxresult');
     Route::post('ajaxpostresult',      'HomeController@ajaxpostresult')->name('m.home.ajaxpostresult');
     Route::post('submitbarcode',       'HomeController@submitbarcode')->name('m.home.submitbarcode');
-    Route::get('login',                'LoginController@login')->name('m.login');
-    Route::post('login/submitbarcode', 'LoginController@submitbarcode')->name('m.login.submitbarcode');
+
+    Route::get('login',                'LoginController@showLoginForm')->name('m.login');
+    Route::post('login',               'LoginController@login')->name('m.login.post');
+    Route::post('logout',              'LoginController@logout')->name('m.logout');
 
     Route::group(['prefix' => '/readbarcode'], function () {
         Route::get('',                   'ReadBarCodeController@index')->name('m.readbarcode');

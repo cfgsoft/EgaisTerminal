@@ -20,6 +20,7 @@ class DatabaseSeeder extends Seeder
             $this->call(ProductEgaisTableSeeder::class);
             $this->call(ExciseStampTableSeeder::class);
             $this->call(ReadBarCodeTableSeeder::class);
+            $this->call(DepartmentTableSeeder::class); //Depends on inventory
             //$this->call(CategoryTableSeeder::class);
 
             $this->call(OrderTableSeeder::class);

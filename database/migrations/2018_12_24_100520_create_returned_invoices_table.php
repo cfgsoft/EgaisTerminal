@@ -59,7 +59,7 @@ class CreateReturnedInvoicesTable extends Migration
                 ->onDelete('restrict')->onUpdate('restrict');
         });
 
-        Schema::create('doc_returned_invoice_box_line', function (Blueprint $table) {
+        Schema::create('doc_returned_invoice_pack_line', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('returned_invoice_id')->unsigned();
             $table->integer('lineid')->unsigned();
