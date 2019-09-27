@@ -403,8 +403,8 @@ class Order extends Model
             $orderMarkLine->line_id      = $orderLine->line_id;
             $orderMarkLine->product_code = $exciseStamp->productcode;
             $orderMarkLine->f2reg_id     = $exciseStamp->f2regid;
-            $orderMarkLine->markcode    = $exciseStamp->id;
-            $orderMarkLine->pack_number = $exciseStampBox->barcode;
+            $orderMarkLine->markcode     = $exciseStamp->barcode;
+            $orderMarkLine->pack_number  = $exciseStampBox->barcode;
             $orderMarkLine->quantity    = 1;
             $orderMarkLine->savedin1c   = false;
             $orderMarkLine->save();
