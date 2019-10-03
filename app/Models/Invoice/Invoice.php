@@ -66,6 +66,7 @@ class Invoice extends Model
     {
         $this->fill($fields);
         $this->setReference($fields);
+        $this->savedin1c = false;
         //$this->save();
 
         return $this;
