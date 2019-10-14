@@ -13,7 +13,7 @@
     <!-- Scripts -->
     <script src="{{ asset('js/m/appmobile.js') }}"></script>
 
-    <script src="http://code.jquery.com/jquery-1.12.4.min.js" integrity="sha256-ZosEbRLbNQzLpnKIkEdrPv7lOy9C27hHQ+Xp8a4MxAQ=" crossorigin="anonymous"></script>
+    <!-- <script src="http://code.jquery.com/jquery-1.12.4.min.js" integrity="sha256-ZosEbRLbNQzLpnKIkEdrPv7lOy9C27hHQ+Xp8a4MxAQ=" crossorigin="anonymous"></script> -->
 
     <!-- Styles -->
     <link href="{{ asset('css/m/appmobile.css') }}" rel="stylesheet">
