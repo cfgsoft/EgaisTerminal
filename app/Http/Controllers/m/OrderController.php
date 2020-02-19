@@ -75,6 +75,8 @@ class OrderController extends Controller
 
     public function submitbarcode(Request $request)
     {
+        //parent::submitbarcode($request);
+
         $barcode = $request->input('BarCode', '');
 
         if ($barcode == '0') {
@@ -100,11 +102,11 @@ class OrderController extends Controller
             ]
         );
 
-        $order = Order::where('barcode', '=', $barcode)->first();
+        $order = Order::where('barcode', '=', $this->barcode)->first();
         if ($order != null) {
             return redirect()->action('m\OrderController@edit', ['id' => $order->id]);
         } else {
-            return redirect()->back()->withErrors(['BarCode' => 'Не найден заказ № ' . $barcode]);
+            return redirect()->back()->withErrors(['BarCode' => 'Не найден заказ № ' . $this->barcode]);
         }
     }
 
