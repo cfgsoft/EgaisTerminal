@@ -11,20 +11,25 @@ class mController extends Controller
 
     protected function menuAction()
     {
-        if ($this->barcode == '0') {
-            return redirect()->action('m\HomeController@index');
-        } elseif ($this->barcode == '1') {
-            //Prev
-            //dd($request);
-        } elseif ($this->barcode == '3') {
-            //Next
+        switch($this->barcode)
+        {
+            case '0': //Main Menu
+                return redirect()->action('m\HomeController@index');
+                break;
+            case '1': //Prev
+                return null;
+                break;
+            case '3': //Next
+                return null;
+                break;
         }
+
     }
 
-    public function submitbarcode_new(Request $request)
+    public function submitbarcode(Request $request)
     {
         $this->barcode = $request->input('BarCode', '');
 
-        $this->menuAction();
+        return $this->menuAction();
     }
 }

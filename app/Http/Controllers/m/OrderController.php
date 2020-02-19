@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\DB;
 
 use Illuminate\Validation\Rule;
 
-class OrderController extends Controller
+class OrderController extends mController
 {
     /**
      * Create a new controller instance.
@@ -75,18 +75,8 @@ class OrderController extends Controller
 
     public function submitbarcode(Request $request)
     {
-        //parent::submitbarcode($request);
-
-        $barcode = $request->input('BarCode', '');
-
-        if ($barcode == '0') {
-            return redirect()->action('m\HomeController@index');
-        } elseif ($barcode == '1') {
-            //Prev
-            //dd($request);
-        } elseif ($barcode == '3') {
-            //Next
-        }
+        $result = parent::submitbarcode($request);
+        if ($result != null) return $result;
 
         $this->validate($request,
             ['BarCode'	=>

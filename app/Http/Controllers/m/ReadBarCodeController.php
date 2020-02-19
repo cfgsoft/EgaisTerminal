@@ -7,7 +7,7 @@ use App\Http\Controllers\Controller;
 
 use App\ReadBarCode;
 
-class ReadBarCodeController extends Controller
+class ReadBarCodeController extends mController
 {
     /**
      * Create a new controller instance.
@@ -40,32 +40,10 @@ class ReadBarCodeController extends Controller
 
     public function submitbarcode(Request $request)
     {
-        $barcode = '';
-        if ($request->has('BarCode')) {
-            $barcode = $request->get('BarCode');
-        }
+        $result = parent::submitbarcode($request);
+        if ($result != null) return $result;
 
-        if ($barcode == '0') {
-            return redirect()->action('m\HomeController@index');
-        }
-
-        ReadBarCode::add($barcode);
-
-        return redirect()->action('m\ReadBarCodeController@index');
-    }
-
-    public function submitbarcodeajax(Request $request)
-    {
-        if ($request->has('BarCode')) {
-            $barcode = $request->get('BarCode');
-
-            if ($barcode == '0') {
-                return redirect()->action('m\HomeController@index');
-            }
-
-            $newbarcode = ReadBarCode::add($barcode);
-
-            return $newbarcode;
-        }
+        $result = ReadBarCode::add($this->barcode);
+        return $result;
     }
 }

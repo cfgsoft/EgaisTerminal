@@ -69,7 +69,7 @@
             xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
         }
 
-        xmlhttp.open("POST","/m/readbarcode/submitbarcodeajax",true);
+        xmlhttp.open("POST","/m/readbarcode/submitbarcode",true);
         xmlhttp.setRequestHeader('Content-Type', "application/json; charset=utf-8");
         xmlhttp.setRequestHeader('X-CSRF-TOKEN', keyToken);
 

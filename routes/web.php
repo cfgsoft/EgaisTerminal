@@ -39,7 +39,6 @@ Route::group(['prefix' => '/m', 'namespace' => 'm'], function ()
     Route::group(['prefix' => '/readbarcode'], function () {
         Route::get('',                   'ReadBarCodeController@index')->name('m.readbarcode');
         Route::post('submitbarcode',     'ReadBarCodeController@submitbarcode')->name('m.readbarcode.submitbarcode');
-        Route::post('submitbarcodeajax', 'ReadBarCodeController@submitbarcodeajax')->name('m.readbarcode.submitbarcodeajax');
     });
 
     Route::group(['prefix' => '/order'], function () {
