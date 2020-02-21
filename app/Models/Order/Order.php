@@ -627,23 +627,4 @@ class Order extends Model
         return ['error' => false, 'errorMessage' => ''];
     }
 
-
-    private function getCollectionExciseStamp($exciseStampPallet)
-    {
-        $collectionExciseStamp = DB::table('excise_stamp_pallet')
-            ->leftJoin('excise_stamp_pallet_line', 'excise_stamp_pallet.id', '=', 'excise_stamp_pallet_line.pallet_id')
-            ->leftJoin('excise_stamp_boxes', 'excise_stamp_pallet_line.box_id', '=', 'excise_stamp_boxes.id')
-            ->leftJoin('excise_stamp_box_lines', 'excise_stamp_boxes.id', '=', 'excise_stamp_box_lines.excise_stamp_box_id')
-            ->leftJoin('excise_stamps', 'excise_stamp_box_lines.markcode', '=', 'excise_stamps.id')
-            ->where('excise_stamp_pallet.id', '=', $exciseStampPallet->id )
-            ->select('excise_stamp_pallet.id as pallet_ip',
-                'excise_stamp_pallet.barcode as pallet_barcode',
-                'excise_stamp_boxes.id as box_id',
-                'excise_stamp_boxes.barcode as box_barcode',
-                'excise_stamps.*')
-            ->get();
-
-        return $collectionExciseStamp;
-    }
-
 }

@@ -9,6 +9,8 @@ use App\ReadBarCode;
 
 class ReadBarCodeController extends mController
 {
+    protected $validateNumberDoc = false;
+
     /**
      * Create a new controller instance.
      *
@@ -29,21 +31,11 @@ class ReadBarCodeController extends mController
         $barcode = ReadBarCode::orderBy("created_at", 'desc') //'asc'
                                 ->take(10)->get();
 
-        return view('m/readbarcode/index',['barcode' => $barcode]);
-
-        //test token
-        //$result = $request->session()->all();//получаем данные из сессии
-        //$token = $result['_token'];
-
-        //return view('m/readbarcode/index',['barcode' => $barcode, 'token' => $token]);
+        return view('m/readbarcode/index',['barcode' => $barcode]);       
     }
 
-    public function submitbarcode(Request $request)
+    public function submitbarcode_new(Request $request)
     {
-        $result = parent::submitbarcode($request);
-        if ($result != null) return $result;
-
-        $result = ReadBarCode::add($this->barcode);
-        return $result;
+        return ReadBarCode::add($this->barcode());
     }
 }

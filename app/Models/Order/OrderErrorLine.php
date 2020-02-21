@@ -13,4 +13,5 @@ class OrderErrorLine extends Model
     public function order(){
         return $this->belongsTo("App\Models\Order\Order");
     }
+
 }
