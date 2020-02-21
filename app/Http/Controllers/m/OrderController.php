@@ -4,10 +4,6 @@ namespace App\Http\Controllers\m;
 
 use App\Models\Order\Order;
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\DB;
-
-use Illuminate\Validation\Rule;
 
 class OrderController extends mController
 {
@@ -28,25 +24,15 @@ class OrderController extends mController
      */
     public function index(Request $request)
     {
-        //$order = Order::orderBy("number", 'desc')->take(10)->get();
-
-        //$barcode = '';
-        //if ($request->has('barcode')) {
-        //    $barcode = $request->get('barcode');
-        //}
-
         $order = Order::orderBy("number", 'desc')->simplePaginate(4);
 
         $barcode = $request->input('barcode', '');
-
-        //dd($order);
 
         return view('m/order/index', ['order' => $order, 'barcode' => $barcode]);
     }
 
     public function edit(Request $request, $id)
     {
-        //$order = Order::find($request->get('id'));
         $order = Order::find($id);
         if ($order == null)
         {
@@ -54,16 +40,6 @@ class OrderController extends mController
         }
         $order->orderLines;
         $order->orderLines = $order->orderLines->sortBy('line_id')->sortByDesc('show_first');
-
-        //$order->orderlines->sortBy('orderlineid');
-        //$order->orderlines->sortByDesc('orderlineid');
-
-        //$orderlines = $orderlines->sortByDesc('orderlineid');
-        //$order->orderlines = $orderlines;
-
-        //$sorted->values()->all();
-        //
-        //return var_dump($sorted->values()->all());
 
         $errorMessage = '';
         if ($request->has('errorMessage')) {
@@ -73,30 +49,13 @@ class OrderController extends mController
         return view('m/order/edit', ['order' => $order, 'errorMessage' => $errorMessage]);
     }
 
-    public function submitbarcode(Request $request)
+    public function submitbarcode_new(Request $request)
     {
-        $result = parent::submitbarcode($request);
-        if ($result != null) return $result;
-
-        $this->validate($request,
-            ['BarCode'	=>
-                ['required',
-                 'min:9',
-                 'max:12',
-                ]
-            ]
-            ,
-            ['BarCode.required' => 'Заполните ШК',
-             'BarCode.min'      => 'ШК минимум 9 символов',
-             'BarCode.max'      => 'ШК максимум 12 символов'
-            ]
-        );
-
-        $order = Order::where('barcode', '=', $this->barcode)->first();
+        $order = Order::where('barcode', '=', $this->barcode())->first();
         if ($order != null) {
             return redirect()->action('m\OrderController@edit', ['id' => $order->id]);
         } else {
-            return redirect()->back()->withErrors(['BarCode' => 'Не найден заказ № ' . $this->barcode]);
+            return redirect()->back()->withErrors(['BarCode' => 'Не найден заказ № ' . $this->barcode()]);
         }
     }
 

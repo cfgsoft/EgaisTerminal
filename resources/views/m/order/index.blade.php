@@ -44,16 +44,6 @@
         </tbody>
     </table>
 
-    {{--
-    @foreach ($order as $item)
-    <div class="card">
-        <a href="{{ route('m.order.edit', ['id' => $item->id]) }}" >
-            <div>{{$item->date}} № {{$item->number}} <span>{{$item->quantity}}</span> <span>{{$item->quantity_mark}}</span> </div>
-        </a>
-    </div>
-    @endforeach
-    --}}
-
     {{ $order->links("pagination.m-simple") }}
 
 @endsection

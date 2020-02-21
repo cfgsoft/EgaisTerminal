@@ -5,11 +5,17 @@ namespace App\Http\Controllers\m;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
-class mController extends Controller
+abstract class mController extends Controller
 {
-    public $barcode;
+    private $barcode;
+    protected $validateNumberDoc = true;
 
-    protected function menuAction()
+    public function barcode()
+    {
+        return $this->barcode;
+    }
+
+    private function menuAction()
     {
         switch($this->barcode)
         {
@@ -23,13 +29,38 @@ class mController extends Controller
                 return null;
                 break;
         }
-
     }
+
+    private function validateNumberDoc(Request $request)
+    {
+        $this->validate($request,
+            ['BarCode'	=>
+                ['required',
+                    'min:9',
+                    'max:12',
+                ]
+            ]
+            ,
+            ['BarCode.required' => 'Заполните ШК',
+                'BarCode.min'      => 'ШК минимум 9 символов',
+                'BarCode.max'      => 'ШК максимум 12 символов'
+            ]
+        );
+    }
+
+    abstract protected function submitbarcode_new(Request $request);
 
     public function submitbarcode(Request $request)
     {
         $this->barcode = $request->input('BarCode', '');
 
-        return $this->menuAction();
+        $result = $this->menuAction();
+        if ($result != null) return $result;
+
+        if ($this->validateNumberDoc) $this->validateNumberDoc($request);
+
+        $result = $this->submitbarcode_new($request);
+
+        return $result;
     }
 }
