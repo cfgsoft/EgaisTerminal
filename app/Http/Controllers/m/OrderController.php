@@ -26,9 +26,7 @@ class OrderController extends mController
     {
         $order = Order::orderBy("number", 'desc')->simplePaginate(4);
 
-        $barcode = $request->input('barcode', '');
-
-        return view('m/order/index', ['order' => $order, 'barcode' => $barcode]);
+        return view('m/order/index', ['order' => $order]);
     }
 
     public function edit(Request $request, $id)

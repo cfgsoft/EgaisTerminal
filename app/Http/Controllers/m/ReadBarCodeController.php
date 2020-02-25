@@ -3,21 +3,24 @@
 namespace App\Http\Controllers\m;
 
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
 
 use App\ReadBarCode;
+use App\Services\ReadBarCodeService;
 
 class ReadBarCodeController extends mController
 {
     protected $validateNumberDoc = false;
+    protected $readBarCodeService;
 
     /**
      * Create a new controller instance.
      *
      * @return void
      */
-    public function __construct()
+    public function __construct(ReadBarCodeService $readBarCodeService)
     {
+        $this->readBarCodeService = $readBarCodeService;
+
         //$this->middleware('auth');
     }
 
@@ -26,10 +29,12 @@ class ReadBarCodeController extends mController
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(Request $request)
+    public function index()
     {
-        $barcode = ReadBarCode::orderBy("created_at", 'desc') //'asc'
-                                ->take(10)->get();
+        $barcode = $this->readBarCodeService->get();
+
+        //$barcode = ReadBarCode::orderBy("created_at", 'desc') //'asc'
+        //                        ->take(10)->get();
 
         return view('m/readbarcode/index',['barcode' => $barcode]);       
     }

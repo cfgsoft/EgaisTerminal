@@ -10,8 +10,6 @@
         <input type="submit" value=".." />
     </form>
 
-    {{ isset($barcode) ? $barcode : '0' }}
-
     @include('m.errors')
 
     <!-- <h5>Документы набора</h5> -->

@@ -27,7 +27,7 @@ class ReadBarCodeTest extends TestCase
         $value = str_random(40);
 
         $response = $this->post('/m/readbarcode/submitbarcode',['BarCode' => $value]);
-        $response->assertStatus(302);
+        $response->assertStatus(201);
 
         //$response = $this->get('/m/readbarcode');
         //$response->assertStatus(200)->assertSee($value);

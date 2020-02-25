@@ -9,8 +9,10 @@ use App\Http\Controllers\Controller;
 use App\Models\Inventory\Inventory;
 use App\Models\Inventory\InventoryMarkLine;
 
-class InventoryController extends Controller
+class InventoryController extends mController
 {
+    protected $menuHotKeys = ['1' => 'm\InventoryController@create'];
+
     /**
      * Display a listing of the resource.
      *
@@ -21,6 +23,8 @@ class InventoryController extends Controller
         $inventory = Inventory::orderBy("id", 'desc')->simplePaginate(4);
 
         $barcode = $request->input('barcode', '');
+
+        \Debugbar::info($inventory);
 
         return view('m/inventory/index', ['inventory' => $inventory, 'barcode' => $barcode]);
     }
@@ -35,8 +39,6 @@ class InventoryController extends Controller
 
     public function store(Request $request)
     {
-        //dd($request);
-
         $this->validate($request, [
             'date'	 =>	'required',
             'number' =>	'required'
@@ -81,42 +83,11 @@ class InventoryController extends Controller
         return view('m/inventory/edit', ['inventory' => $inventory, 'order_id' => $order_id, 'f2reg_id' => $f2reg_id]);
     }
 
-    public function submitbarcode(Request $request)
+    public function submitbarcode_new(Request $request)
     {
-        $barcode = $request->input('BarCode', '');
-
-        if ($barcode == '0') {
-            return redirect()->action('m\HomeController@index');
-        } else if ($barcode == '1') {
+        if ($this->barcode() == '1') {
             return redirect()->action('m\InventoryController@create');
         }
-
-        $this->validate($request,
-            ['BarCode'	=>
-                ['required',
-                    'min:9',
-                    'max:12',
-                ]
-            ]
-            ,
-            ['BarCode.required' => 'Заполните ШК',
-                'BarCode.min'      => 'ШК минимум 9 символов',
-                'BarCode.max'      => 'ШК максимум 12 символов'
-            ]
-        );
-
-        if (strlen($barcode) > 8 and strlen($barcode) < 13) {
-            $barcode = str_replace("*", "", $barcode);
-        }
-
-        /*
-        $inventory = Inventory::where('barcode', '=', $barcode)->first();
-        if ($inventory != null) {
-            return redirect()->action('m\InventoryController@edit', ['id' => $inventory->id]);
-        } else {
-            return redirect()->back()->withErrors(['BarCode' => 'Не найдена инвентаризация № ' . $barcode]);
-        }
-        */
     }
 
     public function submiteditbarcode(Request $request)

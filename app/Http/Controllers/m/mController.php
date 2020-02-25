@@ -8,7 +8,9 @@ use App\Http\Controllers\Controller;
 abstract class mController extends Controller
 {
     private $barcode;
+
     protected $validateNumberDoc = true;
+    protected $menuHotKeys = [];
 
     public function barcode()
     {
@@ -17,17 +19,15 @@ abstract class mController extends Controller
 
     private function menuAction()
     {
-        switch($this->barcode)
-        {
-            case '0': //Main Menu
-                return redirect()->action('m\HomeController@index');
-                break;
-            case '1': //Prev
-                return null;
-                break;
-            case '3': //Next
-                return null;
-                break;
+        if ($this->barcode == '0') return redirect()->action('m\HomeController@index');
+
+        if (array_key_exists($this->barcode, $this->menuHotKeys)) {
+
+            $action = $this->menuHotKeys[$this->barcode];
+
+            if ($action != null) {
+                return redirect()->action($action);
+            }
         }
     }
 

@@ -19,21 +19,6 @@ class OrderController extends Controller
      */
     public function index(Request $request)
     {
-        //$order = Order::find(1);
-        //$order->orderlines;
-        //$order->ordermarklines;
-
-        //$order = Order::with('orderlines', 'ordermarklines', 'orderpacklines', 'ordererrorlines')
-
-
-        //$order = Order::with('orderlines', 'ordererrorlines')
-        //    ->orderBy("number", 'desc')
-        //    ->take(50)
-        //    ->get();
-        //
-        //return response()->json($order);
-
-
         $order = Order::with('orderLines', 'orderErrorLines')
             ->orderBy('number', 'desc')
             ->paginate(50);
@@ -58,16 +43,6 @@ class OrderController extends Controller
         //})->with('ordermarklines')->get();
 
         return response()->json($order);
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
     }
 
     /**
@@ -161,29 +136,6 @@ class OrderController extends Controller
         $order->orderErrorLines;
 
         return response()->json($order);
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Order  $order
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Order $order)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Order  $order
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, Order $order)
-    {
-        //
     }
 
     public function indexMarkLine1c()

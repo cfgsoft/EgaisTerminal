@@ -16,7 +16,7 @@ class ReturnedInvoiceTableSeeder extends Seeder
     public function run()
     {
         DB::table('doc_returned_invoice_error_line')->delete();
-        //DB::table('doc_returned_invoice_pack_line')->delete();
+        DB::table('doc_returned_invoice_pack_line')->delete();
         DB::table('doc_returned_invoice_mark_line')->delete();
         DB::table('doc_returned_invoice_line')->delete();
         DB::table('doc_returned_invoice')->delete();
